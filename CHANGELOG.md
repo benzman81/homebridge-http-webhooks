@@ -1,3 +1,9 @@
+## 0.0.12
+
+Bugfix:
+
+  - Fixed readme.
+
 ## 0.0.11
 
 Bugfix:
