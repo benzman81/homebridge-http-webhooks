@@ -22,7 +22,7 @@ function HttpWebHooksPlatform(log, config){
 
 HttpWebHooksPlatform.prototype = {
 
-    accessories: (function(callback) {
+    accessories: function(callback) {
         var sensorAccessories = [];
         for(var i = 0; i < this.sensors.length; i++){
             var sensor = new HttpWebHookSensorAccessory(this.log, this.sensors[i]);
@@ -36,15 +36,15 @@ HttpWebHooksPlatform.prototype = {
             var theUrlParts = url.parse(theUrl, true);
             var theUrlParams = theUrlParts.query;
             var body = [];
-            request.on('error', function(err) {
-                console.error("[ERROR Http WebHook Server] Reason: %s.", err);
-            }).on('data', function(chunk) {
+            request.on('error', (function(err) {
+                this.log("[ERROR Http WebHook Server] Reason: %s.", err);
+            }).bind(this)).on('data', function(chunk) {
                 body.push(chunk);
             }).on('end', (function() {
                 body = Buffer.concat(body).toString();
 
                 response.on('error', function(err) {
-                    console.error("[ERROR Http WebHook Server] Reason: %s.", err);
+                    this.log("[ERROR Http WebHook Server] Reason: %s.", err);
                 });
 
                 response.statusCode = 200;
@@ -54,7 +54,7 @@ HttpWebHooksPlatform.prototype = {
                     response.statusCode = 404;
                     response.setHeader("Content-Type", "text/plain");
                     var errorText = "[ERROR Http WebHook Server] No accessoryId or state in request.";
-                    console.error(errorText);
+                    this.log(errorText);
                     response.write(errorText);
                     response.end();
                 }
@@ -68,6 +68,7 @@ HttpWebHooksPlatform.prototype = {
                         var sensorAccessory = sensorAccessories[i];
                         if(sensorAccessory.id === accessoryId) {
                             this.storage.setItemSync("http-webhook-"+accessoryId, state);
+                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",sensorAccessory.id,state);
                             sensorAccessory.changeHandler(state);
                             break;
                         }
@@ -76,9 +77,9 @@ HttpWebHooksPlatform.prototype = {
                     response.end();
                 }
             }).bind(this));
-        }).bind(this)).listen(webHookServerPort);    
-        constructorLog("Started server for webhooks on port '%s'.", webHookServerPort);
-    }).bind(this);
+        }).bind(this)).listen(this.webhookPort);    
+        this.log("Started server for webhooks on port '%s'.", this.webhookPort);
+    }
 }
 
 function HttpWebHookSensorAccessory(log, sensorConfig) {
@@ -94,16 +95,18 @@ HttpWebHookSensorAccessory.prototype = {
         var service, changeAction;
         if(this.type === "contact"){
             service = new Service.ContactSensor();
-            changeAction = function(newState){
+            changeAction = (function(newState){
+                this.log("Change HomeKit state for contact sensor to '%s'.", newState);
                 service.getCharacteristic(Characteristic.ContactSensorState)
                         .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-            };
+            }).bind(this);
         } else {
             service = new Service.MotionSensor();
-            changeAction = function(newState){
+            changeAction = (function(newState){
+                this.log("Change HomeKit state for motion sensor to '%s'.", newState);
                 service.getCharacteristic(Characteristic.MotionDetected)
                         .setValue(newState);
-            };
+            }).bind(this);
         }
 
         this.changeHandler = function(newState){
