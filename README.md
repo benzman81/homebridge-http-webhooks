@@ -14,6 +14,7 @@ For motion sensors the value for NEWSTATE is either 'true' for motion detection 
 
 # Configuration
 Example config.json:
+
     {
         "platforms": [
             {
