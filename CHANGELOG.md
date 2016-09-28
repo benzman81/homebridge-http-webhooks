@@ -1,3 +1,27 @@
+## 0.0.11
+
+Bugfix:
+
+  - Fixed state values.
+
+## 0.0.10
+
+Bugfix:
+
+  - Fixed context.
+
+## 0.0.9
+
+Bugfix:
+
+  - Fixed variable.
+
+## 0.0.8
+
+Bugfix:
+
+  - Implemented getState.
+
 ## 0.0.7
 
 Bugfix:

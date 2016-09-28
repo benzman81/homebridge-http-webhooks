@@ -25,7 +25,7 @@ HttpWebHooksPlatform.prototype = {
     accessories: function(callback) {
         var sensorAccessories = [];
         for(var i = 0; i < this.sensors.length; i++){
-            var sensor = new HttpWebHookSensorAccessory(this.log, this.sensors[i]);
+            var sensor = new HttpWebHookSensorAccessory(this.log, this.sensors[i], this.storage);
             sensorAccessories.push(sensor);
         }
         var sensorAccessoriesCount = sensorAccessories.length;
@@ -67,9 +67,10 @@ HttpWebHooksPlatform.prototype = {
                     for(var i = 0; i < sensorAccessoriesCount; i++){
                         var sensorAccessory = sensorAccessories[i];
                         if(sensorAccessory.id === accessoryId) {
-                            this.storage.setItemSync("http-webhook-"+accessoryId, state);
-                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",sensorAccessory.id,state);
-                            sensorAccessory.changeHandler(state);
+                            var stateBool = state==="true";
+                            this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
+                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",sensorAccessory.id,stateBool);
+                            sensorAccessory.changeHandler(stateBool);
                             break;
                         }
                     }
@@ -82,37 +83,50 @@ HttpWebHooksPlatform.prototype = {
     }
 }
 
-function HttpWebHookSensorAccessory(log, sensorConfig) {
+function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     this.log = log;
     this.id = sensorConfig["id"];
     this.name = sensorConfig["name"];
     this.type = sensorConfig["type"];
+    this.storage = storage;
+    
+    if(this.type === "contact") {
+        this.service = new Service.ContactSensor(this.name);
+        this.changeHandler = (function(newState){
+            this.log("Change HomeKit state for contact sensor to '%s'.", newState);
+             this.service.getCharacteristic(Characteristic.ContactSensorState)
+                    .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+        }).bind(this);
+        this.service
+            .getCharacteristic(Characteristic.ContactSensorState)
+            .on('get', this.getState.bind(this));
+    } else {
+        this.service = new Service.MotionSensor(this.name);
+        this.changeHandler = (function(newState){
+            this.log("Change HomeKit state for motion sensor to '%s'.", newState);
+            this.service.getCharacteristic(Characteristic.MotionDetected)
+                    .setValue(newState);
+        }).bind(this);
+        this.service
+            .getCharacteristic(Characteristic.MotionDetected)
+            .on('get', this.getState.bind(this));
+    }
 }
 
-HttpWebHookSensorAccessory.prototype = {
-
-    getServices: function() {
-        var service, changeAction;
-        if(this.type === "contact"){
-            service = new Service.ContactSensor();
-            changeAction = (function(newState){
-                this.log("Change HomeKit state for contact sensor to '%s'.", newState);
-                service.getCharacteristic(Characteristic.ContactSensorState)
-                        .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
-            }).bind(this);
-        } else {
-            service = new Service.MotionSensor();
-            changeAction = (function(newState){
-                this.log("Change HomeKit state for motion sensor to '%s'.", newState);
-                service.getCharacteristic(Characteristic.MotionDetected)
-                        .setValue(newState);
-            }).bind(this);
-        }
-
-        this.changeHandler = function(newState){
-            changeAction(newState);
-        }.bind(this);
-
-        return [service];
+HttpWebHookSensorAccessory.prototype.getState = function(callback) {
+    this.log("Getting current state for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-"+this.id);
+    if(state === undefined) {
+        state = false;
     }
+    if(this.type === "contact") {
+        callback(null, state ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    }
+    else {
+        callback(null, state);
+    }
+};
+
+HttpWebHookSensorAccessory.prototype.getServices = function() {
+  return [this.service];
 };

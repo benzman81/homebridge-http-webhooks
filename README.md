@@ -1,9 +1,16 @@
 # homebridge-http-webhooks
 A http plugin with support of webhooks for Homebridge: https://github.com/nfarina/homebridge.
 
-To trigger a sensor you need to call the url http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=true/false .
-
 Currently supports contact and motion sensors.
+
+# Trigger change
+To trigger a change of an accessory you need to call the url http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE .
+
+## Contact sensor
+For contact sensors the value for NEWSTATE is either 'true' for contact or 'false' for no contact.
+
+## Motion sensor
+For motion sensors the value for NEWSTATE is either 'true' for motion detection or 'false' for no motion.
 
 # Configuration
 Example config.json:
@@ -15,15 +22,14 @@ Example config.json:
                 "cache_directory": "./.node-persist/storage", // (optional, default: "./.node-persist/storage")
                 "sensors": [
                     {
-                        "id": "sensor1",
-                        "name": "Sensor name 1",
-                        "type": "contact"
-                    }
-                    ,
+                    "id": "sensor1",
+                    "name": "Sensor name 1",
+                    "type": "contact"
+                    },
                     {
-                        "id": "sensor1",
-                        "name": "Sensor name 2",
-                        "type": "motion"
+                    "id": "sensor1",
+                    "name": "Sensor name 2",
+                    "type": "motion"
                     }
                 ]
             }
