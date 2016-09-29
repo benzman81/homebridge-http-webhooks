@@ -2,6 +2,12 @@
 
 Bugfix:
 
+  - Fixed switches one more time.
+
+## 0.0.15
+
+Bugfix:
+
   - Fixed switches.
 
 ## 0.0.14

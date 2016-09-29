@@ -182,7 +182,7 @@ HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
     callback(null, state);
 };
 
-HttpWebHookSwitchAccessory.prototype.setState = function(callback) {
+HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
     this.log("Switch state for '%s'...", this.id);
     this.getState((function(err, state) {
         this.storage.setItemSync("http-webhook-"+this.id, !state);
