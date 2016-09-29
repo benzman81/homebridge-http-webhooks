@@ -100,7 +100,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.service
             .getCharacteristic(Characteristic.ContactSensorState)
             .on('get', this.getState.bind(this));
-    } else {
+    } else if(this.type === "motion") {
         this.service = new Service.MotionSensor(this.name);
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for motion sensor to '%s'.", newState);
@@ -109,6 +109,16 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.MotionDetected)
+            .on('get', this.getState.bind(this));
+    } else if(this.type === "smoke") {
+        this.service = new Service.SmokeSensor(this.name);
+        this.changeHandler = (function(newState){
+            this.log("Change HomeKit state for smoke sensor to '%s'.", newState);
+            this.service.getCharacteristic(Characteristic.SmokeDetected)
+                    .setValue(newState);
+        }).bind(this);
+        this.service
+            .getCharacteristic(Characteristic.SmokeDetected)
             .on('get', this.getState.bind(this));
     }
 }
@@ -121,6 +131,9 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
     }
     if(this.type === "contact") {
         callback(null, state ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+    }
+    else if(this.type === "smoke") {
+        callback(null, state ? Characteristic.SmokeDetected.SMOKE_DETECTED : Characteristic.SmokeDetected.SMOKE_NOT_DETECTED);
     }
     else {
         callback(null, state);

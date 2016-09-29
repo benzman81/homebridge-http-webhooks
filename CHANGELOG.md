@@ -1,3 +1,9 @@
+## 0.0.13
+
+New features:
+
+  - Added smoke sensor.
+
 ## 0.0.12
 
 Bugfix:
