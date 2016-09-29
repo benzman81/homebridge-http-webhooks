@@ -164,7 +164,7 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.service = new Service.Switch(this.name);
     this.changeHandler = (function(newState) {
         this.log("Change HomeKit state for switch to '%s'.", newState);
-         this.service.getCharacteristic(Characteristic.On)
+        this.service.getCharacteristic(Characteristic.On)
                 .setValue(newState);
     }).bind(this);
     this.service
@@ -185,7 +185,7 @@ HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
 HttpWebHookSwitchAccessory.prototype.setState = function(callback) {
     this.log("Switch state for '%s'...", this.id);
     this.getState((function(err, state) {
-        this.storage.setItemSync("http-webhook-"+accessoryId, !state);
+        this.storage.setItemSync("http-webhook-"+this.id, !state);
         var urlToCall = this.onURL;
         if(state) {
             urlToCall = this.offURL;

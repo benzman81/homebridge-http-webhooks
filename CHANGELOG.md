@@ -1,3 +1,9 @@
+## 0.0.15
+
+Bugfix:
+
+  - Fixed switches.
+
 ## 0.0.14
 
 New features:
