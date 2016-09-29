@@ -2,6 +2,7 @@ var request = require("request");
 var http = require('http');
 var url = require('url');
 var Service, Characteristic;
+var DEFAULT_REQUEST_TIMEOUT = 10000;
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
@@ -9,6 +10,7 @@ module.exports = function(homebridge) {
 
     homebridge.registerPlatform("homebridge-http-webhooks", "HttpWebHooks", HttpWebHooksPlatform);
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSensor", HttpWebHookSensorAccessory);
+    homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSwitch", HttpWebHookSwitchAccessory);
 };
 
 function HttpWebHooksPlatform(log, config){
@@ -16,6 +18,7 @@ function HttpWebHooksPlatform(log, config){
     this.cacheDirectory = config["cache_directory"] || "./.node-persist/storage";
     this.webhookPort = config["webhook_port"] || 51828;
     this.sensors = config["sensors"] || [];
+    this.switches = config["switches"] || [];
     this.storage = require('node-persist');
     this.storage.initSync({dir:this.cacheDirectory});
 }
@@ -23,13 +26,19 @@ function HttpWebHooksPlatform(log, config){
 HttpWebHooksPlatform.prototype = {
 
     accessories: function(callback) {
-        var sensorAccessories = [];
+        var accessories = [];
         for(var i = 0; i < this.sensors.length; i++){
             var sensor = new HttpWebHookSensorAccessory(this.log, this.sensors[i], this.storage);
-            sensorAccessories.push(sensor);
+            accessories.push(sensor);
         }
-        var sensorAccessoriesCount = sensorAccessories.length;
-        callback(sensorAccessories);
+
+        for(var i = 0; i < this.switches.length; i++){
+            var switchAccessory = new HttpWebHookSwitchAccessory(this.log, this.switches[i], this.storage);
+            accessories.push(switchAccessory);
+        }
+        var accessoriesCount = accessories.length;
+        
+        callback(accessories);
         
         http.createServer((function(request, response) {
             var theUrl = request.url;
@@ -64,13 +73,13 @@ HttpWebHooksPlatform.prototype = {
                     var responseBody = {
                         success: true
                     };
-                    for(var i = 0; i < sensorAccessoriesCount; i++){
-                        var sensorAccessory = sensorAccessories[i];
-                        if(sensorAccessory.id === accessoryId) {
+                    for(var i = 0; i < accessoriesCount; i++){
+                        var accessory = accessories[i];
+                        if(accessory.id === accessoryId) {
                             var stateBool = state==="true";
                             this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
-                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",sensorAccessory.id,stateBool);
-                            sensorAccessory.changeHandler(stateBool);
+                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
+                            accessory.changeHandler(stateBool);
                             break;
                         }
                     }
@@ -141,5 +150,64 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
 };
 
 HttpWebHookSensorAccessory.prototype.getServices = function() {
+  return [this.service];
+};
+
+function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
+    this.log = log;
+    this.id = switchConfig["id"];
+    this.name = switchConfig["name"];
+    this.onURL = switchConfig["on_url"] || "";
+    this.offURL = switchConfig["off_url"] || "";
+    this.storage = storage;
+    
+    this.service = new Service.Switch(this.name);
+    this.changeHandler = (function(newState) {
+        this.log("Change HomeKit state for switch to '%s'.", newState);
+         this.service.getCharacteristic(Characteristic.On)
+                .setValue(newState);
+    }).bind(this);
+    this.service
+        .getCharacteristic(Characteristic.On)
+        .on('get', this.getState.bind(this))
+        .on('set', this.setState.bind(this));
+}
+
+HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
+    this.log("Getting current state for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-"+this.id);
+    if(state === undefined) {
+        state = false;
+    }
+    callback(null, state);
+};
+
+HttpWebHookSwitchAccessory.prototype.setState = function(callback) {
+    this.log("Switch state for '%s'...", this.id);
+    this.getState((function(err, state) {
+        this.storage.setItemSync("http-webhook-"+accessoryId, !state);
+        var urlToCall = this.onURL;
+        if(state) {
+            urlToCall = this.offURL;
+        }
+        if(urlToCall !== "") {
+            request.get({
+                url: urlToCall,
+                timeout: DEFAULT_REQUEST_TIMEOUT
+            }, (function(err, response, body) {
+                var statusCode = response && response.statusCode ? response.statusCode: -1;
+                this.log("Request to '%s' finished with status code '%s' and body '%s'.", url, statusCode, body, err);
+                if (!err && statusCode == 200) {
+                    callback(null);
+                }
+                else {  
+                    callback(err || new Error("Request to '"+url+"' was not succesful."));
+                }
+            }).bind(this));
+        }
+    }).bind(this));
+};
+
+HttpWebHookSwitchAccessory.prototype.getServices = function() {
   return [this.service];
 };

@@ -3,7 +3,7 @@ A http plugin with support of webhooks for Homebridge: https://github.com/nfarin
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion and smoke sensors.
+Currently supports contact, motion and smoke sensors and switches.
 
 # Trigger change
 To trigger a change of an accessory you need to call the url http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE .
@@ -16,6 +16,14 @@ For motion sensors the value for NEWSTATE is either 'true' for motion detection 
 
 ## Smoke sensor
 For smoke sensors the value for NEWSTATE is either 'true' for smoke detection or 'false' for no smoke.
+
+## Switch
+For switches the value for NEWSTATE is either 'true' for on or 'false' for off.
+
+# Trigger action
+
+## Switch
+For switches you can trigger a url of any system for switching the switch on or off.
 
 # Configuration
 Example config.json:
@@ -41,6 +49,14 @@ Example config.json:
                     "id": "sensor3",
                     "name": "Sensor name 3",
                     "type": "smoke"
+                    }
+                ],
+                "switches": [
+                    {
+                    "id": "switch1",
+                    "name": "Switch name 1",
+                    "on_url": "your url to switch the switch on", // (optional)
+                    "off_url": "your url to switch the switch off" // (optional)
                     }
                 ]
             }

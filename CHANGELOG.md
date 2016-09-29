@@ -1,3 +1,9 @@
+## 0.0.14
+
+New features:
+
+  - Added switch.
+
 ## 0.0.13
 
 New features:
