@@ -184,28 +184,26 @@ HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
 
 HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
     this.log("Switch state for '%s'...", this.id);
-    this.getState((function(err, state) {
-        this.storage.setItemSync("http-webhook-"+this.id, !state);
-        var urlToCall = this.onURL;
-        if(state) {
-            urlToCall = this.offURL;
-        }
-        if(urlToCall !== "") {
-            request.get({
-                url: urlToCall,
-                timeout: DEFAULT_REQUEST_TIMEOUT
-            }, (function(err, response, body) {
-                var statusCode = response && response.statusCode ? response.statusCode: -1;
-                this.log("Request to '%s' finished with status code '%s' and body '%s'.", url, statusCode, body, err);
-                if (!err && statusCode == 200) {
-                    callback(null);
-                }
-                else {  
-                    callback(err || new Error("Request to '"+url+"' was not succesful."));
-                }
-            }).bind(this));
-        }
-    }).bind(this));
+    this.storage.setItemSync("http-webhook-"+this.id, powerOn);
+    var urlToCall = this.onURL;
+    if(!powerOn) {
+        urlToCall = this.offURL;
+    }
+    if(urlToCall !== "") {
+        request.get({
+            url: urlToCall,
+            timeout: DEFAULT_REQUEST_TIMEOUT
+        }, (function(err, response, body) {
+            var statusCode = response && response.statusCode ? response.statusCode: -1;
+            this.log("Request to '%s' finished with status code '%s' and body '%s'.", url, statusCode, body, err);
+            if (!err && statusCode == 200) {
+                callback(null);
+            }
+            else {  
+                callback(err || new Error("Request to '"+url+"' was not succesful."));
+            }
+        }).bind(this));
+    }
 };
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {

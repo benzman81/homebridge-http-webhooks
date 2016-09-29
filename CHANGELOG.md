@@ -1,4 +1,10 @@
-## 0.0.15
+## 0.0.17
+
+Bugfix:
+
+  - Fixed infinite loop for switches.
+
+## 0.0.16
 
 Bugfix:
 
