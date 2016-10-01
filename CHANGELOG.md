@@ -1,3 +1,9 @@
+## 0.0.18
+
+Bugfix:
+
+  - Added context to setValue call.
+
 ## 0.0.17
 
 Bugfix:

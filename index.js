@@ -104,7 +104,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for contact sensor to '%s'.", newState);
              this.service.getCharacteristic(Characteristic.ContactSensorState)
-                    .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+                    .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, 'fromHTTPWebhooks');
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.ContactSensorState)
@@ -114,7 +114,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for motion sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.MotionDetected)
-                    .setValue(newState);
+                    .setValue(newState, undefined, 'fromHTTPWebhooks');
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.MotionDetected)
@@ -124,7 +124,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for smoke sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.SmokeDetected)
-                    .setValue(newState);
+                    .setValue(newState, undefined, 'fromHTTPWebhooks');
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.SmokeDetected)
@@ -165,7 +165,7 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.changeHandler = (function(newState) {
         this.log("Change HomeKit state for switch to '%s'.", newState);
         this.service.getCharacteristic(Characteristic.On)
-                .setValue(newState);
+                .setValue(newState, undefined, 'fromHTTPWebhooks');
     }).bind(this);
     this.service
         .getCharacteristic(Characteristic.On)
