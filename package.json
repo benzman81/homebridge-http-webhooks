@@ -1,6 +1,6 @@
 {
   "name": "homebridge-http-webhooks",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "A http plugin with support of webhooks for Homebridge: https://github.com/nfarina/homebridge",
   "license": "GPL-3.0",
   "keywords": [
@@ -27,5 +27,7 @@
   "dependencies": {
     "request": "2.49.x",
     "node-persist" : "2.0.x"
-  }
+  },
+  "homepage": "https://github.com/benzman81/homebridge-http-webhooks#readme",
+  "author": "benzman81"
 }

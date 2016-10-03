@@ -1,3 +1,9 @@
+## 0.0.19
+
+Bugfix:
+
+  - Removed some logging.
+
 ## 0.0.18
 
 Bugfix:

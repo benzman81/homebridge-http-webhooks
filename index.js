@@ -78,7 +78,7 @@ HttpWebHooksPlatform.prototype = {
                         if(accessory.id === accessoryId) {
                             var stateBool = state==="true";
                             this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
-                            this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
+                            //this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
                             accessory.changeHandler(stateBool);
                             break;
                         }
@@ -112,7 +112,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     } else if(this.type === "motion") {
         this.service = new Service.MotionSensor(this.name);
         this.changeHandler = (function(newState){
-            this.log("Change HomeKit state for motion sensor to '%s'.", newState);
+            //this.log("Change HomeKit state for motion sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.MotionDetected)
                     .setValue(newState, undefined, 'fromHTTPWebhooks');
         }).bind(this);
