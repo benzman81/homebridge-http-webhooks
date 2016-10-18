@@ -37,9 +37,9 @@ HttpWebHooksPlatform.prototype = {
             accessories.push(switchAccessory);
         }
         var accessoriesCount = accessories.length;
-        
+
         callback(accessories);
-        
+
         http.createServer((function(request, response) {
             var theUrl = request.url;
             var theUrlParts = url.parse(theUrl, true);
@@ -87,7 +87,7 @@ HttpWebHooksPlatform.prototype = {
                     response.end();
                 }
             }).bind(this));
-        }).bind(this)).listen(this.webhookPort);    
+        }).bind(this)).listen(this.webhookPort);
         this.log("Started server for webhooks on port '%s'.", this.webhookPort);
     }
 }
@@ -98,7 +98,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     this.name = sensorConfig["name"];
     this.type = sensorConfig["type"];
     this.storage = storage;
-    
+
     if(this.type === "contact") {
         this.service = new Service.ContactSensor(this.name);
         this.changeHandler = (function(newState){
@@ -118,6 +118,16 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.MotionDetected)
+            .on('get', this.getState.bind(this));
+    } else if(this.type === "occupancy") {
+        this.service = new Service.OccupancySensor(this.name);
+        this.changeHandler = (function(newState){
+            //this.log("Change HomeKit state for occupancy sensor to '%s'.", newState);
+            this.service.getCharacteristic(Characteristic.OccupancyDetected)
+                    .setValue(newState, undefined, 'fromHTTPWebhooks');
+        }).bind(this);
+        this.service
+            .getCharacteristic(Characteristic.OccupancyDetected)
             .on('get', this.getState.bind(this));
     } else if(this.type === "smoke") {
         this.service = new Service.SmokeSensor(this.name);
@@ -160,7 +170,7 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.onURL = switchConfig["on_url"] || "";
     this.offURL = switchConfig["off_url"] || "";
     this.storage = storage;
-    
+
     this.service = new Service.Switch(this.name);
     this.changeHandler = (function(newState) {
         this.log("Change HomeKit state for switch to '%s'.", newState);
@@ -199,7 +209,7 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
             if (!err && statusCode == 200) {
                 callback(null);
             }
-            else {  
+            else {
                 callback(err || new Error("Request to '"+url+"' was not succesful."));
             }
         }).bind(this));

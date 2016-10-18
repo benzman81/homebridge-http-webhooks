@@ -1,24 +1,32 @@
 # homebridge-http-webhooks
-A http plugin with support of webhooks for Homebridge: https://github.com/nfarina/homebridge.
+A http plugin with support of webhooks for [Homebridge](https://github.com/nfarina/homebridge).
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion and smoke sensors and switches.
+Currently supports contact, motion, occupancy, and smoke sensors and switches.
+
+# Installation
+1. Install homebridge using: `npm install -g homebridge`
+2. Install this plugin using: `npm install -g homebridge-http-webhooks`
+3. Update your configuration file. See sample-config.json snippet below.
 
 # Trigger change
-To trigger a change of an accessory you need to call the url http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE .
+To trigger a change of an accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
 
 ## Contact sensor
-For contact sensors the value for NEWSTATE is either 'true' for contact or 'false' for no contact.
+For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact.
 
 ## Motion sensor
-For motion sensors the value for NEWSTATE is either 'true' for motion detection or 'false' for no motion.
+For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion.
+
+## Occupancy sensor
+For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy.
 
 ## Smoke sensor
-For smoke sensors the value for NEWSTATE is either 'true' for smoke detection or 'false' for no smoke.
+For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
 
 ## Switch
-For switches the value for NEWSTATE is either 'true' for on or 'false' for off.
+For switches the value for `NEWSTATE` is either `true` for on or `false` for off.
 
 # Trigger action
 
@@ -27,7 +35,7 @@ For switches you can trigger a url of any system for switching the switch on or 
 
 # Configuration
 Example config.json:
-
+```
     {
         "platforms": [
             {
@@ -48,6 +56,11 @@ Example config.json:
                     {
                     "id": "sensor3",
                     "name": "Sensor name 3",
+                    "type": "occupancy"
+                    },
+                    {
+                    "id": "sensor4",
+                    "name": "Sensor name 4",
                     "type": "smoke"
                     }
                 ],
@@ -62,3 +75,4 @@ Example config.json:
             }
         ]
     }
+```
