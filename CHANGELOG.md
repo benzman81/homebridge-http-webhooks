@@ -1,3 +1,9 @@
+## 0.0.20
+
+New features:
+
+  - Added occupancy sensor (thanks to wr).
+  
 ## 0.0.19
 
 Bugfix:
