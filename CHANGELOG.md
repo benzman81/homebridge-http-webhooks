@@ -1,3 +1,9 @@
+## 0.0.21
+
+New features:
+
+  - You can now call the webhook URL without the state parameter to get the current state of the accessory.
+
 ## 0.0.20
 
 New features:

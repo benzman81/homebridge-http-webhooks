@@ -59,27 +59,39 @@ HttpWebHooksPlatform.prototype = {
                 response.statusCode = 200;
                 response.setHeader('Content-Type', 'application/json');
 
-                if(!theUrlParams.accessoryId || !theUrlParams.state) {
+                if(!theUrlParams.accessoryId) {
                     response.statusCode = 404;
                     response.setHeader("Content-Type", "text/plain");
-                    var errorText = "[ERROR Http WebHook Server] No accessoryId or state in request.";
+                    var errorText = "[ERROR Http WebHook Server] No accessoryId in request.";
                     this.log(errorText);
                     response.write(errorText);
                     response.end();
                 }
                 else {
-                    var accessoryId = theUrlParams.accessoryId;
-                    var state = theUrlParams.state;
                     var responseBody = {
                         success: true
                     };
+                    var accessoryId = theUrlParams.accessoryId;
                     for(var i = 0; i < accessoriesCount; i++){
                         var accessory = accessories[i];
                         if(accessory.id === accessoryId) {
-                            var stateBool = state==="true";
-                            this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
-                            //this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
-                            accessory.changeHandler(stateBool);
+                            if(!theUrlParams.state) {
+                                var cachedState = this.storage.getItemSync("http-webhook-"+accessoryId);
+                                if(cachedState === undefined) {
+                                    cachedState = false;
+                                }
+                                responseBody = {
+                                    success: true,
+                                    state: cachedState
+                                };
+                            }
+                            else {
+                                var state = theUrlParams.state;
+                                var stateBool = state==="true";
+                                this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
+                                //this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
+                                accessory.changeHandler(stateBool);
+                            }
                             break;
                         }
                     }

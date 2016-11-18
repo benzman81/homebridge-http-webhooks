@@ -10,6 +10,16 @@ Currently supports contact, motion, occupancy, and smoke sensors and switches.
 2. Install this plugin using: `npm install -g homebridge-http-webhooks`
 3. Update your configuration file. See sample-config.json snippet below.
 
+# Retrieve state
+To retireve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
+The returned JSON format is:
+```
+    {
+        success: true,
+        state: cachedState
+    }
+```
+
 # Trigger change
 To trigger a change of an accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
 
