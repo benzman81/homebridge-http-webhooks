@@ -1,3 +1,9 @@
+## 0.0.22
+
+Bugfix:
+
+  - Switches without on or off url do now switch state correctly.
+
 ## 0.0.21
 
 New features:

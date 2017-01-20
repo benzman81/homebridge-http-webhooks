@@ -226,6 +226,9 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
             }
         }).bind(this));
     }
+    else {
+        callback(null);
+    }
 };
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {
