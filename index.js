@@ -181,6 +181,7 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.name = switchConfig["name"];
     this.onURL = switchConfig["on_url"] || "";
     this.offURL = switchConfig["off_url"] || "";
+    this.dummy = switchConfig["dummy"] || false;
     this.storage = storage;
 
     this.service = new Service.Switch(this.name);
@@ -211,6 +212,14 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
     if(!powerOn) {
         urlToCall = this.offURL;
     }
+    
+    if(this.dummy && powerOn) {
+      setTimeout(function() {
+        this.service.getCharacteristic(Characteristic.On)
+                .setValue(false, undefined, 'fromHTTPWebhooks');
+      }.bind(this), 1000);
+    }
+    
     if(urlToCall !== "") {
         request.get({
             url: urlToCall,
