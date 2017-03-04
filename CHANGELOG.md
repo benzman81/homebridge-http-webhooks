@@ -1,3 +1,9 @@
+## 0.0.24
+
+Bugfix:
+
+  - Push buttons without url do now switch state back correctly.
+
 ## 0.0.23
 
 New features:

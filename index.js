@@ -271,8 +271,14 @@ HttpWebHookPushButtonAccessory.prototype.getState = function(callback) {
 
 HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback) {
     this.log("Push buttons state change for '%s'...", this.id);
-    if(!powerOn || this.pushURL === "") {
+    if(!powerOn) {
         callback(null);
+    }
+    else if(this.pushURL === "") {
+        callback(null);
+        setTimeout(function() {
+            this.service.getCharacteristic(Characteristic.On).setValue(false, undefined, 'fromTimeoutCall');
+        }.bind(this), 1000);
     }
     else {
         request.get({
