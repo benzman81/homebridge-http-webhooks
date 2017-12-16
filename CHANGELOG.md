@@ -1,3 +1,9 @@
+## 0.0.25
+
+Bugfix:
+
+  - Now Uses the Characteristic's Enumeration for Value Reporting.
+
 ## 0.0.24
 
 Bugfix:

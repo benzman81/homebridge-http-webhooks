@@ -144,7 +144,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             //this.log("Change HomeKit state for occupancy sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.OccupancyDetected)
-                    .setValue(newState, undefined, 'fromHTTPWebhooks');
+                  .setValue(newState ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, 'fromHTTPWebhooks');
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.OccupancyDetected)
@@ -171,8 +171,11 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
     if(this.type === "contact") {
         callback(null, state ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     }
-    else if(this.type === "smoke") {
+    else if(this.type === "smoke") { 
         callback(null, state ? Characteristic.SmokeDetected.SMOKE_DETECTED : Characteristic.SmokeDetected.SMOKE_NOT_DETECTED);
+    }
+    else if(this.type === "occupancy") {
+        callback(null, state ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
     }
     else {
         callback(null, state);
