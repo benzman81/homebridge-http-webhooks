@@ -3,6 +3,7 @@
 Bugfix:
 
   - Now Uses the Characteristic's Enumeration for Value Reporting.
+  - Now a webhook call only triggers homekit change if the state is not the same as in the cache. This fixed an issue where a homekit change was triggered twice, once by homekit and once by the resulting webhook call of an external system that also reacts on changes.
 
 ## 0.0.24
 
