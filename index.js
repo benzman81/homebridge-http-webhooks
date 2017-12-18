@@ -14,6 +14,7 @@ module.exports = function(homebridge) {
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSensor", HttpWebHookSensorAccessory);
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSwitch", HttpWebHookSwitchAccessory);
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookPushButton", HttpWebHookPushButtonAccessory);
+    homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLight", HttpWebHookLightAccessory);
 };
 
 function HttpWebHooksPlatform(log, config){
@@ -23,6 +24,7 @@ function HttpWebHooksPlatform(log, config){
     this.sensors = config["sensors"] || [];
     this.switches = config["switches"] || [];
     this.pushButtons = config["pushbuttons"] || [];
+    this.lights = config["lights"] || [];
     this.storage = require('node-persist');
     this.storage.initSync({dir:this.cacheDirectory});
 }
@@ -44,6 +46,11 @@ HttpWebHooksPlatform.prototype = {
         for(var i = 0; i < this.pushButtons.length; i++){
             var pushButtonsAccessory = new HttpWebHookPushButtonAccessory(this.log, this.pushButtons[i], this.storage);
             accessories.push(pushButtonsAccessory);
+        }
+
+        for(var i = 0; i < this.lights.length; i++){
+            var lightAccessory = new HttpWebHookLightAccessory(this.log, this.lights[i], this.storage);
+            accessories.push(lightAccessory);
         }
 
         var accessoriesCount = accessories.length;
@@ -309,5 +316,65 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback) 
 };
 
 HttpWebHookPushButtonAccessory.prototype.getServices = function() {
+  return [this.service];
+};
+
+function HttpWebHookLightAccessory(log, lightConfig, storage) {
+    this.log = log;
+    this.id = lightConfig["id"];
+    this.name = lightConfig["name"];
+    this.onURL = lightConfig["on_url"] || "";
+    this.offURL = lightConfig["off_url"] || "";
+    this.storage = storage;
+
+    this.service = new Service.Lightbulb(this.name);
+    this.changeHandler = (function(newState) {
+        this.log("Change HomeKit state for light to '%s'.", newState);
+        this.service.getCharacteristic(Characteristic.On)
+                .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }).bind(this);
+    this.service
+        .getCharacteristic(Characteristic.On)
+        .on('get', this.getState.bind(this)) 
+        .on('set', this.setState.bind(this));
+}
+
+HttpWebHookLightAccessory.prototype.getState = function(callback) {
+    this.log("Getting current state for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-"+this.id);
+    if(state === undefined) {
+        state = false;
+    }
+    callback(null, state);
+};
+
+HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback) {
+    this.log("Light state for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-"+this.id, powerOn);
+    var urlToCall = this.onURL;
+    if(!powerOn) {
+        urlToCall = this.offURL;
+    }
+    if(urlToCall !== "") {
+        request.get({
+            url: urlToCall,
+            timeout: DEFAULT_REQUEST_TIMEOUT
+        }, (function(err, response, body) {
+            var statusCode = response && response.statusCode ? response.statusCode: -1;
+            this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+            if (!err && statusCode == 200) {
+                callback(null);
+            }
+            else {
+                callback(err || new Error("Request to '"+urlToCall+"' was not succesful."));
+            }
+        }).bind(this));
+    }
+    else {
+        callback(null);
+    }
+};
+
+HttpWebHookLightAccessory.prototype.getServices = function() {
   return [this.service];
 };

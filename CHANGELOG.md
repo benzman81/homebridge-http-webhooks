@@ -1,3 +1,9 @@
+## 0.0.26
+
+New features:
+
+  - Added light. Currently just on/off is supported.
+  
 ## 0.0.25
 
 Bugfix:
