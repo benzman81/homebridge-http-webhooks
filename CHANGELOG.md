@@ -1,3 +1,9 @@
+## 0.0.27
+
+New features:
+
+  - Webhooks no longer call the on/off/push url as in most cases the webhook gets called from an external smart home system that already knows the new state as it send the webhook call.
+
 ## 0.0.26
 
 New features:

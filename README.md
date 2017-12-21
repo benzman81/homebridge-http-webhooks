@@ -3,7 +3,7 @@ A http plugin with support of webhooks for [Homebridge](https://github.com/nfari
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons and lights (onyl on/off).
+Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons and lights (only on/off).
 
 # Installation
 1. Install homebridge using: `npm install -g homebridge`

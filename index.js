@@ -226,14 +226,14 @@ HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
     callback(null, state);
 };
 
-HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback) {
+HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, context) {
     this.log("Switch state for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-"+this.id, powerOn);
     var urlToCall = this.onURL;
     if(!powerOn) {
         urlToCall = this.offURL;
     }
-    if(urlToCall !== "") {
+    if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
         request.get({
             url: urlToCall,
             timeout: DEFAULT_REQUEST_TIMEOUT
@@ -283,12 +283,12 @@ HttpWebHookPushButtonAccessory.prototype.getState = function(callback) {
     callback(null, state);
 };
 
-HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback) {
+HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, context) {
     this.log("Push buttons state change for '%s'...", this.id);
     if(!powerOn) {
         callback(null);
     }
-    else if(this.pushURL === "") {
+    else if(this.pushURL === "" || context === CONTEXT_FROM_WEBHOOK) {
         callback(null);
         setTimeout(function() {
             this.service.getCharacteristic(Characteristic.On).setValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
@@ -348,14 +348,14 @@ HttpWebHookLightAccessory.prototype.getState = function(callback) {
     callback(null, state);
 };
 
-HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback) {
+HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, context) {
     this.log("Light state for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-"+this.id, powerOn);
     var urlToCall = this.onURL;
     if(!powerOn) {
         urlToCall = this.offURL;
     }
-    if(urlToCall !== "") {
+    if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
         request.get({
             url: urlToCall,
             timeout: DEFAULT_REQUEST_TIMEOUT
