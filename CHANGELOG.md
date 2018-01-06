@@ -1,3 +1,9 @@
+## 0.0.28
+
+Bugfix:
+
+  - Now uses updateValue instead of setValue to update iOS correctly.
+
 ## 0.0.27
 
 New features:

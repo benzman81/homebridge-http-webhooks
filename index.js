@@ -135,7 +135,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for contact sensor to '%s'.", newState);
              this.service.getCharacteristic(Characteristic.ContactSensorState)
-                    .setValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
+                    .updateValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.ContactSensorState)
@@ -145,7 +145,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             //this.log("Change HomeKit state for motion sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.MotionDetected)
-                    .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                    .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.MotionDetected)
@@ -155,7 +155,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             //this.log("Change HomeKit state for occupancy sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.OccupancyDetected)
-                  .setValue(newState ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
+                  .updateValue(newState ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.OccupancyDetected)
@@ -165,7 +165,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for smoke sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.SmokeDetected)
-                    .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                    .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.SmokeDetected)
@@ -209,7 +209,7 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.changeHandler = (function(newState) {
         this.log("Change HomeKit state for switch to '%s'.", newState);
         this.service.getCharacteristic(Characteristic.On)
-                .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }).bind(this);
     this.service
         .getCharacteristic(Characteristic.On)
@@ -268,7 +268,7 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
         if(newState) {
             this.log("Change HomeKit state for push button to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.On)
-                    .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                    .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
         }
     }).bind(this);
     this.service
@@ -291,7 +291,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
     else if(this.pushURL === "" || context === CONTEXT_FROM_WEBHOOK) {
         callback(null);
         setTimeout(function() {
-            this.service.getCharacteristic(Characteristic.On).setValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
+            this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
         }.bind(this), 1000);
     }
     else {
@@ -309,7 +309,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
                 callback(err || new Error("Request to '"+urlToCall+"' was not succesful."));
             }
             setTimeout(function() {
-                this.service.getCharacteristic(Characteristic.On).setValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
+                this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
             }.bind(this), 1000);
         }).bind(this));
     }
@@ -331,7 +331,7 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
     this.changeHandler = (function(newState) {
         this.log("Change HomeKit state for light to '%s'.", newState);
         this.service.getCharacteristic(Characteristic.On)
-                .setValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }).bind(this);
     this.service
         .getCharacteristic(Characteristic.On)
