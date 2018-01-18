@@ -165,7 +165,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.changeHandler = (function(newState){
             this.log("Change HomeKit state for smoke sensor to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.SmokeDetected)
-                    .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+                  .updateValue(newState ? Characteristic.SmokeDetected.SMOKE_DETECTED : Characteristic.SmokeDetected.SMOKE_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
         }).bind(this);
         this.service
             .getCharacteristic(Characteristic.SmokeDetected)
@@ -269,6 +269,9 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
             this.log("Change HomeKit state for push button to '%s'.", newState);
             this.service.getCharacteristic(Characteristic.On)
                     .updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+            setTimeout(function() {
+                this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
+            }.bind(this), 1000);
         }
     }).bind(this);
     this.service

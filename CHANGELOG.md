@@ -1,3 +1,10 @@
+## 0.0.29
+
+Bugfix:
+
+  - Use correct type to update smoke sensor state via webhook.
+  - Switch back pushbutton correctly using timeout if it was updated to state = true via webhook.
+
 ## 0.0.28
 
 Bugfix:
