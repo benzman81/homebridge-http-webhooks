@@ -91,14 +91,17 @@ Example config.json:
                     "id": "switch1",
                     "name": "Switch name 1",
                     "on_url": "your url to switch the switch on", // (optional)
-                    "off_url": "your url to switch the switch off" // (optional)
+                    "on_method": "GET", // (optional)
+                    "off_url": "your url to switch the switch off", // (optional)
+                    "off_method": "GET" // (optional)
                     }
                 ],
                 "pushbuttons": [
                     {
                     "id": "pushbutton1",
                     "name": "Push button name 1",
-                    "push_url": "your url to be called on push" // (optional)
+                    "push_url": "your url to be called on push", // (optional)
+                    "push_method": "GET" // (optional)
                     }
                 ],
                 "lights": [
@@ -106,7 +109,9 @@ Example config.json:
                     "id": "light1",
                     "name": "Light name 1",
                     "on_url": "your url to switch the light on", // (optional)
-                    "off_url": "your url to switch the light off" // (optional)
+                    "on_method": "GET", // (optional)
+                    "off_url": "your url to switch the light off", // (optional)
+                    "off_method": "GET" // (optional)
                     }
                 ]
             }

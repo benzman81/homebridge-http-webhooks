@@ -1,4 +1,10 @@
-## 0.0.29
+### 0.0.30
+
+New features:
+
+  - Support setting the request method. Only GET and PUT are tested. Default is still GET.
+
+# 0.0.29
 
 Bugfix:
 

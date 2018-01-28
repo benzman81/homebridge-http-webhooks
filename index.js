@@ -202,7 +202,9 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
     this.id = switchConfig["id"];
     this.name = switchConfig["name"];
     this.onURL = switchConfig["on_url"] || "";
+    this.onMethod = switchConfig["on_method"] || "GET";
     this.offURL = switchConfig["off_url"] || "";
+    this.offMethod = switchConfig["off_method"] || "GET";
     this.storage = storage;
 
     this.service = new Service.Switch(this.name);
@@ -230,11 +232,14 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
     this.log("Switch state for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-"+this.id, powerOn);
     var urlToCall = this.onURL;
+    var urlMethod = this.onMethod;
     if(!powerOn) {
         urlToCall = this.offURL;
+        urlMethod = this.offMethod;
     }
     if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-        request.get({
+        request({
+            method: urlMethod,
             url: urlToCall,
             timeout: DEFAULT_REQUEST_TIMEOUT
         }, (function(err, response, body) {
@@ -262,6 +267,7 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
     this.id = pushButtonConfig["id"];
     this.name = pushButtonConfig["name"];
     this.pushURL = pushButtonConfig["push_url"] || "";
+    this.pushMethod = pushButtonConfig["push_method"] || "GET";
 
     this.service = new Service.Switch(this.name);
     this.changeHandler = (function(newState) {
@@ -299,7 +305,9 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
     }
     else {
         var urlToCall = this.pushURL;
-        request.get({
+        var urlMethod = this.pushMethod;
+        request({
+            method: urlMethod,
             url: urlToCall,
             timeout: DEFAULT_REQUEST_TIMEOUT
         }, (function(err, response, body) {
@@ -327,7 +335,9 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
     this.id = lightConfig["id"];
     this.name = lightConfig["name"];
     this.onURL = lightConfig["on_url"] || "";
+    this.onMethod = lightConfig["on_method"] || "GET";
     this.offURL = lightConfig["off_url"] || "";
+    this.offMethod = lightConfig["off_method"] || "GET";
     this.storage = storage;
 
     this.service = new Service.Lightbulb(this.name);
@@ -355,11 +365,14 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
     this.log("Light state for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-"+this.id, powerOn);
     var urlToCall = this.onURL;
+    var urlMethod = this.onMethod;
     if(!powerOn) {
         urlToCall = this.offURL;
+        urlMethod = this.offMethod;
     }
     if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-        request.get({
+        request({
+            method: urlMethod,
             url: urlToCall,
             timeout: DEFAULT_REQUEST_TIMEOUT
         }, (function(err, response, body) {
