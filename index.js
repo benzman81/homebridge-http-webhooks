@@ -26,8 +26,6 @@ function HttpWebHooksPlatform(log, config){
     this.switches = config["switches"] || [];
     this.pushButtons = config["pushbuttons"] || [];
     this.lights = config["lights"] || [];
-    // this.temperatureSensors = config["temperaturesensors"] || [];
-    // this.humiditySensors = config["humiditysensors"] || [];
     this.thermostats = config["thermostats"] || [];
     this.storage = require('node-persist');
     this.storage.initSync({dir:this.cacheDirectory});
@@ -56,16 +54,6 @@ HttpWebHooksPlatform.prototype = {
             var lightAccessory = new HttpWebHookLightAccessory(this.log, this.lights[i], this.storage);
             accessories.push(lightAccessory);
         }
-
-        // for(var i = 0; i < this.temperatureSensors.length; i++){
-        //     var temperatureAccessory = new HttpWebHookTemperatureAccessory(this.log, this.temperatureSensors[i], this.storage);
-        //     accessories.push(temperatureAccessory);
-        // }
-
-        // for(var i = 0; i < this.humiditySensors.length; i++){
-        //     var humidityAccessory = new HttpWebHookHumidityAccessory(this.log, this.humiditySensors[i], this.storage);
-        //     accessories.push(humidityAccessory);
-        // }
 
         for(var i = 0; i < this.thermostats.length; i++){
             var thermostatAccessory = new HttpWebHookThermostatAccessory(this.log, this.thermostats[i], this.storage);
@@ -125,17 +113,7 @@ HttpWebHooksPlatform.prototype = {
 								if (theUrlParams.targettemperature != null) {
 									var cachedCurTemp = this.storage.getItemSync("http-webhook-target-temperature-"+accessoryId);
 									if(cachedCurTemp === undefined) {
-										cachedCurTemp = 20;
-									}
-									this.storage.setItemSync("http-webhook-target-temperature-"+accessoryId, theUrlParams.targettemperature);
-									if(cachedCurTemp !== theUrlParams.targettemperature) {
-										accessory.changeTargetTemperatureHandler(theUrlParams.targettemperature);
-									}										
-								}
-								if (theUrlParams.targettemperature != null) {
-									var cachedCurTemp = this.storage.getItemSync("http-webhook-target-temperature-"+accessoryId);
-									if(cachedCurTemp === undefined) {
-										cachedCurTemp = 20;
+										cachedCurTemp = 10;
 									}
 									this.storage.setItemSync("http-webhook-target-temperature-"+accessoryId, theUrlParams.targettemperature);
 									if(cachedCurTemp !== theUrlParams.targettemperature) {
@@ -166,23 +144,43 @@ HttpWebHooksPlatform.prototype = {
 									success: true
 								};
 							} else {
-								var cachedState = this.storage.getItemSync("http-webhook-"+accessoryId);
-								if(cachedState === undefined) {
-									cachedState = false;
-								}
-								if(!theUrlParams.state) {
-									responseBody = {
-										success: true,
-										state: cachedState
-									};
-								}
-								else {
-									var state = theUrlParams.state;
-									var stateBool = state==="true";
-									this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
-									//this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
-									if(cachedState !== stateBool) {
-										accessory.changeHandler(stateBool);
+								if (accessory.type == "humidity" || accessory.type == "temperature") {
+									var cachedValue = this.storage.getItemSync("http-webhook-"+accessoryId);
+									if(cachedValue === undefined) {
+										cachedValue = 0;
+									}
+									if(!theUrlParams.value) {
+										responseBody = {
+											success: true,
+											state: cachedValue
+										};
+									}
+									else {
+										var value = theUrlParams.value;
+										this.storage.setItemSync("http-webhook-"+accessoryId, value);
+										if(cachedValue !== value) {
+											accessory.changeHandler(value);
+										}
+									}
+								} else {
+									var cachedState = this.storage.getItemSync("http-webhook-"+accessoryId);
+									if(cachedState === undefined) {
+										cachedState = false;
+									}
+									if(!theUrlParams.state) {
+										responseBody = {
+											success: true,
+											state: cachedState
+										};
+									}
+									else {
+										var state = theUrlParams.state;
+										var stateBool = state==="true";
+										this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
+										//this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
+										if(cachedState !== stateBool) {
+											accessory.changeHandler(stateBool);
+										}
 									}
 								}
 								break;
@@ -245,7 +243,27 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.service
             .getCharacteristic(Characteristic.SmokeDetected)
             .on('get', this.getState.bind(this));
-    }
+	} else if(this.type === "humidity") {
+		this.service = new Service.HumiditySensor(this.name);
+		this.changeHandler = (function(newState){
+			this.log("Change HomeKit value for humidity sensor to '%s'.", newState);
+			this.service.getCharacteristic(Characteristic.CurrentRelativeHumidity)
+				.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+		}).bind(this);
+		this.service
+			.getCharacteristic(Characteristic.CurrentRelativeHumidity)
+			.on('get', this.getState.bind(this));
+	} else if(this.type === "temperature") {
+		this.service = new Service.TemperatureSensor(this.name);
+		this.changeHandler = (function(newState){
+			this.log("Change HomeKit value for temperature sensor to '%s'.", newState);
+			this.service.getCharacteristic(Characteristic.CurrentTemperature)
+				.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+		}).bind(this);
+		this.service
+			.getCharacteristic(Characteristic.CurrentTemperature)
+			.on('get', this.getState.bind(this));
+	}
 }
 
 HttpWebHookSensorAccessory.prototype.getState = function(callback) {
