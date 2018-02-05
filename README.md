@@ -62,7 +62,7 @@ To update a numeric accessory you need to call the url `http://yourHomebridgeSer
 For temperature sensors the value for `NEWVALUE` is the new temperature reading.
 
 ## Humidity sensor
-For humidity sensors the value for `NEWVALUE` is the new ralative humidity percentage reading.
+For humidity sensors the value for `NEWVALUE` is the new relative humidity percentage reading.
 
 # Thermostat
 To update a thermostat you can update four different values:
@@ -145,7 +145,7 @@ Example config.json:
                     "id": "thermostat1",
                     "name": "Thermostat name 1",
                     "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
-                    "set_target_heating_cooling_state_url": "http://127.0.0.1/thermostatscript.php?targetstate=%b",    // %b is replaced by the target state
+                    "set_target_heating_cooling_state_url": "http://127.0.0.1/thermostatscript.php?targetstate=%b"     // %b is replaced by the target state
                     }
                 ]
             }
