@@ -3,7 +3,7 @@ A http plugin with support of webhooks for [Homebridge](https://github.com/nfari
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons and lights (only on/off).
+Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons, lights (only on/off), temperature sensors, humidity sensors and thermostats.
 
 # Installation
 1. Install homebridge using: `npm install -g homebridge`
@@ -11,7 +11,7 @@ Currently supports contact, motion, occupancy, smoke sensors, switches, push but
 3. Update your configuration file. See sample-config.json snippet below.
 
 # Retrieve state
-To retireve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
+To retrieve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
 The returned JSON format is:
 ```
     {
@@ -20,8 +20,8 @@ The returned JSON format is:
     }
 ```
 
-# Trigger change
-To trigger a change of an accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
+# Trigger change for boolean accessory
+To trigger a change of a boolean accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
 
 ## Contact sensor
 For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact.
@@ -55,6 +55,22 @@ For push buttons you can trigger a url of any system for "pushing the button. Th
 ## Light
 For lights you can trigger a url of any system for switching the ligth on or off.
 
+# Update a numeric accessory
+To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
+
+## Temperature sensor
+For temperature sensors the value for `NEWVALUE` is the new temperature reading.
+
+## Humidity sensor
+For humidity sensors the value for `NEWVALUE` is the new ralative humidity percentage reading.
+
+# Thermostat
+To update a thermostat you can update four different values:
+* Current temperature reading: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currenttemperature=NEWVALUE`
+* Target temperature: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targettemperature=NEWVALUE`
+* Current state (Off=0 / Heating=1 / Cooling=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
+* Target state (Off=0 / Heat=1 / Cool=2 / Auto=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
+
 # Configuration
 Example config.json:
 ```
@@ -84,6 +100,16 @@ Example config.json:
                     "id": "sensor4",
                     "name": "Sensor name 4",
                     "type": "smoke"
+                    },
+                    {
+                    "id": "sensor5",
+                    "name": "Sensor name 5",
+                    "type": "temperature"
+                    },
+                    {
+                    "id": "sensor6",
+                    "name": "Sensor name 6",
+                    "type": "humidity"
                     }
                 ],
                 "switches": [
@@ -112,6 +138,14 @@ Example config.json:
                     "on_method": "GET", // (optional)
                     "off_url": "your url to switch the light off", // (optional)
                     "off_method": "GET" // (optional)
+                    }
+                ],
+                "thermostats": [
+                    {
+                    "id": "thermostat1",
+                    "name": "Thermostat name 1",
+                    "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
+                    "set_target_heating_cooling_state_url": "http://127.0.0.1/thermostatscript.php?targetstate=%b",    // %b is replaced by the target state
                     }
                 ]
             }

@@ -558,7 +558,7 @@ HttpWebHookThermostatAccessory.prototype.getTargetTemperature = function(callbac
 HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, callback, context) {
     this.log("Target temperature for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-target-temperature-"+this.id, temp);
-    var urlToCall = this.setTargetTemperatureURL+temp;
+    var urlToCall = this.setTargetTemperatureURL.replace("%f", temp);
     var urlMethod = this.setTargetTemperatureMethod;
     if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
         request({
@@ -604,7 +604,7 @@ HttpWebHookThermostatAccessory.prototype.getTargetHeatingCoolingState = function
 HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function(newState, callback, context) {
     this.log("Target Heating Cooling state for '%s'...", this.id);
     this.storage.setItemSync("http-webhook-target-heating-cooling-state-"+this.id, newState);
-    var urlToCall = this.setTargetHeatingCoolingStateURL+newState;
+    var urlToCall = this.setTargetHeatingCoolingStateURL.replace("%b", newState);
     var urlMethod = this.setTargetHeatingCoolingStateMethod;
     if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
         request({
