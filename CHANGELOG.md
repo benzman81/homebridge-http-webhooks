@@ -1,3 +1,9 @@
+### 0.0.31
+
+New features:
+
+  - Added support for temperature, humidity and thermostats (thanks to iEns).
+
 ### 0.0.30
 
 New features:
