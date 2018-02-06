@@ -15,6 +15,7 @@ module.exports = function(homebridge) {
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSwitch", HttpWebHookSwitchAccessory);
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookPushButton", HttpWebHookPushButtonAccessory);
     homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLight", HttpWebHookLightAccessory);
+    homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookThermostat", HttpWebHookThermostatAccessory);
 };
 
 function HttpWebHooksPlatform(log, config){
@@ -25,6 +26,7 @@ function HttpWebHooksPlatform(log, config){
     this.switches = config["switches"] || [];
     this.pushButtons = config["pushbuttons"] || [];
     this.lights = config["lights"] || [];
+    this.thermostats = config["thermostats"] || [];
     this.storage = require('node-persist');
     this.storage.initSync({dir:this.cacheDirectory});
 }
@@ -51,6 +53,11 @@ HttpWebHooksPlatform.prototype = {
         for(var i = 0; i < this.lights.length; i++){
             var lightAccessory = new HttpWebHookLightAccessory(this.log, this.lights[i], this.storage);
             accessories.push(lightAccessory);
+        }
+
+        for(var i = 0; i < this.thermostats.length; i++){
+            var thermostatAccessory = new HttpWebHookThermostatAccessory(this.log, this.thermostats[i], this.storage);
+            accessories.push(thermostatAccessory);
         }
 
         var accessoriesCount = accessories.length;
@@ -92,26 +99,92 @@ HttpWebHooksPlatform.prototype = {
                     for(var i = 0; i < accessoriesCount; i++){
                         var accessory = accessories[i];
                         if(accessory.id === accessoryId) {
-                            var cachedState = this.storage.getItemSync("http-webhook-"+accessoryId);
-                            if(cachedState === undefined) {
-                                cachedState = false;
-                            }
-                            if(!theUrlParams.state) {
-                                responseBody = {
-                                    success: true,
-                                    state: cachedState
-                                };
-                            }
-                            else {
-                                var state = theUrlParams.state;
-                                var stateBool = state==="true";
-                                this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
-                                //this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
-                                if(cachedState !== stateBool) {
-                                    accessory.changeHandler(stateBool);
-                                }
-                            }
-                            break;
+							if (accessory.type == "thermostat") {
+								if (theUrlParams.currenttemperature != null) {
+									var cachedCurTemp = this.storage.getItemSync("http-webhook-current-temperature-"+accessoryId);
+									if(cachedCurTemp === undefined) {
+										cachedCurTemp = 0;
+									}
+									this.storage.setItemSync("http-webhook-current-temperature-"+accessoryId, theUrlParams.currenttemperature);
+									if(cachedCurTemp !== theUrlParams.currenttemperature) {
+										accessory.changeCurrentTemperatureHandler(theUrlParams.currenttemperature);
+									}										
+								}
+								if (theUrlParams.targettemperature != null) {
+									var cachedCurTemp = this.storage.getItemSync("http-webhook-target-temperature-"+accessoryId);
+									if(cachedCurTemp === undefined) {
+										cachedCurTemp = 10;
+									}
+									this.storage.setItemSync("http-webhook-target-temperature-"+accessoryId, theUrlParams.targettemperature);
+									if(cachedCurTemp !== theUrlParams.targettemperature) {
+										accessory.changeTargetTemperatureHandler(theUrlParams.targettemperature);
+									}										
+								}
+								if (theUrlParams.currentstate != null) {
+									var cachedState = this.storage.getItemSync("http-webhook-current-heating-cooling-state-"+accessoryId);
+									if(cachedState === undefined) {
+										cachedState = Characteristic.CurrentHeatingCoolingState.OFF;
+									}
+									this.storage.setItemSync("http-webhook-current-heating-cooling-state-"+accessoryId, theUrlParams.currentstate);
+									if(cachedState !== theUrlParams.currentstate) {
+										accessory.changeCurrentHeatingCoolingStateHandler(theUrlParams.currentstate);
+									}										
+								}
+								if (theUrlParams.targetstate != null) {
+									var cachedState = this.storage.getItemSync("http-webhook-target-heating-cooling-state-"+accessoryId);
+									if(cachedState === undefined) {
+										cachedState = Characteristic.TargetHeatingCoolingState.OFF;
+									}
+									this.storage.setItemSync("http-webhook-target-heating-cooling-state-"+accessoryId, theUrlParams.targetstate);
+									if(cachedState !== theUrlParams.targetstate) {
+										accessory.changeTargetHeatingCoolingStateHandler(theUrlParams.targetstate);
+									}										
+								}
+								responseBody = {
+									success: true
+								};
+							} else {
+								if (accessory.type == "humidity" || accessory.type == "temperature") {
+									var cachedValue = this.storage.getItemSync("http-webhook-"+accessoryId);
+									if(cachedValue === undefined) {
+										cachedValue = 0;
+									}
+									if(!theUrlParams.value) {
+										responseBody = {
+											success: true,
+											state: cachedValue
+										};
+									}
+									else {
+										var value = theUrlParams.value;
+										this.storage.setItemSync("http-webhook-"+accessoryId, value);
+										if(cachedValue !== value) {
+											accessory.changeHandler(value);
+										}
+									}
+								} else {
+									var cachedState = this.storage.getItemSync("http-webhook-"+accessoryId);
+									if(cachedState === undefined) {
+										cachedState = false;
+									}
+									if(!theUrlParams.state) {
+										responseBody = {
+											success: true,
+											state: cachedState
+										};
+									}
+									else {
+										var state = theUrlParams.state;
+										var stateBool = state==="true";
+										this.storage.setItemSync("http-webhook-"+accessoryId, stateBool);
+										//this.log("[INFO Http WebHook Server] State change of '%s' to '%s'.",accessory.id,stateBool);
+										if(cachedState !== stateBool) {
+											accessory.changeHandler(stateBool);
+										}
+									}
+								}
+								break;
+							}
                         }
                     }
                     response.write(JSON.stringify(responseBody));
@@ -170,7 +243,27 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         this.service
             .getCharacteristic(Characteristic.SmokeDetected)
             .on('get', this.getState.bind(this));
-    }
+	} else if(this.type === "humidity") {
+		this.service = new Service.HumiditySensor(this.name);
+		this.changeHandler = (function(newState){
+			this.log("Change HomeKit value for humidity sensor to '%s'.", newState);
+			this.service.getCharacteristic(Characteristic.CurrentRelativeHumidity)
+				.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+		}).bind(this);
+		this.service
+			.getCharacteristic(Characteristic.CurrentRelativeHumidity)
+			.on('get', this.getState.bind(this));
+	} else if(this.type === "temperature") {
+		this.service = new Service.TemperatureSensor(this.name);
+		this.changeHandler = (function(newState){
+			this.log("Change HomeKit value for temperature sensor to '%s'.", newState);
+			this.service.getCharacteristic(Characteristic.CurrentTemperature)
+				.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+		}).bind(this);
+		this.service
+			.getCharacteristic(Characteristic.CurrentTemperature)
+			.on('get', this.getState.bind(this));
+	}
 }
 
 HttpWebHookSensorAccessory.prototype.getState = function(callback) {
@@ -392,5 +485,159 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
 };
 
 HttpWebHookLightAccessory.prototype.getServices = function() {
+  return [this.service];
+};
+
+
+
+function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
+    this.log = log;
+    this.id = thermostatConfig["id"];
+	this.name = thermostatConfig["name"];
+	this.type = "thermostat";
+    this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
+    this.setTargetTemperatureMethod = thermostatConfig["set_target_temperature_method"] || "GET";
+    this.setTargetHeatingCoolingStateURL = thermostatConfig["set_target_heating_cooling_state_url"] || "";
+    this.setTargetHeatingCoolingStateMethod = thermostatConfig["set_target_heating_cooling_state_method"] || "GET";
+    this.storage = storage;
+
+    this.service = new Service.Thermostat(this.name);
+    this.changeCurrentTemperatureHandler = (function(newTemp) {
+        this.log("Change current Temperature for thermostat to '%d'.", newTemp);
+        this.service.getCharacteristic(Characteristic.CurrentTemperature)
+                .updateValue(newTemp, undefined, CONTEXT_FROM_WEBHOOK);
+    }).bind(this);
+    this.changeTargetTemperatureHandler = (function(newTemp) {
+        this.log("Change target Temperature for thermostat to '%d'.", newTemp);
+        this.service.getCharacteristic(Characteristic.TargetTemperature)
+                .updateValue(newTemp, undefined, CONTEXT_FROM_WEBHOOK);
+	}).bind(this);
+	this.changeCurrentHeatingCoolingStateHandler = (function(newState) {
+        if(newState) {
+            this.log("Change Current Heating Cooling State for thermostat to '%s'.", newState);
+            this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState)
+					.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+        }
+    }).bind(this);
+	this.changeTargetHeatingCoolingStateHandler = (function(newState) {
+        if(newState) {
+            this.log("Change Target Heating Cooling State for thermostat to '%s'.", newState);
+            this.service.getCharacteristic(Characteristic.TargetHeatingCoolingState)
+					.updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+        }
+    }).bind(this);
+
+    this.service
+        .getCharacteristic(Characteristic.TargetHeatingCoolingState)
+        .on('get', this.getTargetHeatingCoolingState.bind(this)) 
+        .on('set', this.setTargetHeatingCoolingState.bind(this));
+    this.service
+        .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
+        .on('get', this.getCurrentHeatingCoolingState.bind(this)); 
+//        .on('set', this.setCurrentHeatingCoolingState.bind(this));
+	this.service
+        .getCharacteristic(Characteristic.TargetTemperature)
+        .on('get', this.getTargetTemperature.bind(this)) 
+        .on('set', this.setTargetTemperature.bind(this));
+	this.service
+        .getCharacteristic(Characteristic.CurrentTemperature)
+        .on('get', this.getCurrentTemperature.bind(this)); 
+//        .on('set', this.setCurrentTemperature.bind(this));
+}
+
+// TargetTemperature
+HttpWebHookThermostatAccessory.prototype.getTargetTemperature = function(callback) {
+    this.log("Getting target temperature for '%s'...", this.id);
+    var temp = this.storage.getItemSync("http-webhook-target-temperature-"+this.id);
+    if(temp === undefined) {
+        temp = 20;
+    }
+    callback(null, temp);
+};
+
+HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, callback, context) {
+    this.log("Target temperature for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-target-temperature-"+this.id, temp);
+    var urlToCall = this.setTargetTemperatureURL.replace("%f", temp);
+    var urlMethod = this.setTargetTemperatureMethod;
+    if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+        request({
+            method: urlMethod,
+            url: urlToCall,
+            timeout: DEFAULT_REQUEST_TIMEOUT
+        }, (function(err, response, body) {
+            var statusCode = response && response.statusCode ? response.statusCode: -1;
+            this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+            if (!err && statusCode == 200) {
+                callback(null);
+            }
+            else {
+                callback(err || new Error("Request to '"+urlToCall+"' was not succesful."));
+            }
+        }).bind(this));
+    }
+    else {
+        callback(null);
+    }
+};
+
+// Current Temperature
+HttpWebHookThermostatAccessory.prototype.getCurrentTemperature = function(callback) {
+    this.log("Getting current temperature for '%s'...", this.id);
+    var temp = this.storage.getItemSync("http-webhook-current-temperature-"+this.id);
+    if(temp === undefined) {
+        temp = 20;
+    }
+    callback(null, temp);
+};
+
+// Target Heating Cooling State
+HttpWebHookThermostatAccessory.prototype.getTargetHeatingCoolingState = function(callback) {
+    this.log("Getting current Target Heating Cooling state for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-target-heating-cooling-state-"+this.id);
+    if(state === undefined) {
+        state = Characteristic.TargetHeatingCoolingState.OFF;
+    }
+    callback(null, state);
+};
+
+HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function(newState, callback, context) {
+    this.log("Target Heating Cooling state for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-target-heating-cooling-state-"+this.id, newState);
+    var urlToCall = this.setTargetHeatingCoolingStateURL.replace("%b", newState);
+    var urlMethod = this.setTargetHeatingCoolingStateMethod;
+    if(urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+        request({
+            method: urlMethod,
+            url: urlToCall,
+            timeout: DEFAULT_REQUEST_TIMEOUT
+        }, (function(err, response, body) {
+            var statusCode = response && response.statusCode ? response.statusCode: -1;
+            this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+            if (!err && statusCode == 200) {
+                callback(null);
+            }
+            else {
+                callback(err || new Error("Request to '"+urlToCall+"' was not succesful."));
+            }
+        }).bind(this));
+    }
+    else {
+        callback(null);
+    }
+};
+
+// Current Heating Cooling State
+HttpWebHookThermostatAccessory.prototype.getCurrentHeatingCoolingState = function(callback) {
+    this.log("Getting current Target Heating Cooling state for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-current-heating-cooling-state-"+this.id);
+    if(state === undefined) {
+        state = Characteristic.CurrentHeatingCoolingState.OFF;
+    }
+    callback(null, state);
+};
+
+
+HttpWebHookThermostatAccessory.prototype.getServices = function() {
   return [this.service];
 };
