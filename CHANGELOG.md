@@ -1,3 +1,9 @@
+### 0.0.32
+
+New features:
+
+  - Added support for outlet.
+
 ### 0.0.31
 
 New features:

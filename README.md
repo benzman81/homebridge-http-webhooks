@@ -44,6 +44,13 @@ For push buttons the value for `NEWSTATE` is `true`. The button will be released
 ## Light
 For lights the value for `NEWSTATE` is either `true` for on or `false` for off.
 
+## Outlet
+For outlets the value for `NEWSTATE` is either `true` for on or `false` for off.
+
+### Outlet in use
+For outlets the additional state `stateOutletInUse` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
+can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&stateOutletInUse=NEWSTATE`
+
 # Trigger action
 
 ## Switch
@@ -53,7 +60,10 @@ For switches you can trigger a url of any system for switching the switch on or 
 For push buttons you can trigger a url of any system for "pushing the button. The button will be released automatically.
 
 ## Light
-For lights you can trigger a url of any system for switching the ligth on or off.
+For lights you can trigger a url of any system for switching the light on or off.
+
+## Outlet
+For outlets you can trigger a url of any system for switching the outlet on or off.
 
 # Update a numeric accessory
 To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
@@ -147,7 +157,17 @@ Example config.json:
                     "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
                     "set_target_heating_cooling_state_url": "http://127.0.0.1/thermostatscript.php?targetstate=%b"     // %b is replaced by the target state
                     }
-                ]
+                ],
+                "outlets": [
+                    {
+                    "id": "outlet1",
+                    "name": "Outlet name 1",
+                    "on_url": "your url to switch the outlet on", // (optional)
+                    "on_method": "GET", // (optional)
+                    "off_url": "your url to switch the outlet off", // (optional)
+                    "off_method": "GET" // (optional)
+                    }
+                ],
             }
         ]
     }

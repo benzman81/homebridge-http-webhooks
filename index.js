@@ -16,6 +16,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookPushButton", HttpWebHookPushButtonAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLight", HttpWebHookLightAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookThermostat", HttpWebHookThermostatAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookOutlet", HttpWebHookOutletAccessory);
 };
 
 function HttpWebHooksPlatform(log, config) {
@@ -27,6 +28,7 @@ function HttpWebHooksPlatform(log, config) {
   this.pushButtons = config["pushbuttons"] || [];
   this.lights = config["lights"] || [];
   this.thermostats = config["thermostats"] || [];
+  this.outlets = config["outlets"] || [];
   this.storage = require('node-persist');
   this.storage.initSync({
     dir : this.cacheDirectory
@@ -60,6 +62,11 @@ HttpWebHooksPlatform.prototype = {
     for (var i = 0; i < this.thermostats.length; i++) {
       var thermostatAccessory = new HttpWebHookThermostatAccessory(this.log, this.thermostats[i], this.storage);
       accessories.push(thermostatAccessory);
+    }
+
+    for (var i = 0; i < this.outlets.length; i++) {
+      var outletAccessory = new HttpWebHookOutletAccessory(this.log, this.outlets[i], this.storage);
+      accessories.push(outletAccessory);
     }
 
     var accessoriesCount = accessories.length;
@@ -163,6 +170,47 @@ HttpWebHooksPlatform.prototype = {
                     this.storage.setItemSync("http-webhook-" + accessoryId, value);
                     if (cachedValue !== value) {
                       accessory.changeHandler(value);
+                    }
+                  }
+                }
+                else if (accessory.type == "outlet") {
+                  var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
+                  if (cachedState === undefined) {
+                    cachedState = false;
+                  }
+                  var cachedStateInUse = this.storage.getItemSync("http-webhook-" + accessoryId + "-inUse");
+                  if (cachedStateInUse === undefined) {
+                    cachedStateInUse = false;
+                  }
+                  if (!theUrlParams.state && !theUrlParams.stateOutletInUse) {
+                    responseBody = {
+                      success : true,
+                      state : cachedState,
+                      stateOutletInUse : cachedStateInUse
+                    };
+                  }
+                  else {
+                    if (theUrlParams.state) {
+                      var state = theUrlParams.state;
+                      var stateBool = state === "true";
+                      this.storage.setItemSync("http-webhook-" + accessoryId, stateBool);
+                      // this.log("[INFO Http WebHook Server] State change of
+                      // '%s'
+                      // to '%s'.",accessory.id,stateBool);
+                      if (cachedState !== stateBool) {
+                        accessory.changeHandler(stateBool);
+                      }
+                    }
+                    if (theUrlParams.stateOutletInUse) {
+                      var stateOutletInUse = theUrlParams.stateOutletInUse;
+                      var stateOutletInUseBool = stateOutletInUse === "true";
+                      this.storage.setItemSync("http-webhook-" + accessoryId + "-inUse", stateOutletInUseBool);
+                      // this.log("[INFO Http WebHook Server] State change of
+                      // '%s'
+                      // to '%s'.",accessory.id,stateBool);
+                      if (cachedStateInUse !== stateOutletInUseBool) {
+                        accessory.changeHandlerInUse(stateOutletInUseBool);
+                      }
                     }
                   }
                 }
@@ -603,5 +651,81 @@ HttpWebHookThermostatAccessory.prototype.getCurrentHeatingCoolingState = functio
 };
 
 HttpWebHookThermostatAccessory.prototype.getServices = function() {
+  return [ this.service ];
+};
+
+function HttpWebHookOutletAccessory(log, outletConfig, storage) {
+  this.log = log;
+  this.id = outletConfig["id"];
+  this.name = outletConfig["name"];
+  this.type = "outlet";
+  this.onURL = outletConfig["on_url"] || "";
+  this.onMethod = outletConfig["on_method"] || "GET";
+  this.offURL = outletConfig["off_url"] || "";
+  this.offMethod = outletConfig["off_method"] || "GET";
+  this.storage = storage;
+
+  this.service = new Service.Outlet(this.name);
+  this.changeHandler = (function(newState) {
+    this.log("Change HomeKit state for outlet to '%s'.", newState);
+    this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+  this.changeHandlerInUse = (function(newState) {
+    this.log("Change HomeKit stateInUse for outlet to '%s'.", newState);
+    this.service.getCharacteristic(Characteristic.OutletInUse).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+  this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+  this.service.getCharacteristic(Characteristic.OutletInUse).on('get', this.getStateInUse.bind(this));
+}
+
+HttpWebHookOutletAccessory.prototype.getState = function(callback) {
+  this.log("Getting current state for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-" + this.id);
+  if (state === undefined) {
+    state = false;
+  }
+  callback(null, state);
+};
+
+HttpWebHookOutletAccessory.prototype.getStateInUse = function(callback) {
+  this.log("Getting current state for '%s'...", this.id);
+  var stateInUse = this.storage.getItemSync("http-webhook-" + this.id + "-inUse");
+  if (stateInUse === undefined) {
+    stateInUse = false;
+  }
+  callback(null, stateInUse);
+};
+
+HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, context) {
+  this.log("Switch outlet state for '%s'...", this.id);
+  this.storage.setItemSync("http-webhook-" + this.id, powerOn);
+  var urlToCall = this.onURL;
+  var urlMethod = this.onMethod;
+  if (!powerOn) {
+    urlToCall = this.offURL;
+    urlMethod = this.offMethod;
+  }
+  if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+    request({
+      method : urlMethod,
+      url : urlToCall,
+      timeout : DEFAULT_REQUEST_TIMEOUT
+    }, (function(err, response, body) {
+      var statusCode = response && response.statusCode ? response.statusCode : -1;
+      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      if (!err && statusCode == 200) {
+        callback(null);
+      }
+      else {
+        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
+      }
+    }).bind(this));
+  }
+  else {
+    callback(null);
+  }
+};
+
+HttpWebHookOutletAccessory.prototype.getServices = function() {
   return [ this.service ];
 };
