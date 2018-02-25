@@ -1,3 +1,9 @@
+### 0.0.33
+
+Bugfix:
+
+  - Fix issue where push button doesn't change its cache state back to false.
+
 ### 0.0.32
 
 New features:

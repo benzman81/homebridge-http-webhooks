@@ -406,6 +406,7 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
       this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
       setTimeout(function() {
         this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
+        this.storage.setItemSync("http-webhook-" + this.id, false);
       }.bind(this), 1000);
     }
   }).bind(this);
