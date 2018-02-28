@@ -1,3 +1,9 @@
+### 0.0.34
+
+Bugfix:
+
+  - Last fix wasn't correct. Removed cache handling for push button as state is always false.
+  
 ### 0.0.33
 
 Bugfix:

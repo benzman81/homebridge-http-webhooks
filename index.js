@@ -214,6 +214,21 @@ HttpWebHooksPlatform.prototype = {
                     }
                   }
                 }
+                else if (accessory.type == "pushbutton") {
+                  if (!theUrlParams.state) {
+                    responseBody = {
+                      success : true,
+                      state : cachedState
+                    };
+                  }
+                  else {
+                    var state = theUrlParams.state;
+                    var stateBool = state === "true";
+                    // this.log("[INFO Http WebHook Server] State change of '%s'
+                    // to '%s'.",accessory.id,stateBool);
+                    accessory.changeHandler(stateBool);
+                  }
+                }
                 else {
                   var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedState === undefined) {
@@ -395,6 +410,7 @@ HttpWebHookSwitchAccessory.prototype.getServices = function() {
 function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
   this.log = log;
   this.id = pushButtonConfig["id"];
+  this.type = "pushbutton";
   this.name = pushButtonConfig["name"];
   this.pushURL = pushButtonConfig["push_url"] || "";
   this.pushMethod = pushButtonConfig["push_method"] || "GET";
@@ -406,7 +422,6 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
       this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
       setTimeout(function() {
         this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
-        this.storage.setItemSync("http-webhook-" + this.id, false);
       }.bind(this), 1000);
     }
   }).bind(this);
