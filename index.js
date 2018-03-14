@@ -376,8 +376,10 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.name = switchConfig["name"];
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
+  this.onBody = switchConfig["on_body"] || "";
   this.offURL = switchConfig["off_url"] || "";
   this.offMethod = switchConfig["off_method"] || "GET";
+  this.offBody = switchConfig["off_body"] || "";
   this.storage = storage;
 
   this.service = new Service.Switch(this.name);
@@ -402,16 +404,24 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
   this.storage.setItemSync("http-webhook-" + this.id, powerOn);
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
+  var urlBody = this.onBody;
+
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
+    urlBody = this.offBody;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
-      method : urlMethod,
-      url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+    var theRequest = {
+        method: urlMethod,
+        url: urlToCall,
+        timeout: DEFAULT_REQUEST_TIMEOUT,
+    };
+    if ((urlMethod === "POST" || urlMethod === "PUT") && urlBody) {
+      this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
