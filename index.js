@@ -31,6 +31,7 @@ function HttpWebHooksPlatform(log, config) {
   this.lights = config["lights"] || [];
   this.thermostats = config["thermostats"] || [];
   this.outlets = config["outlets"] || [];
+  this.statelessSwitches = config["statelessswitches"] || [];
   this.storage = require('node-persist');
   this.storage.initSync({
     dir : this.cacheDirectory
