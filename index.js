@@ -242,6 +242,11 @@ HttpWebHooksPlatform.prototype = {
                         accessory.changeHandler(theUrlParams.buttonName, theUrlParams.event);
                     }
                 }
+                else if((accessory.type == "motion" || accessory.type == "occupancy") && accessory.autoRelease){
+                    if (theUrlParams.state) {
+                        accessory.changeHandler(theUrlParams.state);
+                    }                
+                }
                 else {
                   var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedState === undefined) {
