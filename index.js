@@ -244,7 +244,9 @@ HttpWebHooksPlatform.prototype = {
                 }
                 else if((accessory.type == "motion" || accessory.type == "occupancy") && accessory.autoRelease){
                     if (theUrlParams.state) {
-                        accessory.changeHandler(theUrlParams.state);
+                      var state = theUrlParams.state;
+                      var stateBool = state === "true";  
+                        accessory.changeHandler(stateBool);
                     }                
                 }
                 else {
