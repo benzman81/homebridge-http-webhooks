@@ -25,8 +25,9 @@
     "homebridge": ">=0.3.0"
   },
   "dependencies": {
-    "request": "2.49.x",
-    "node-persist" : "2.0.x"
+    "http-auth": "^3.2.3",
+    "node-persist": "2.0.x",
+    "request": "2.49.x"
   },
   "homepage": "https://github.com/benzman81/homebridge-http-webhooks#readme",
   "author": "benzman81"

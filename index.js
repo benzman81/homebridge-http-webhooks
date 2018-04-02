@@ -1,6 +1,7 @@
 var request = require("request");
 var http = require('http');
 var url = require('url');
+var auth = require('http-auth');
 var Service, Characteristic;
 var DEFAULT_REQUEST_TIMEOUT = 10000;
 var CONTEXT_FROM_WEBHOOK = "fromHTTPWebhooks";
@@ -29,6 +30,8 @@ function HttpWebHooksPlatform(log, config) {
   this.lights = config["lights"] || [];
   this.thermostats = config["thermostats"] || [];
   this.outlets = config["outlets"] || [];
+  this.httpAuthUser = config["http_auth_user"] || null;
+  this.httpAuthPass = config["http_auth_pass"] || null;
   this.storage = require('node-persist');
   this.storage.initSync({
     dir : this.cacheDirectory
@@ -73,7 +76,7 @@ HttpWebHooksPlatform.prototype = {
 
     callback(accessories);
 
-    http.createServer((function(request, response) {
+    var createServerCallback = (function(request, response) {
       var theUrl = request.url;
       var theUrlParts = url.parse(theUrl, true);
       var theUrlParams = theUrlParts.query;
@@ -259,7 +262,23 @@ HttpWebHooksPlatform.prototype = {
           response.end();
         }
       }).bind(this));
-    }).bind(this)).listen(this.webhookPort);
+    }).bind(this);
+
+    if (this.httpAuthUser && this.httpAuthPass) {
+      var httpAuthUser = this.httpAuthUser;
+      var httpAuthPass = this.httpAuthPass;
+      basicAuth = auth.basic(
+        {
+          realm: "Auth required"
+        },
+        function(username, password, callback) {
+          callback(username === httpAuthUser && password === httpAuthPass);
+        }
+      );
+      http.createServer(basicAuth, createServerCallback).listen(this.webhookPort);;
+    } else {
+      http.createServer(createServerCallback).listen(this.webhookPort);;
+    }
     this.log("Started server for webhooks on port '%s'.", this.webhookPort);
   }
 }
