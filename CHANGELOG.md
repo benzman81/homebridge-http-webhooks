@@ -2,6 +2,12 @@
 
 New features:
 
+  - Added air quality as sensor.
+
+### 0.0.35
+
+New features:
+
   - Added http authentication if desired (thanks to paolotremadio).
 
 ### 0.0.34
