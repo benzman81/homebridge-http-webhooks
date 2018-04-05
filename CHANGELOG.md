@@ -2,7 +2,7 @@
 
 New features:
 
-  - Added air quality as sensor.
+  - Added air quality as sensor (thanks to tansuka).
 
 ### 0.0.35
 
