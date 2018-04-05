@@ -74,6 +74,9 @@ For temperature sensors the value for `NEWVALUE` is the new temperature reading.
 ## Humidity sensor
 For humidity sensors the value for `NEWVALUE` is the new relative humidity percentage reading.
 
+## Air Quality sensor
+For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
+
 # Thermostat
 To update a thermostat you can update four different values:
 * Current temperature reading: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currenttemperature=NEWVALUE`
@@ -122,6 +125,11 @@ Example config.json:
                     "id": "sensor6",
                     "name": "Sensor name 6",
                     "type": "humidity"
+                    },
+                    {
+                    "id": "sensor7",
+                    "name": "Sensor name 7",
+                    "type": "airquality"
                     }
                 ],
                 "switches": [

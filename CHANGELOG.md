@@ -1,3 +1,9 @@
+### 0.0.36
+
+New features:
+
+  - Added air quality as sensor.
+
 ### 0.0.35
 
 New features:

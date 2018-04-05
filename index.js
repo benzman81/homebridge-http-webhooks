@@ -157,7 +157,7 @@ HttpWebHooksPlatform.prototype = {
                 };
               }
               else {
-                if (accessory.type == "humidity" || accessory.type == "temperature") {
+                if (accessory.type == "humidity" || accessory.type == "temperature" || accessory.type == "airquality") {
                   var cachedValue = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedValue === undefined) {
                     cachedValue = 0;
@@ -339,6 +339,15 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     }).bind(this);
     this.service.getCharacteristic(Characteristic.CurrentTemperature).on('get', this.getState.bind(this));
   }
+  else if (this.type === "airquality") {
+    this.service = new Service.AirQualitySensor(this.name);
+    this.changeHandler = (function(newState) {
+      this.log("Change HomeKit value for air quality sensor to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.AirQuality).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }).bind(this);
+    this.service.getCharacteristic(Characteristic.AirQuality).on('get', this.getState.bind(this));
+  }
+
 }
 
 HttpWebHookSensorAccessory.prototype.getState = function(callback) {
