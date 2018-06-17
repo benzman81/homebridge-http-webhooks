@@ -267,17 +267,15 @@ HttpWebHooksPlatform.prototype = {
     if (this.httpAuthUser && this.httpAuthPass) {
       var httpAuthUser = this.httpAuthUser;
       var httpAuthPass = this.httpAuthPass;
-      basicAuth = auth.basic(
-        {
-          realm: "Auth required"
-        },
-        function(username, password, callback) {
-          callback(username === httpAuthUser && password === httpAuthPass);
-        }
-      );
-      http.createServer(basicAuth, createServerCallback).listen(this.webhookPort);;
-    } else {
-      http.createServer(createServerCallback).listen(this.webhookPort);;
+      basicAuth = auth.basic({
+        realm : "Auth required"
+      }, function(username, password, callback) {
+        callback(username === httpAuthUser && password === httpAuthPass);
+      });
+      http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+    }
+    else {
+      http.createServer(createServerCallback).listen(this.webhookPort, "0.0.0.0");
     }
     this.log("Started server for webhooks on port '%s'.", this.webhookPort);
   }
