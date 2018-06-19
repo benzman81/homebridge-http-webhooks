@@ -18,6 +18,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLight", HttpWebHookLightAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookThermostat", HttpWebHookThermostatAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookOutlet", HttpWebHookOutletAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSecurity", HttpWebHookSecurityAccessory);
 };
 
 function HttpWebHooksPlatform(log, config) {
@@ -30,6 +31,7 @@ function HttpWebHooksPlatform(log, config) {
   this.lights = config["lights"] || [];
   this.thermostats = config["thermostats"] || [];
   this.outlets = config["outlets"] || [];
+  this.security = config["security"] || [];
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
   this.storage = require('node-persist');
@@ -70,6 +72,11 @@ HttpWebHooksPlatform.prototype = {
     for (var i = 0; i < this.outlets.length; i++) {
       var outletAccessory = new HttpWebHookOutletAccessory(this.log, this.outlets[i], this.storage);
       accessories.push(outletAccessory);
+    }
+
+    for (var i = 0; i < this.security.length; i++) {
+      var securityAccessory = new HttpWebHookSecurityAccessory(this.log, this.security[i], this.storage);
+      accessories.push(securityAccessory);
     }
 
     var accessoriesCount = accessories.length;
@@ -150,6 +157,31 @@ HttpWebHooksPlatform.prototype = {
                   this.storage.setItemSync("http-webhook-target-heating-cooling-state-" + accessoryId, theUrlParams.targetstate);
                   if (cachedState !== theUrlParams.targetstate) {
                     accessory.changeTargetHeatingCoolingStateHandler(theUrlParams.targetstate);
+                  }
+                }
+                responseBody = {
+                  success : true
+                };
+              }
+              else if (accessory.type == "security") {
+                if (theUrlParams.currentstate != null) {
+                  var cachedState = this.storage.getItemSync("http-webhook-current-security-state-" + accessoryId);
+                  if (cachedState === undefined) {
+                    cachedState = Characteristic.SecuritySystemCurrentState.DISARMED;
+                  }
+                  this.storage.setItemSync("http-webhook-current-security-state-" + accessoryId, theUrlParams.currentstate);
+                  if (cachedState !== theUrlParams.currentstate) {
+                    accessory.changeCurrentStateHandler(theUrlParams.currentstate);
+                  }
+                }
+                if (theUrlParams.targetstate != null) {
+                  var cachedState = this.storage.getItemSync("http-webhook-target-security-state-" + accessoryId);
+                  if (cachedState === undefined) {
+                    cachedState = Characteristic.SecuritySystemTargetState.DISARM;
+                  }
+                  this.storage.setItemSync("http-webhook-target-security-state-" + accessoryId, theUrlParams.targetstate);
+                  if (cachedState !== theUrlParams.targetstate) {
+                    accessory.changeTargetStateHandler(theUrlParams.targetstate);
                   }
                 }
                 responseBody = {
@@ -769,5 +801,79 @@ HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, cont
 };
 
 HttpWebHookOutletAccessory.prototype.getServices = function() {
+  return [ this.service ];
+};
+
+function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
+  this.log = log;
+  this.id = securityConfig["id"];
+  this.name = securityConfig["name"];
+  this.type = "security";
+  this.setStateURL = securityConfig["set_state_url"] || "";
+  this.setStateMethod = securityConfig["set_state_method"] || "GET";
+  this.storage = storage;
+
+  this.service = new Service.SecuritySystem(this.name);
+  this.changeCurrentStateHandler = (function(newState) {
+    this.log("Change current state for security to '%d'.", newState);
+    this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+  this.changeTargetStateHandler = (function(newState) {
+    this.log("Change target state for security to '%d'.", newState);
+    this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+
+  this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getTargetSecurityState.bind(this)).on('set', this.setTargetSecurityState.bind(this));
+  this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).on('get', this.getCurrentSecurityState.bind(this));
+  // .on('set', this.setCurrentTemperature.bind(this));
+}
+
+// Target Security State
+HttpWebHookSecurityAccessory.prototype.getTargetSecurityState = function(callback) {
+  this.log("Getting current Target Security state for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-target-security-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.SecuritySystemTargetState.DISARM;
+  }
+  callback(null, state);
+};
+
+HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newState, callback, context) {
+  this.log("Target Security state for '%s'...", this.id);
+  this.storage.setItemSync("http-webhook-target-security-state-" + this.id, newState);
+  var urlToCall = this.setStateURL.replace("%d", newState);
+  var urlMethod = this.setStateMethod;
+  if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+    request({
+      method : urlMethod,
+      url : urlToCall,
+      timeout : DEFAULT_REQUEST_TIMEOUT
+    }, (function(err, response, body) {
+      var statusCode = response && response.statusCode ? response.statusCode : -1;
+      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      if (!err && statusCode == 200) {
+        callback(null);
+      }
+      else {
+        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
+      }
+    }).bind(this));
+  }
+  else {
+    callback(null);
+  }
+};
+
+// Current Security State
+HttpWebHookSecurityAccessory.prototype.getCurrentSecurityState = function(callback) {
+  this.log("Getting current Target Security state for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-current-security-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.SecuritySystemCurrentState.DISARMED;
+  }
+  callback(null, state);
+};
+
+HttpWebHookSecurityAccessory.prototype.getServices = function() {
   return [ this.service ];
 };
