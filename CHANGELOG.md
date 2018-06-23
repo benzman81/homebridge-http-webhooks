@@ -1,3 +1,9 @@
+### 0.0.38
+
+New features:
+
+  - Added a new accessory to support security system. (thanks to jcbriones).
+
 ## 0.0.37
 
 Bugfix:

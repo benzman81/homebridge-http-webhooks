@@ -825,10 +825,8 @@ function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
 
   this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getTargetSecurityState.bind(this)).on('set', this.setTargetSecurityState.bind(this));
   this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).on('get', this.getCurrentSecurityState.bind(this));
-  // .on('set', this.setCurrentTemperature.bind(this));
 }
 
-// Target Security State
 HttpWebHookSecurityAccessory.prototype.getTargetSecurityState = function(callback) {
   this.log("Getting current Target Security state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-target-security-state-" + this.id);
@@ -864,7 +862,6 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
   }
 };
 
-// Current Security State
 HttpWebHookSecurityAccessory.prototype.getCurrentSecurityState = function(callback) {
   this.log("Getting current Target Security state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-security-state-" + this.id);
