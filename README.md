@@ -84,6 +84,11 @@ To update a thermostat you can update four different values:
 * Current state (Off=0 / Heating=1 / Cooling=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
 * Target state (Off=0 / Heat=1 / Cool=2 / Auto=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
+# Security System
+To update the state of security, you can update two different values:
+* Current state (Stay=0 / Away=1 / Night=2 / Disarmed=3 / Triggered=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
+* Target state (Stay=0 / Away=1 / Night=2 / Disarm=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
+
 # Configuration
 Example config.json:
 ```
@@ -176,6 +181,14 @@ Example config.json:
                     "on_method": "GET", // (optional)
                     "off_url": "your url to switch the outlet off", // (optional)
                     "off_method": "GET" // (optional)
+                    }
+                ],
+                "security": [
+                    {
+                    "id": "security1",
+                    "name": "Security System",
+                    "set_state_url": "http://localhost/security/mode/%d",     // %d is replaced by the target state
+                    "set_state_method": "GET" // (optional)
                     }
                 ],
             }
