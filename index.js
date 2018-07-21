@@ -172,22 +172,22 @@ HttpWebHooksPlatform.prototype = {
               }
               else if (accessory.type == "garagedooropener") {
                 if (theUrlParams.currentdoorstate != null) {
-                  var cachedDoorState = this.storage.getItemSync("http-webhook-current-door-state-" + accessoryId);
-                  if (cachedDoorState === undefined) {
-                    cachedDoorState = Characteristic.CurrentDoorState.CLOSED;
+                  var cachedCurrentDoorState = this.storage.getItemSync("http-webhook-current-door-state-" + accessoryId);
+                  if (cachedCurrentDoorState === undefined) {
+                    cachedCurrentDoorState = Characteristic.CurrentDoorState.CLOSED;
                   }
                   this.storage.setItemSync("http-webhook-current-door-state-" + accessoryId, theUrlParams.currentdoorstate);
-                  if (cachedDoorState !== theUrlParams.currentdoorstate) {
+                  if (cachedCurrentDoorState !== theUrlParams.currentdoorstate) {
                     accessory.changeCurrentDoorStateHandler(theUrlParams.currentdoorstate);
                   }
                 }
                 if (theUrlParams.targetdoorstate != null) {
-                  var cachedDoorState = this.storage.getItemSync("http-webhook-target-door-state-" + accessoryId);
-                  if (cachedDoorState === undefined) {
-                    cachedDoorState = Characteristic.TargetDoorState.CLOSED;
+                  var cachedTargetDoorState = this.storage.getItemSync("http-webhook-target-door-state-" + accessoryId);
+                  if (cachedTargetDoorState === undefined) {
+                    cachedTargetDoorState = Characteristic.TargetDoorState.CLOSED;
                   }
                   this.storage.setItemSync("http-webhook-target-door-state-" + accessoryId, theUrlParams.targetdoorstate);
-                  if (cachedDoorState !== theUrlParams.targetdoorstate) {
+                  if (cachedTargetDoorState !== theUrlParams.targetdoorstate) {
                     accessory.changeTargetDoorStateHandler(theUrlParams.targetdoorstate);
                   }
                 }
@@ -202,7 +202,10 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true
+                  success : true,
+                  currentState : cachedCurrentDoorState,
+                  targetState : cachedTargetDoorState,
+                  obstruction : cachedObstructionDetected                  
                 };
               }
               else if (accessory.type == "security") {
@@ -777,8 +780,9 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.name = garageDoorOpenerConfig["name"];
   this.type = "garagedooropener";
   this.setTargetDoorStateOpenURL = garageDoorOpenerConfig["open_url"] || "";
+  this.setTargetDoorStateOpenMethod = garageDoorOpenerConfig["open_method"] || "GET";  
   this.setTargetDoorStateCloseURL = garageDoorOpenerConfig["close_url"] || "";
-  this.setTargetDoorStateMethod = garageDoorOpenerConfig["open_close_method"] || "GET";  
+  this.setTargetDoorStateCloseMethod = garageDoorOpenerConfig["close_method"] || "GET";  
   this.storage = storage;
 
   this.service = new Service.GarageDoorOpener(this.name);
@@ -806,6 +810,7 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.service.getCharacteristic(Characteristic.ObstructionDetected).on('get', this.getObstructionDetected.bind(this));
 }
 
+// Target Door State
 HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(callback) {
   this.log("Getting current Target Door State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-target-door-state-" + this.id);
@@ -815,15 +820,15 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(cal
   callback(null, state);
 };
 
-// Target Door State
 HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(newState, callback, context) {
   this.log("Target Door State for '%s'...", this.id);
   this.storage.setItemSync("http-webhook-target-door-state-" + this.id, newState);
   var urlToCall = this.setTargetDoorStateCloseURL;
+  var urlMethod = this.setTargetDoorStateCloseMethod;
   if (newState == Characteristic.TargetDoorState.OPEN) {
     var urlToCall = this.setTargetDoorStateOpenURL;
+    var urlMethod = this.setTargetDoorStateOpenMethod;
   }
-  var urlMethod = this.setTargetDoorStateMethod;
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
     request({
       method : urlMethod,
@@ -864,7 +869,6 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getObstructionDetected = function
   }
   callback(null, state);
 };
-
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getServices = function() {
   return [ this.service ];
