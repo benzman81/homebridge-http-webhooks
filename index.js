@@ -170,7 +170,7 @@ HttpWebHooksPlatform.prototype = {
                   success : true
                 };
               }
-              else if (accessory.type == "garageDoorOpener") {
+              else if (accessory.type == "garagedooropener") {
                 if (theUrlParams.currentdoorstate != null) {
                   var cachedDoorState = this.storage.getItemSync("http-webhook-current-door-state-" + accessoryId);
                   if (cachedDoorState === undefined) {
