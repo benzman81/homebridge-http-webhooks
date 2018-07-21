@@ -19,6 +19,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookThermostat", HttpWebHookThermostatAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookOutlet", HttpWebHookOutletAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSecurity", HttpWebHookSecurityAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookGarageDoorOpener", HttpWebHookGarageDoorOpenerAccessory);
 };
 
 function HttpWebHooksPlatform(log, config) {
@@ -32,6 +33,7 @@ function HttpWebHooksPlatform(log, config) {
   this.thermostats = config["thermostats"] || [];
   this.outlets = config["outlets"] || [];
   this.security = config["security"] || [];
+  this.garageDoorOpeners = config["garagedooropeners"] || [];
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
   this.storage = require('node-persist');
@@ -77,6 +79,11 @@ HttpWebHooksPlatform.prototype = {
     for (var i = 0; i < this.security.length; i++) {
       var securityAccessory = new HttpWebHookSecurityAccessory(this.log, this.security[i], this.storage);
       accessories.push(securityAccessory);
+    }
+
+    for (var i = 0; i < this.garageDoorOpeners.length; i++) {
+      var garageDoorOpenerAccessory = new HttpWebHookGarageDoorOpenerAccessory(this.log, this.garageDoorOpeners[i], this.storage);
+      accessories.push(garageDoorOpenerAccessory);
     }
 
     var accessoriesCount = accessories.length;
@@ -157,6 +164,41 @@ HttpWebHooksPlatform.prototype = {
                   this.storage.setItemSync("http-webhook-target-heating-cooling-state-" + accessoryId, theUrlParams.targetstate);
                   if (cachedState !== theUrlParams.targetstate) {
                     accessory.changeTargetHeatingCoolingStateHandler(theUrlParams.targetstate);
+                  }
+                }
+                responseBody = {
+                  success : true
+                };
+              }
+              else if (accessory.type == "garageDoorOpener") {
+                if (theUrlParams.currentdoorstate != null) {
+                  var cachedDoorState = this.storage.getItemSync("http-webhook-current-door-state-" + accessoryId);
+                  if (cachedDoorState === undefined) {
+                    cachedDoorState = Characteristic.CurrentDoorState.OPEN;
+                  }
+                  this.storage.setItemSync("http-webhook-current-door-state-" + accessoryId, theUrlParams.currentdoorstate);
+                  if (cachedDoorState !== theUrlParams.currentdoorstate) {
+                    accessory.changeCurrentDoorHandler(theUrlParams.currentdoorstate);
+                  }
+                }
+                if (theUrlParams.targetdoorstate != null) {
+                  var cachedDoorState = this.storage.getItemSync("http-webhook-target-door-state-" + accessoryId);
+                  if (cachedDoorState === undefined) {
+                    cachedDoorState = Characteristic.TargetDoorState.CLOSED;
+                  }
+                  this.storage.setItemSync("http-webhook-target-door-state-" + accessoryId, theUrlParams.targetdoorstate);
+                  if (cachedDoorState !== theUrlParams.targetdoorstate) {
+                    accessory.changeTargetDoorStateHandler(theUrlParams.targetdoorstate);
+                  }
+                }
+                if (theUrlParams.obstructiondetected != null) {
+                  var cachedObstructionDetected = this.storage.getItemSync("http-webhook-obstruction-detected-" + accessoryId);
+                  if (cachedObstructionDetected === undefined) {
+                    cachedObstructionDetected = false;
+                  }
+                  this.storage.setItemSync("http-webhook-obstruction-detected-" + accessoryId, theUrlParams.obstructiondetected);
+                  if (cachedObstructionDetected !== theUrlParams.obstructiondetected) {
+                    accessory.changeObstructionDetectedHandler(theUrlParams.obstructiondetected);
                   }
                 }
                 responseBody = {
@@ -727,6 +769,127 @@ HttpWebHookThermostatAccessory.prototype.getCurrentHeatingCoolingState = functio
 HttpWebHookThermostatAccessory.prototype.getServices = function() {
   return [ this.service ];
 };
+
+function HttpWebHookOutletAccessory(log, outletConfig, storage) {
+  this.log = log;
+  this.id = outletConfig["id"];
+  this.name = outletConfig["name"];
+  this.type = "outlet";
+  this.onURL = outletConfig["on_url"] || "";
+  this.onMethod = outletConfig["on_method"] || "GET";
+  this.offURL = outletConfig["off_url"] || "";
+  this.offMethod = outletConfig["off_method"] || "GET";
+  this.storage = storage;
+
+  this.service = new Service.Outlet(this.name);
+  this.changeHandler = (function(newState) {
+    this.log("Change HomeKit state for outlet to '%s'.", newState);
+    this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+  this.changeHandlerInUse = (function(newState) {
+    this.log("Change HomeKit stateInUse for outlet to '%s'.", newState);
+    this.service.getCharacteristic(Characteristic.OutletInUse).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  }).bind(this);
+  this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+  this.service.getCharacteristic(Characteristic.OutletInUse).on('get', this.getStateInUse.bind(this));
+}
+
+
+function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, storage) {
+  this.log = log;
+  this.id = garageDoorOpenerConfig["id"];
+  this.name = garageDoorOpenerConfig["name"];
+  this.type = "garagedooropener";
+  this.setTargetDoorStateURL = garageDoorOpenerConfig["set_target_door_state_url"] || "";
+  this.setTargetDoorStateMethod = garageDoorOpenerConfig["set_target_door_state_method"] || "GET";
+  this.storage = storage;
+
+  this.service = new Service.GarageDoorOpener(this.name);
+  this.changeCurrentDoorStateHandler = (function(newState) {
+    if (newState) {
+      this.log("Change Current Door State for garage door opener to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }
+  }).bind(this);
+  this.changeTargetDoorStateHandler = (function(newState) {
+    if (newState) {
+      this.log("Change Target Door State for garage door opener to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }
+  }).bind(this);
+  this.changeObstructionDetectedHandler = (function(newState) {
+    if (newState) {
+      this.log("Change Obstruction Detected for garage door opener to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.ObstructionDetected).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }
+  }).bind(this);
+
+  this.service.getCharacteristic(Characteristic.TargetDoorState).on('get', this.getTargetDoorState.bind(this)).on('set', this.setTargetDoorState.bind(this));
+  this.service.getCharacteristic(Characteristic.CurrentDoorState).on('get', this.getCurrentDoorState.bind(this));
+  this.service.getCharacteristic(Characteristic.ObstructionDetected).on('get', this.getObstructionDetected.bind(this));
+}
+
+// Target Heating Cooling State
+HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(callback) {
+  this.log("Getting current Target Door State for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-target-door-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.TargetDoorState.CLOSED;
+  }
+  callback(null, state);
+};
+
+HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(newState, callback, context) {
+  this.log("Target Door State for '%s'...", this.id);
+  this.storage.setItemSync("http-webhook-target-door-state-" + this.id, newState);
+  var urlToCall = this.setTargetDoorStateURL.replace("%b", newState);
+  var urlMethod = this.setTargetDoorStateMethod;
+  if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+    request({
+      method : urlMethod,
+      url : urlToCall,
+      timeout : DEFAULT_REQUEST_TIMEOUT
+    }, (function(err, response, body) {
+      var statusCode = response && response.statusCode ? response.statusCode : -1;
+      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      if (!err && statusCode == 200) {
+        callback(null);
+      }
+      else {
+        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
+      }
+    }).bind(this));
+  }
+  else {
+    callback(null);
+  }
+};
+
+// Current Door State
+HttpWebHookGarageDoorOpenerAccessory.prototype.getCurrentDoorState = function(callback) {
+  this.log("Getting Current Door State for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-current-door-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.CurrentDoorState.OPEN;
+  }
+  callback(null, state);
+};
+
+// Obstruction Detected
+HttpWebHookGarageDoorOpenerAccessory.prototype.getObstructionDetected = function(callback) {
+  this.log("Getting Obstruction Detected for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-obstruction-detected-" + this.id);
+  if (state === undefined) {
+    state = false;
+  }
+  callback(null, state);
+};
+
+
+HttpWebHookGarageDoorOpenerAccessory.prototype.getServices = function() {
+  return [ this.service ];
+};
+
 
 function HttpWebHookOutletAccessory(log, outletConfig, storage) {
   this.log = log;
