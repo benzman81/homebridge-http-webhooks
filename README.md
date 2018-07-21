@@ -89,6 +89,12 @@ To update the state of security, you can update two different values:
 * Current state (Stay=0 / Away=1 / Night=2 / Disarmed=3 / Triggered=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
 * Target state (Stay=0 / Away=1 / Night=2 / Disarm=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
+# Garage Door opener
+To update a garage door opener you can update three different values:
+* Current door state (Open=0 / Closed=1 / Opening=2 / Closing=3 / Stopped=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
+* Target door state (Open=0 / Closed=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
+* Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
+
 # Configuration
 Example config.json:
 ```
@@ -191,6 +197,16 @@ Example config.json:
                     "set_state_method": "GET" // (optional)
                     }
                 ],
+                "garagedooropeners": [
+                    {
+                        "id": "garagedooropener1",
+                        "name": "Garage Door Opener name 1",
+                        "open_url" : "your url to open the garage door", // (optional)
+                        "open_method" : "GET", // (optional)
+                        "close_url" : "your url to close the garage door", // (optional)
+                        "close_method" : "GET" // (optional)
+                    }
+                ]
             }
         ]
     }
