@@ -778,7 +778,7 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.type = "garagedooropener";
   this.setTargetDoorStateOpenURL = garageDoorOpenerConfig["open_url"] || "";
   this.setTargetDoorStateCloseURL = garageDoorOpenerConfig["close_url"] || "";
-  this.setTargetDoorStateMethod = garageDoorOpenerConfig["set_target_door_state_method"] || "GET";  
+  this.setTargetDoorStateMethod = garageDoorOpenerConfig["open_close_method"] || "GET";  
   this.storage = storage;
 
   this.service = new Service.GarageDoorOpener(this.name);
