@@ -1,3 +1,9 @@
+### 0.0.39
+
+New features:
+
+  - Added Garage Door Opener accessory. (thanks to FlyingLemming).
+
 ### 0.0.38
 
 New features:
