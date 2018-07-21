@@ -178,7 +178,7 @@ HttpWebHooksPlatform.prototype = {
                   }
                   this.storage.setItemSync("http-webhook-current-door-state-" + accessoryId, theUrlParams.currentdoorstate);
                   if (cachedDoorState !== theUrlParams.currentdoorstate) {
-                    accessory.changeCurrentDoorHandler(theUrlParams.currentdoorstate);
+                    accessory.changeCurrentDoorStateHandler(theUrlParams.currentdoorstate);
                   }
                 }
                 if (theUrlParams.targetdoorstate != null) {
