@@ -81,11 +81,11 @@ To update a thermostat you can update four different values:
 * Current state (Off=0 / Heating=1 / Cooling=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
 * Target state (Off=0 / Heat=1 / Cool=2 / Auto=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
-#Stateless switch
+# Stateless switch
 Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger:
-Single press = 0
-Double press = 1
-Long press = 2
+* Single press = 0
+* Double press = 1
+* Long press = 2
 
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
 
