@@ -139,7 +139,7 @@ Example config.json:
                     "on_body": "{ 'on' : true }", // (optional only for POST and PUT)
                     "off_url": "your url to switch the switch off", // (optional)
                     "off_method": "GET" // (optional)
-                    "on_body": "{'on': true }" // (optional only for POST and PUT)
+                    "off_body": "{'on': false }" // (optional only for POST and PUT)
                     }
                 ],
                 "pushbuttons": [
@@ -179,20 +179,20 @@ Example config.json:
                     }
                 ],
                 "statelessswitches": [
-	            	{
-		            "id": "statelessswitch1",
-		            "name": "Stateless Switch 1",
-            		"buttons":[ //the buttons of the switch
-			            {
-            			"name": "Button1"
-			            },
-			            {
-			            "name": "Button2",
+                    {
+                    "id": "statelessswitch1",
+                    "name": "Stateless Switch 1",
+                    "buttons":[ //the buttons of the switch
+                        {
+                        "name": "Button1"
+                        },
+                        {
+                        "name": "Button2",
                         "double_press": false, //you can disable a type of action
                         "long_press": false
-			            }
-		            ]
-		        }
+                        }
+                    ]
+                }
             }
         ]
     }
