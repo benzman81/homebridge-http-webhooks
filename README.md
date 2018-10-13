@@ -95,6 +95,14 @@ To update a garage door opener you can update three different values:
 * Target door state (Open=0 / Closed=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetdoorstate=NEWVALUE`
 * Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&obstructiondetected=NEWVALUE`
 
+# Stateless switch
+Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger:
+* Single press = 0
+* Double press = 1
+* Long press = 2
+
+`http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
+
 # Configuration
 Example config.json:
 ```
@@ -149,8 +157,10 @@ Example config.json:
                     "name": "Switch name 1",
                     "on_url": "your url to switch the switch on", // (optional)
                     "on_method": "GET", // (optional)
+                    "on_body": "{ 'on' : true }", // (optional only for POST and PUT)
                     "off_url": "your url to switch the switch off", // (optional)
-                    "off_method": "GET" // (optional)
+                    "off_method": "GET", // (optional)
+                    "off_body": "{'on': false }" // (optional only for POST and PUT)
                     }
                 ],
                 "pushbuttons": [
@@ -206,7 +216,22 @@ Example config.json:
                         "close_url" : "your url to close the garage door", // (optional)
                         "close_method" : "GET" // (optional)
                     }
-                ]
+                ],
+                "statelessswitches": [
+                    {
+                    "id": "statelessswitch1",
+                    "name": "Stateless Switch 1",
+                    "buttons":[ //the buttons of the switch
+                        {
+                        "name": "Button1"
+                        },
+                        {
+                        "name": "Button2",
+                        "double_press": false, //you can disable a type of action
+                        "long_press": false
+                        }
+                    ]
+                }
             }
         ]
     }
