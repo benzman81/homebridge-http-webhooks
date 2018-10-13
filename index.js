@@ -22,6 +22,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSecurity", HttpWebHookSecurityAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookGarageDoorOpener", HttpWebHookGarageDoorOpenerAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookStatelessSwitch", HttpWebHookStatelessSwitchAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLockMechanism", HttpWebHookLockMechanismAccessory);
 };
 
 function HttpWebHooksPlatform(log, config) {
@@ -37,6 +38,7 @@ function HttpWebHooksPlatform(log, config) {
   this.security = config["security"] || [];
   this.garageDoorOpeners = config["garagedooropeners"] || [];
   this.statelessSwitches = config["statelessswitches"] || [];
+  this.lockMechanisms = config["lockmechanisms"] || [];
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
   this.storage = require('node-persist');
@@ -92,6 +94,10 @@ HttpWebHooksPlatform.prototype = {
     for (var i = 0; i < this.statelessSwitches.length; i++) {
         var statelessSwitchAccessory = new HttpWebHookStatelessSwitchAccessory(this.log, this.statelessSwitches[i], this.storage);
         accessories.push(statelessSwitchAccessory);
+    }
+    for (var i = 0; i < this.lockMechanisms.length; i++) {
+      var lockMechanismAccessory = new HttpWebHookLockMechanismAccessory(this.log, this.lockMechanisms[i], this.storage);
+      accessories.push(lockMechanismAccessory);
     }
 
     var accessoriesCount = accessories.length;
@@ -216,6 +222,35 @@ HttpWebHooksPlatform.prototype = {
                   obstruction : cachedObstructionDetected                  
                 };
               }
+              else if (accessory.type == "lockmechanism") {
+                if (theUrlParams.lockcurrentstate != null) {
+                  var cachedLockCurrentState = this.storage.getItemSync("http-webhook--lock-current-state-" + accessoryId);
+                  if (cachedLockCurrentState === undefined) {
+                    cachedLockCurrentState = Characteristic.LockCurrentState.SECURED;
+                  }
+                  this.storage.setItemSync("http-webhook-lock-current-state-" + accessoryId, theUrlParams.lockcurrentstate);
+                  if (cachedLockCurrentState !== theUrlParams.lockcurrentstate) {
+                    accessory.changeLockCurrentStateHandler(theUrlParams.lockcurrentstate);
+                  }
+                }
+                if (theUrlParams.locktargetstate != null) {
+                  var cachedLockTargetState = this.storage.getItemSync("http-webhook-lock-target-state-" + accessoryId);
+                  if (cachedLockTargetState === undefined) {
+                    cachedLockTargetState = Characteristic.LockTargetState.SECURED;
+                  }
+                  this.storage.setItemSync("http-webhook-lock-target-state-" + accessoryId, theUrlParams.locktargetstate);
+                  if (cachedLockTargetState !== theUrlParams.locktargetstate) {
+                    accessory.changeLockTargetStateHandler(theUrlParams.locktargetstate);
+                  }
+                }
+                responseBody = {
+                  success : true,
+                  currentState : cachedLockCurrentState,
+                  targetState : cachedLockTargetState
+                };
+              }
+              
+              
               else if (accessory.type == "security") {
                 if (theUrlParams.currentstate != null) {
                   var cachedState = this.storage.getItemSync("http-webhook-current-security-state-" + accessoryId);
@@ -994,6 +1029,91 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getObstructionDetected = function
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getServices = function() {
+  return [ this.service ];
+};
+
+function HttpWebHookLockMechanismAccessory(log, lockMechanismOpenerConfig, storage) {
+  this.log = log;
+  this.id = lockMechanismOpenerConfig["id"];
+  this.name = lockMechanismOpenerConfig["name"];
+  this.type = "lockmechanism";
+  this.setLockTargetStateOpenURL = lockMechanismOpenerConfig["open_url"] || "";
+  this.setLockTargetStateOpenMethod = lockMechanismOpenerConfig["open_method"] || "GET";  
+  this.setLockTargetStateCloseURL = lockMechanismOpenerConfig["close_url"] || "";
+  this.setLockTargetStateCloseMethod = lockMechanismOpenerConfig["close_method"] || "GET";  
+  this.storage = storage;
+
+  this.service = new Service.LockMechanism(this.name);
+  this.changeLockCurrentStateHandler = (function(newState) {
+    if (newState) {
+      this.log("Change Current Lock State for locking to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }
+  }).bind(this);
+  this.changeLockTargetStateHandler = (function(newState) {
+    if (newState) {
+      this.log("Change Target Lock State for locking to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }
+  }).bind(this);
+
+  this.service.getCharacteristic(Characteristic.LockTargetState).on('get', this.getLockTargetState.bind(this)).on('set', this.setLockTargetState.bind(this));
+  this.service.getCharacteristic(Characteristic.LockCurrentState).on('get', this.getLockCurrentState.bind(this));
+}
+
+// Target Lock State
+HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callback) {
+  this.log("Getting current Target Lock State for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-lock-target-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.LockTargetState.SECURED;
+  }
+  callback(null, state);
+};
+
+HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(newState, callback, context) {
+  this.log("Target Lock State for '%s'...", this.id);
+  this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, newState);
+  var urlToCall = this.setLockTargetStateCloseURL;
+  var urlMethod = this.setLockTargetStateCloseMethod;
+
+  if (newState == Characteristic.LockTargetState.OPEN) {
+    urlToCall = this.setLockTargetStateOpenURL;
+    urlMethod = this.setLockTargetStateOpenMethod;
+  }
+
+  if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+    request({
+      method : urlMethod,
+      url : urlToCall,
+      timeout : DEFAULT_REQUEST_TIMEOUT
+    }, (function(err, response, body) {
+      var statusCode = response && response.statusCode ? response.statusCode : -1;
+      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      if (!err && statusCode == 200) {
+        callback(null);
+      }
+      else {
+        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
+      }
+    }).bind(this));
+  }
+  else {
+    callback(null);
+  }
+};
+
+// Current Lock State
+HttpWebHookLockMechanismAccessory.prototype.getLockCurrentState = function(callback) {
+  this.log("Getting Current Lock State for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-lock-current-state-" + this.id);
+  if (state === undefined) {
+    state = Characteristic.LockCurrentState.SECURED;
+  }
+  callback(null, state);
+};
+
+HttpWebHookLockMechanismAccessory.prototype.getServices = function() {
   return [ this.service ];
 };
 
