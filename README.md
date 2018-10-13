@@ -103,6 +103,12 @@ Stateless switches requires 3 parameters accessoryId, buttonName and the event t
 
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
 
+# Lock mechanism
+To update a lock mechanism you can update two different values:
+
+Current lock state (unsecured=0 /secured=1 / jamned=2 /unknown=3 ): http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE
+Target lock state (unsecured=0 / secured=1): http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE
+
 # Configuration
 Example config.json:
 ```
@@ -233,7 +239,18 @@ Example config.json:
                         "long_press": false
                         }
                     ]
-                }
+                    }
+                ],
+                "lockmechanisms": [
+									{
+									"id": "doorlock1",
+									"name": "Door",
+									"open_url" : "your url to open the garage door", // (optional)
+									"open_method" : "GET",// (optional)
+									"close_url" : "your url to close the garage door", // (optional)
+									"close_method" : "GET"// (optional)
+									}
+							  ]
             }
         ]
     }
