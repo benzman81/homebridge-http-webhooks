@@ -1,3 +1,9 @@
+### 0.0.41
+
+New features:
+
+  - Added lock mechanism. (thanks to kaowiec).
+  
 ### 0.0.40
 
 New features:
