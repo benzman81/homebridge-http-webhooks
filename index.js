@@ -6,6 +6,7 @@ var Service, Characteristic;
 var DEFAULT_REQUEST_TIMEOUT = 10000;
 var CONTEXT_FROM_WEBHOOK = "fromHTTPWebhooks";
 var CONTEXT_FROM_TIMEOUTCALL = "fromTimeoutCall";
+var SENSOR_TIMEOUT = 5000;
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -20,6 +21,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookOutlet", HttpWebHookOutletAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSecurity", HttpWebHookSecurityAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookGarageDoorOpener", HttpWebHookGarageDoorOpenerAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookStatelessSwitch", HttpWebHookStatelessSwitchAccessory);
 };
 
 function HttpWebHooksPlatform(log, config) {
@@ -34,6 +36,7 @@ function HttpWebHooksPlatform(log, config) {
   this.outlets = config["outlets"] || [];
   this.security = config["security"] || [];
   this.garageDoorOpeners = config["garagedooropeners"] || [];
+  this.statelessSwitches = config["statelessswitches"] || [];
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
   this.storage = require('node-persist');
@@ -84,6 +87,11 @@ HttpWebHooksPlatform.prototype = {
     for (var i = 0; i < this.garageDoorOpeners.length; i++) {
       var garageDoorOpenerAccessory = new HttpWebHookGarageDoorOpenerAccessory(this.log, this.garageDoorOpeners[i], this.storage);
       accessories.push(garageDoorOpenerAccessory);
+    }
+
+    for (var i = 0; i < this.statelessSwitches.length; i++) {
+        var statelessSwitchAccessory = new HttpWebHookStatelessSwitchAccessory(this.log, this.statelessSwitches[i], this.storage);
+        accessories.push(statelessSwitchAccessory);
     }
 
     var accessoriesCount = accessories.length;
@@ -309,6 +317,18 @@ HttpWebHooksPlatform.prototype = {
                     accessory.changeHandler(stateBool);
                   }
                 }
+                else if (accessory.type == "statelessswitch") {
+                    if (theUrlParams.event && theUrlParams.event) {
+                        accessory.changeHandler(theUrlParams.buttonName, theUrlParams.event);
+                    }
+                }
+                else if((accessory.type == "motion" || accessory.type == "occupancy") && accessory.autoRelease){
+                    if (theUrlParams.state) {
+                      var state = theUrlParams.state;
+                      var stateBool = state === "true";  
+                        accessory.changeHandler(stateBool);
+                    }                
+                }
                 else {
                   var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedState === undefined) {
@@ -378,6 +398,11 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     this.changeHandler = (function(newState) {
       // this.log("Change HomeKit state for motion sensor to '%s'.", newState);
       this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+      if (this.autoRelease) {
+        setTimeout(function () {
+            this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
+        }.bind(this), SENSOR_TIMEOUT);
+      }
     }).bind(this);
     this.service.getCharacteristic(Characteristic.MotionDetected).on('get', this.getState.bind(this));
   }
@@ -387,6 +412,11 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       // this.log("Change HomeKit state for occupancy sensor to '%s'.",
       // newState);
       this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(newState ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
+      if (this.autoRelease) {
+        setTimeout(function () {
+            this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
+        }.bind(this), SENSOR_TIMEOUT);
+      }
     }).bind(this);
     this.service.getCharacteristic(Characteristic.OccupancyDetected).on('get', this.getState.bind(this));
   }
@@ -455,8 +485,10 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.name = switchConfig["name"];
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
+  this.onBody = switchConfig["on_body"] || "";
   this.offURL = switchConfig["off_url"] || "";
   this.offMethod = switchConfig["off_method"] || "GET";
+  this.offBody = switchConfig["off_body"] || "";
   this.storage = storage;
 
   this.service = new Service.Switch(this.name);
@@ -481,16 +513,24 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
   this.storage.setItemSync("http-webhook-" + this.id, powerOn);
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
+  var urlBody = this.onBody;
+  
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
+    urlBody = this.offBody;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
-      method : urlMethod,
-      url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+    var theRequest = {
+        method: urlMethod,
+        url: urlToCall,
+        timeout: DEFAULT_REQUEST_TIMEOUT,
+    };
+    if ((urlMethod === "POST" || urlMethod === "PUT") && urlBody) {
+      this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -508,6 +548,89 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {
   return [ this.service ];
+};
+
+function HttpWebHookStatelessSwitchAccessory(log, statelessSwitchConfig, storage) {
+    this.log = log;
+    this.id = statelessSwitchConfig["id"];
+    this.type = "statelessswitch";
+    this.name = statelessSwitchConfig["name"];
+    this.buttons = statelessSwitchConfig["buttons"] || [];
+
+    this.service = [];
+    for(var index=0; index< this.buttons.length; index ++){
+      var single_press = this.buttons[index]["single_press"] == undefined ? true : this.buttons[index]["single_press"];
+      var double_press = this.buttons[index]["double_press"] == undefined ? true : this.buttons[index]["double_press"];
+      var long_press = this.buttons[index]["long_press"] == undefined ? true : this.buttons[index]["long_press"];
+        var button = new Service.StatelessProgrammableSwitch(this.buttons[index].name, '' + index);
+        button.getCharacteristic(Characteristic.ProgrammableSwitchEvent).setProps(GetStatelessSwitchProps(single_press, double_press, long_press));
+        button.getCharacteristic(Characteristic.ServiceLabelIndex).setValue(index + 1);
+        this.service.push(button);
+    }
+    this.changeHandler = (function (buttonName, event) {
+          for(var index = 0; index < this.service.length; index++ ){
+            var serviceName = this.service[index].getCharacteristic(Characteristic.Name).value;
+            if (serviceName === buttonName) {
+                this.log("Pressing '%s' with event '%i'", buttonName, event)
+                this.service[index].getCharacteristic(Characteristic.ProgrammableSwitchEvent).updateValue(event, undefined, CONTEXT_FROM_WEBHOOK);
+            }
+        }
+    }).bind(this);
+};
+
+function GetStatelessSwitchProps(single_press, double_press, long_press) {
+    var props;
+    if (single_press && !double_press && !long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS
+        };
+    }
+    if (single_press && double_press && !long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS
+        };
+    }
+    if (single_press && !double_press && long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.LONG_PRESS,
+            validValues: [
+                 Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS,
+                 Characteristic.ProgrammableSwitchEvent.LONG_PRESS
+            ]
+        };
+    }
+    if (!single_press && double_press && !long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS
+        };
+    }
+    if (!single_press && double_press && long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.LONG_PRESS
+        };
+    }
+    if (!single_press && !double_press && long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.LONG_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.LONG_PRESS
+        };
+    }
+    if (single_press && double_press && long_press) {
+        props = {
+            minValue: Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS,
+            maxValue: Characteristic.ProgrammableSwitchEvent.LONG_PRESS
+        };
+    }
+    return props;
+}
+
+HttpWebHookStatelessSwitchAccessory.prototype.getServices = function () {
+    return this.service;
 };
 
 function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
