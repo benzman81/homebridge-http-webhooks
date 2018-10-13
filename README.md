@@ -27,10 +27,10 @@ To trigger a change of a boolean accessory you need to call the url `http://your
 For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact.
 
 ## Motion sensor
-For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion.
+For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released after 5 seconds.
 
 ## Occupancy sensor
-For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy.
+For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy. If `autoRelease` is used, than the state will be released after 5 seconds.
 
 ## Smoke sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
@@ -123,12 +123,14 @@ Example config.json:
                     {
                     "id": "sensor2",
                     "name": "Sensor name 2",
-                    "type": "motion"
+                    "type": "motion",
+                    "autoRelease": false // (optional)
                     },
                     {
                     "id": "sensor3",
                     "name": "Sensor name 3",
-                    "type": "occupancy"
+                    "type": "occupancy",
+                    "autoRelease": false // (optional)
                     },
                     {
                     "id": "sensor4",
