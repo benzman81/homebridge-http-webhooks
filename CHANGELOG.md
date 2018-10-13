@@ -1,3 +1,11 @@
+### 0.0.40
+
+New features:
+
+  - Added stateless switches. (thanks to BetoRn).
+  - Added request body support for POST and PUT request for switches. (thanks to BetoRn).
+  - Added auto release for motion and occupancy sensor. (thanks to BetoRn).
+
 ### 0.0.39
 
 New features:
