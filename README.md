@@ -71,6 +71,9 @@ To update a numeric accessory you need to call the url `http://yourHomebridgeSer
 ## Temperature sensor
 For temperature sensors the value for `NEWVALUE` is the new temperature reading.
 
+## Light sensor
+For light sensors the value for `NEWVALUE` is the new light intensity in lux (as float).
+
 ## Humidity sensor
 For humidity sensors the value for `NEWVALUE` is the new relative humidity percentage reading.
 

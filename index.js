@@ -277,7 +277,7 @@ HttpWebHooksPlatform.prototype = {
                 };
               }
               else {
-                if (accessory.type == "humidity" || accessory.type == "temperature" || accessory.type == "airquality") {
+                if (accessory.type == "humidity" || accessory.type == "temperature" || accessory.type == "airquality" || accessory.type == "light") {
                   var cachedValue = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedValue === undefined) {
                     cachedValue = 0;
@@ -486,6 +486,14 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       this.service.getCharacteristic(Characteristic.AirQuality).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }).bind(this);
     this.service.getCharacteristic(Characteristic.AirQuality).on('get', this.getState.bind(this));
+  } else if (this.type === "light") {
+    this.service = new Service.LightSensor(this.name);
+    this.changeHandler = (function(newState) {
+      newState=parseFloat(newState)
+      this.log("Change HomeKit value for light sensor to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }).bind(this);
+    this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel).on('get', this.getState.bind(this));
   }
 
 }
@@ -493,6 +501,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
 HttpWebHookSensorAccessory.prototype.getState = function(callback) {
   this.log("Getting current state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-" + this.id);
+  this.log("State for '%s' is '%s'", this.id,state);
   if (state === undefined) {
     state = false;
   }
@@ -504,6 +513,8 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
   }
   else if (this.type === "occupancy") {
     callback(null, state ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
+  } else if(this.type === "light") {
+    callback(null, parseFloat(state));
   }
   else {
     callback(null, state);
