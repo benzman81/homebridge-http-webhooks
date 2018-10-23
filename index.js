@@ -357,13 +357,6 @@ HttpWebHooksPlatform.prototype = {
                         accessory.changeHandler(theUrlParams.buttonName, theUrlParams.event);
                     }
                 }
-                else if((accessory.type == "motion" || accessory.type == "occupancy") && accessory.autoRelease){
-                    if (theUrlParams.state) {
-                      var state = theUrlParams.state;
-                      var stateBool = state === "true";  
-                        accessory.changeHandler(stateBool);
-                    }                
-                }
                 else {
                   var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedState === undefined) {
@@ -418,6 +411,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
   this.id = sensorConfig["id"];
   this.name = sensorConfig["name"];
   this.type = sensorConfig["type"];
+  this.autoRelease = sensorConfig["autoRelease"];
   this.storage = storage;
 
   if (this.type === "contact") {
@@ -435,6 +429,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
       if (this.autoRelease) {
         setTimeout(function () {
+            this.storage.setItemSync("http-webhook-" + this.id, false);
             this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
         }.bind(this), SENSOR_TIMEOUT);
       }
@@ -449,6 +444,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(newState ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
       if (this.autoRelease) {
         setTimeout(function () {
+            this.storage.setItemSync("http-webhook-" + this.id, false);
             this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
         }.bind(this), SENSOR_TIMEOUT);
       }
