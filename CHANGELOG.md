@@ -1,4 +1,14 @@
-### 0.0.41
+### 0.0.43
+
+New features:
+
+  - Added light sensor. (thanks to gorootde)
+
+Bugfix:
+
+  - Fixed auto release for motion and occupancy sensor. (thanks to kovalev-sergey)
+
+### 0.0.42
 
 New features:
 
