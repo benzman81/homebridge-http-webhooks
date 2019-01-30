@@ -1,3 +1,9 @@
+### 0.0.44
+
+Bugfix:
+
+  - Now a temperature sensor can handle negative values.
+
 ### 0.0.43
 
 New features:
