@@ -474,7 +474,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
     }).bind(this);
     this.service.getCharacteristic(Characteristic.CurrentTemperature).setProps({
       minValue : -100,
-      maxValue : 100
+      maxValue : 140
     }).on('get', this.getState.bind(this));
   }
   else if (this.type === "airquality") {
