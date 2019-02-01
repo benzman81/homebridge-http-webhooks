@@ -1080,6 +1080,8 @@ HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callba
 
 HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKitState, callback, context) {
   var doLock = homeKitState == Characteristic.LockTargetState.SECURED;
+  var newHomeKitState = doLock ? Characteristic.LockCurrentState.SECURED : Characteristic.LockCurrentState.UNSECURED;
+  var newHomeKitStateTarget = doLock ? Characteristic.LockTargetState.SECURED : Characteristic.LockTargetState.UNSECURED;
 
   this.log("Target Lock State for '%s' to '%s'...", this.id, doLock);
   this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, homeKitState);
@@ -1100,9 +1102,15 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
+        this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
+        this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
+        this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
         callback(null);
       }
       else {
+        this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, Characteristic.LockCurrentState.UNKNOWN);
+        this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
+        this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(Characteristic.LockCurrentState.UNKNOWN, undefined, null);
         callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
       }
     }).bind(this));
