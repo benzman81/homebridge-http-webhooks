@@ -1080,8 +1080,6 @@ HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callba
 
 HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKitState, callback, context) {
   var doLock = homeKitState == Characteristic.LockTargetState.SECURED;
-  var newHomeKitState = doLock ? Characteristic.LockCurrentState.SECURED : Characteristic.LockCurrentState.UNSECURED;
-  var newHomeKitStateTarget = doLock ? Characteristic.LockTargetState.SECURED : Characteristic.LockTargetState.UNSECURED;
 
   this.log("Target Lock State for '%s' to '%s'...", this.id, doLock);
   this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, homeKitState);
@@ -1101,8 +1099,6 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     }, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
-      this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
       if (!err && statusCode == 200) {
         callback(null);
       }
@@ -1112,8 +1108,6 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     }).bind(this));
   }
   else {
-    this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
-    this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
     callback(null);
   }
 };
