@@ -1,3 +1,45 @@
+### 0.0.45
+
+Bugfix:
+
+  - Fixed lock mechanism.
+
+### 0.0.44
+
+Bugfix:
+
+  - Now a temperature sensor can handle negative values.
+
+### 0.0.43
+
+New features:
+
+  - Added light sensor. (thanks to gorootde)
+
+Bugfix:
+
+  - Fixed auto release for motion and occupancy sensor. (thanks to kovalev-sergey)
+
+### 0.0.42
+
+New features:
+
+  - Updated dependency to request.
+
+### 0.0.41
+
+New features:
+
+  - Added lock mechanism. (thanks to kaowiec).
+  
+### 0.0.40
+
+New features:
+
+  - Added stateless switches. (thanks to BetoRn).
+  - Added request body support for POST and PUT request for switches. (thanks to BetoRn).
+  - Added auto release for motion and occupancy sensor. (thanks to BetoRn).
+
 ### 0.0.39
 
 New features:

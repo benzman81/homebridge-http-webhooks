@@ -859,19 +859,16 @@ function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
     this.log("Change current Temperature for thermostat to '%d'.", newTemp);
     this.service.getCharacteristic(Characteristic.CurrentTemperature).updateValue(newTemp, undefined, CONTEXT_FROM_WEBHOOK);
   }).bind(this);
-
   this.changeTargetTemperatureHandler = (function(newTemp) {
     this.log("Change target Temperature for thermostat to '%d'.", newTemp);
     this.service.getCharacteristic(Characteristic.TargetTemperature).updateValue(newTemp, undefined, CONTEXT_FROM_WEBHOOK);
   }).bind(this);
-
   this.changeCurrentHeatingCoolingStateHandler = (function(newState) {
     if (newState) {
       this.log("Change Current Heating Cooling State for thermostat to '%s'.", newState);
       this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }
   }).bind(this);
-
   this.changeTargetHeatingCoolingStateHandler = (function(newState) {
     if (newState) {
       this.log("Change Target Heating Cooling State for thermostat to '%s'.", newState);
