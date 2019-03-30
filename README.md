@@ -112,6 +112,15 @@ To update a lock mechanism you can update two different values:
 Current lock state (unsecured=0 /secured=1 / jamned=2 /unknown=3 ): http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE
 Target lock state (unsecured=0 / secured=1): http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE
 
+# Window Coverings
+To update a window coverings you can update three different values:
+* Current position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentposition=%s` (%s is repalced by coresponding current position)
+* Target position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetposition=%s` (%s is repalced by coresponding targret position)
+Seting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close  
+* Position State (Decreasing=0 / Increasing=1 / Stoped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
+
+
+
 # Configuration
 Example config.json:
 ```
@@ -243,6 +252,25 @@ Example config.json:
                         }
                     ]
                     }
+                ],
+                 "windowcoverings": 
+                [
+                    {
+                    "id": "windowcovering1",
+                    "name": "Some Window Cover",
+                    "open_url" : "http://your.url/to/open",
+                    "open_method" : "GET",
+                    "open_80_url" : "http://your.url/to/open80%",
+                    "open_80_method" : "GET",
+                    "open_60_url" : "http://your.url/to/open60%",
+                    "open_60_method" : "GET",
+                    "open_40_url" : "http://your.url/to/open40%",
+                    "open_40_method" : "GET",
+                    "open_20_url" : "http://your.url/to/open20%",
+                    "open_20_method" : "GET",
+                    "close_url" : "http://your.url/to/close",
+                    "close_method" : "GET"
+                     }
                 ],
                 "lockmechanisms": [
 									{
