@@ -1,3 +1,9 @@
+### 0.0.46
+
+New features:
+
+  - Added window coverings. (thanks to kaowiec)
+
 ### 0.0.45
 
 Bugfix:
