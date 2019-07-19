@@ -1,3 +1,9 @@
+### 0.0.47
+
+Bugfix:
+
+  - Fixed garage door spinning wheel visiable in homekit after action.
+
 ### 0.0.46
 
 New features:

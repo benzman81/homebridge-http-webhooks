@@ -226,7 +226,7 @@ HttpWebHooksPlatform.prototype = {
                 };
               }
               else if (accessory.type == "windowcovering") {
-                  if (theUrlParams.currentposition != null) {
+                if (theUrlParams.currentposition != null) {
                   var cachedCurrentPosition = this.storage.getItemSync("http-webhook-current-position-" + accessoryId);
                   if (cachedCurrentPosition === undefined) {
                     cachedCurrentPosition = 100;
@@ -258,10 +258,10 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success: true,
-                  CurrentPosition: cachedCurrentPosition,
-                  TargetPosition: cachedTargetPosition,
-                  PositionState: cachedPositionState
+                  success : true,
+                  CurrentPosition : cachedCurrentPosition,
+                  TargetPosition : cachedTargetPosition,
+                  PositionState : cachedPositionState
                 };
               }
               else if (accessory.type == "lockmechanism") {
@@ -880,7 +880,7 @@ function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
   this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState).on('get', this.getCurrentHeatingCoolingState.bind(this));
   this.service.getCharacteristic(Characteristic.TargetTemperature).on('get', this.getTargetTemperature.bind(this)).on('set', this.setTargetTemperature.bind(this));
   this.service.getCharacteristic(Characteristic.CurrentTemperature).on('get', this.getCurrentTemperature.bind(this));
- }
+}
 
 // TargetTemperature
 HttpWebHookThermostatAccessory.prototype.getTargetTemperature = function(callback) {
@@ -1027,11 +1027,15 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(cal
 HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(newState, callback, context) {
   this.log("Target Door State for '%s'...", this.id);
   this.storage.setItemSync("http-webhook-target-door-state-" + this.id, newState);
+
+  var doOpen = newState == Characteristic.TargetDoorState.OPEN;
+  var newHomeKitState = doOpen ? Characteristic.CurrentDoorState.OPEN : Characteristic.CurrentDoorState.CLOSED;
+  var newHomeKitStateTarget = doOpen ? Characteristic.TargetDoorState.OPEN : Characteristic.TargetDoorState.CLOSED;
   var urlToCall = this.setTargetDoorStateCloseURL;
   var urlMethod = this.setTargetDoorStateCloseMethod;
-  if (newState == Characteristic.TargetDoorState.OPEN) {
-    var urlToCall = this.setTargetDoorStateOpenURL;
-    var urlMethod = this.setTargetDoorStateOpenMethod;
+  if (doOpen) {
+    urlToCall = this.setTargetDoorStateOpenURL;
+    urlMethod = this.setTargetDoorStateOpenMethod;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
     request({
@@ -1042,6 +1046,8 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
+        this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newHomeKitStateTarget, undefined, null);
+        this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newHomeKitState, undefined, null);
         callback(null);
       }
       else {
@@ -1078,7 +1084,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getServices = function() {
   return [ this.service ];
 };
 
-//START WINDOW COVERING
+// START WINDOW COVERING
 
 function HttpWebHookWindowCoveringAccessory(log, windowcoveringConfig, storage) {
   this.log = log;
@@ -1099,18 +1105,18 @@ function HttpWebHookWindowCoveringAccessory(log, windowcoveringConfig, storage) 
   this.setTargetPositionCloseMethod = windowcoveringConfig["close_method"] || "GET";
   this.storage = storage;
   this.service = new Service.WindowCovering(this.name);
-  this.changeCurrentPositionHandler = (function (newState) {                                                                
-      this.log("Change Current Window Covering for covers to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.CurrentPosition).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+  this.changeCurrentPositionHandler = (function(newState) {
+    this.log("Change Current Window Covering for covers to '%s'.", newState);
+    this.service.getCharacteristic(Characteristic.CurrentPosition).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
   }).bind(this);
- //do tego moejsca 
-  this.changeTargetPositionHandler = (function (newState) {
+  // do tego moejsca
+  this.changeTargetPositionHandler = (function(newState) {
     if (newState) {
       this.log("Change Target Position for covers to '%s'.", newState);
       this.service.getCharacteristic(Characteristic.TargetPosition).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }
   }).bind(this);
-  this.changePositionStateHandler = (function (newState) {
+  this.changePositionStateHandler = (function(newState) {
     if (newState) {
       this.log("Change Position State for covers to '%s'.", newState);
       this.service.getCharacteristic(Characteristic.PositionState).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
@@ -1123,7 +1129,7 @@ function HttpWebHookWindowCoveringAccessory(log, windowcoveringConfig, storage) 
 }
 
 // Target Position
-HttpWebHookWindowCoveringAccessory.prototype.getTargetPosition = function (callback) {
+HttpWebHookWindowCoveringAccessory.prototype.getTargetPosition = function(callback) {
   this.log("Getting current Target Position for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-target-position-" + this.id);
   if (state === undefined) {
@@ -1132,7 +1138,7 @@ HttpWebHookWindowCoveringAccessory.prototype.getTargetPosition = function (callb
   callback(null, state);
 };
 
-HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function (newState, callback, context) {
+HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newState, callback, context) {
   this.log("Target Position State for '%s'...", this.id);
   this.log("newstate is: " + newState);
   this.storage.setItemSync("http-webhook-target-position-" + this.id, newState);
@@ -1164,10 +1170,10 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function (newSt
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
     request({
-      method: urlMethod,
-      url: urlToCall,
-      timeout: COVERS_REQUEST_TIMEOUT
-    }, (function (err, response, body) {
+      method : urlMethod,
+      url : urlToCall,
+      timeout : COVERS_REQUEST_TIMEOUT
+    }, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -1183,17 +1189,17 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function (newSt
   }
 };
 // Current Position
-HttpWebHookWindowCoveringAccessory.prototype.getCurrentPosition = function (callback) {
+HttpWebHookWindowCoveringAccessory.prototype.getCurrentPosition = function(callback) {
   this.log("Getting Current Position for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-position-" + this.id);
   if (state === undefined) {
-//    state = Characteristic.CurrentPosition = 100;
+    // state = Characteristic.CurrentPosition = 100;
     state = 100;
   }
   callback(null, state);
 };
 // Position State
-HttpWebHookWindowCoveringAccessory.prototype.getPositionState = function (callback) {
+HttpWebHookWindowCoveringAccessory.prototype.getPositionState = function(callback) {
   this.log("Getting position state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-position-state-" + this.id);
   if (state === undefined) {
@@ -1201,11 +1207,11 @@ HttpWebHookWindowCoveringAccessory.prototype.getPositionState = function (callba
   }
   callback(null, state);
 };
-HttpWebHookWindowCoveringAccessory.prototype.getServices = function () {
-  return [this.service];
+HttpWebHookWindowCoveringAccessory.prototype.getServices = function() {
+  return [ this.service ];
 };
 
-//END WINDOW COVERINGS
+// END WINDOW COVERINGS
 
 function HttpWebHookLockMechanismAccessory(log, lockMechanismOpenerConfig, storage) {
   this.log = log;
