@@ -1,3 +1,9 @@
+### 0.0.48
+
+Bugfix:
+
+  - Fixed security system spinning wheel in homekit after action.
+
 ### 0.0.47
 
 Bugfix:
