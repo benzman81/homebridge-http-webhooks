@@ -1430,7 +1430,6 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
-        this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).updateValue(newState, undefined, null);
         this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, null);
         callback(null);
       }
