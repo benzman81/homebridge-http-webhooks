@@ -182,12 +182,12 @@ Example config.json:
                     "name": "Switch name 1",
                     "on_url": "your url to switch the switch on", // (optional)
                     "on_method": "GET", // (optional)
-                    "on_body": "{ 'on' : true }", // (optional only for POST and PUT)
-                    "on_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}", // (optional)
+                    "on_body": "{ \"on\" : true }", // (optional only for POST and PUT)
+                    "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                     "off_url": "your url to switch the switch off", // (optional)
                     "off_method": "GET", // (optional)
-                    "off_body": "{'on': false }", // (optional only for POST and PUT)
-                    "off_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}" // (optional)
+                    "off_body": "{ \"on\": false }", // (optional only for POST and PUT)
+                    "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
                 "pushbuttons": [
@@ -222,12 +222,12 @@ Example config.json:
                     "name": "Outlet name 1",
                     "on_url": "your url to switch the outlet on", // (optional)
                     "on_method": "GET", // (optional)
-                    "on_body": "{ 'on' : true }", // (optional only for POST and PUT)
-                    "on_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}", // (optional)
+                    "on_body": "{ \"on\" : true }", // (optional only for POST and PUT)
+                    "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                     "off_url": "your url to switch the outlet off", // (optional)
                     "off_method": "GET", // (optional)
-                    "off_body": "{'on': false }", // (optional only for POST and PUT)
-                    "off_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}" // (optional)
+                    "off_body": "{ \"on\": false }", // (optional only for POST and PUT)
+                    "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
                 "security": [
