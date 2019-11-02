@@ -1320,12 +1320,12 @@ function HttpWebHookOutletAccessory(log, outletConfig, storage) {
   this.type = "outlet";
   this.onURL = outletConfig["on_url"] || "";
   this.onMethod = outletConfig["on_method"] || "GET";
-  this.onBody = switchConfig["on_body"] || "";
-  this.onHeaders = switchConfig["on_headers"] || "{}";
+  this.onBody = outletConfig["on_body"] || "";
+  this.onHeaders = outletConfig["on_headers"] || "{}";
   this.offURL = outletConfig["off_url"] || "";
   this.offMethod = outletConfig["off_method"] || "GET";
-  this.offBody = switchConfig["off_body"] || "";
-  this.offHeaders = switchConfig["off_headers"] || "{}";
+  this.offBody = outletConfig["off_body"] || "";
+  this.offHeaders = outletConfig["off_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.Outlet(this.name);
