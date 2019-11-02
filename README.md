@@ -183,9 +183,11 @@ Example config.json:
                     "on_url": "your url to switch the switch on", // (optional)
                     "on_method": "GET", // (optional)
                     "on_body": "{ 'on' : true }", // (optional only for POST and PUT)
+                    "on_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}", // (optional)
                     "off_url": "your url to switch the switch off", // (optional)
                     "off_method": "GET", // (optional)
                     "off_body": "{'on': false }" // (optional only for POST and PUT)
+                    "off_headers": "{'Authorization': 'Bearer ABCDEFGH', 'Content-Type': 'application/json'}", // (optional)
                     }
                 ],
                 "pushbuttons": [

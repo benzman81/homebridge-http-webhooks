@@ -574,9 +574,11 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
   this.onBody = switchConfig["on_body"] || "";
+  this.onHeaders = switchConfig["on_headers"] || "{}";
   this.offURL = switchConfig["off_url"] || "";
   this.offMethod = switchConfig["off_method"] || "GET";
   this.offBody = switchConfig["off_body"] || "";
+  this.offHeaders = switchConfig["off_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.Switch(this.name);
@@ -602,17 +604,20 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
   var urlBody = this.onBody;
+  var urlHeaders = this.onHeaders;
 
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
     urlBody = this.offBody;
+    urlHeaders = this.offHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
     var theRequest = {
       method : urlMethod,
       url : urlToCall,
       timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
     };
     if ((urlMethod === "POST" || urlMethod === "PUT") && urlBody) {
       this.log("Adding Body " + urlBody);

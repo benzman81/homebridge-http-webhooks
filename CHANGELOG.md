@@ -1,3 +1,9 @@
+### 0.0.49
+
+New features:
+
+  - You can now set custom headers for switches.
+
 ### 0.0.48
 
 Bugfix:
