@@ -3,6 +3,7 @@
 New features:
 
   - You can now set custom headers for switches.
+  - You can now set body and custom headers for outlets.
 
 ### 0.0.48
 
