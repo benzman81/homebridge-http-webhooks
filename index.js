@@ -899,8 +899,14 @@ function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
   this.type = "thermostat";
   this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
   this.setTargetTemperatureMethod = thermostatConfig["set_target_temperature_method"] || "GET";
+  this.setTargetTemperatureBody = thermostatConfig["set_target_temperature_body"] || "";
+  this.setTargetTemperatureForm = thermostatConfig["set_target_temperature_form"] || "";
+  this.setTargetTemperatureHeaders = thermostatConfig["set_target_temperature_headers"] || "{}";
   this.setTargetHeatingCoolingStateURL = thermostatConfig["set_target_heating_cooling_state_url"] || "";
   this.setTargetHeatingCoolingStateMethod = thermostatConfig["set_target_heating_cooling_state_method"] || "GET";
+  this.setTargetHeatingCoolingStateBody = thermostatConfig["set_target_heating_cooling_state_body"] || "";
+  this.setTargetHeatingCoolingStateForm = thermostatConfig["set_target_heating_cooling_state_form"] || "";
+  this.setTargetHeatingCoolingStateHeaders = thermostatConfig["set_target_heating_cooling_state_headers"] || "{}";
   this.storage = storage;
   this.service = new Service.Thermostat(this.name);
   this.changeCurrentTemperatureHandler = (function(newTemp) {
@@ -945,12 +951,27 @@ HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, c
   this.storage.setItemSync("http-webhook-target-temperature-" + this.id, temp);
   var urlToCall = this.setTargetTemperatureURL.replace("%f", temp);
   var urlMethod = this.setTargetTemperatureMethod;
+  var urlBody = this.setTargetTemperatureBody;
+  var urlForm = this.setTargetTemperatureForm;
+  var urlHeaders = this.setTargetTemperatureHeaders;
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -991,12 +1012,27 @@ HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function
   this.storage.setItemSync("http-webhook-target-heating-cooling-state-" + this.id, newState);
   var urlToCall = this.setTargetHeatingCoolingStateURL.replace("%b", newState);
   var urlMethod = this.setTargetHeatingCoolingStateMethod;
+  var urlBody = this.setTargetHeatingCoolingStateBody;
+  var urlForm = this.setTargetHeatingCoolingStateForm;
+  var urlHeaders = this.setTargetHeatingCoolingStateHeaders;
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
