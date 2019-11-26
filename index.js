@@ -730,6 +730,9 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
   this.name = pushButtonConfig["name"];
   this.pushURL = pushButtonConfig["push_url"] || "";
   this.pushMethod = pushButtonConfig["push_method"] || "GET";
+  this.pushBody = pushButtonConfig["push_body"] || "";
+  this.pushForm = pushButtonConfig["push_form"] || "";
+  this.pushHeaders = pushButtonConfig["push_headers"] || "{}";
 
   this.service = new Service.Switch(this.name);
   this.changeHandler = (function(newState) {
@@ -764,11 +767,27 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
   else {
     var urlToCall = this.pushURL;
     var urlMethod = this.pushMethod;
-    request({
+    var urlBody = this.pushBody;
+    var urlForm = this.pushForm;
+    var urlHeaders = this.pushHeaders;
+
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
