@@ -574,10 +574,12 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
   this.onBody = switchConfig["on_body"] || "";
+  this.onForm = switchConfig["on_form"] || "";
   this.onHeaders = switchConfig["on_headers"] || "{}";
   this.offURL = switchConfig["off_url"] || "";
   this.offMethod = switchConfig["off_method"] || "GET";
   this.offBody = switchConfig["off_body"] || "";
+  this.offForm = switchConfig["off_form"] || "";
   this.offHeaders = switchConfig["off_headers"] || "{}";
   this.storage = storage;
 
@@ -604,12 +606,14 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
   var urlBody = this.onBody;
+  var urlForm = this.onForm;
   var urlHeaders = this.onHeaders;
 
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
     urlBody = this.offBody;
+    urlForm = this.offForm;
     urlHeaders = this.offHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
@@ -619,9 +623,15 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
       timeout : DEFAULT_REQUEST_TIMEOUT,
       headers: JSON.parse(urlHeaders)
     };
-    if ((urlMethod === "POST" || urlMethod === "PUT") && urlBody) {
-      this.log("Adding Body " + urlBody);
-      theRequest.body = urlBody;
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
     }
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
@@ -1588,6 +1598,9 @@ function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
   this.type = "security";
   this.setStateURL = securityConfig["set_state_url"] || "";
   this.setStateMethod = securityConfig["set_state_method"] || "GET";
+  this.setStateBody = securityConfig["set_state_body"] || "";
+  this.setStateForm = securityConfig["set_state_form"] || "";
+  this.setStateHeaders = securityConfig["set_state_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.SecuritySystem(this.name);
@@ -1618,12 +1631,28 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
   this.storage.setItemSync("http-webhook-target-security-state-" + this.id, newState);
   var urlToCall = this.setStateURL.replace("%d", newState);
   var urlMethod = this.setStateMethod;
+  var urlBody = this.setStateBody;
+  var urlForm = this.setStateForm;
+  var urlHeaders = this.setStateHeaders;
+ 
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
