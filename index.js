@@ -1379,8 +1379,14 @@ function HttpWebHookLockMechanismAccessory(log, lockMechanismOpenerConfig, stora
   this.type = "lockmechanism";
   this.setLockTargetStateOpenURL = lockMechanismOpenerConfig["open_url"] || "";
   this.setLockTargetStateOpenMethod = lockMechanismOpenerConfig["open_method"] || "GET";
+  this.setLockTargetStateOpenBody = lockMechanismOpenerConfig["open_body"] || "";
+  this.setLockTargetStateOpenForm = lockMechanismOpenerConfig["open_form"] || "";
+  this.setLockTargetStateOpenHeaders = lockMechanismOpenerConfig["open_headers"] || "{}";
   this.setLockTargetStateCloseURL = lockMechanismOpenerConfig["close_url"] || "";
   this.setLockTargetStateCloseMethod = lockMechanismOpenerConfig["close_method"] || "GET";
+  this.setLockTargetStateCloseBody = lockMechanismOpenerConfig["close_body"] || "";
+  this.setLockTargetStateCloseForm = lockMechanismOpenerConfig["close_form"] || "";
+  this.setLockTargetStateCloseHeaders = lockMechanismOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.LockMechanism(this.name);
@@ -1420,18 +1426,36 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
   this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, homeKitState);
   var urlToCall = this.setLockTargetStateCloseURL;
   var urlMethod = this.setLockTargetStateCloseMethod;
+  var urlBody = this.setLockTargetStateCloseBody;
+  var urlForm = this.setLockTargetStateCloseForm;
+  var urlHeaders = this.setLockTargetStateCloseHeaders;
 
   if (!doLock) {
     urlToCall = this.setLockTargetStateOpenURL;
     urlMethod = this.setLockTargetStateOpenMethod;
+    urlBody = this.setLockTargetStateOpenBody;
+    urlForm = this.setLockTargetStateOpenForm;
+    urlHeaders = this.setLockTargetStateOpenHeaders;
   }
 
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
