@@ -1069,8 +1069,14 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.type = "garagedooropener";
   this.setTargetDoorStateOpenURL = garageDoorOpenerConfig["open_url"] || "";
   this.setTargetDoorStateOpenMethod = garageDoorOpenerConfig["open_method"] || "GET";
+  this.setTargetDoorStateOpenBody = garageDoorOpenerConfig["open_body"] || "";
+  this.setTargetDoorStateOpenForm = garageDoorOpenerConfig["open_form"] || "";
+  this.setTargetDoorStateOpenHeaders = garageDoorOpenerConfig["open_headers"] || "{}";
   this.setTargetDoorStateCloseURL = garageDoorOpenerConfig["close_url"] || "";
   this.setTargetDoorStateCloseMethod = garageDoorOpenerConfig["close_method"] || "GET";
+  this.setTargetDoorStateCloseBody = garageDoorOpenerConfig["close_body"] || "";
+  this.setTargetDoorStateCloseForm = garageDoorOpenerConfig["close_form"] || "";
+  this.setTargetDoorStateCloseHeaders = garageDoorOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.GarageDoorOpener(this.name);
@@ -1117,16 +1123,34 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
   var newHomeKitStateTarget = doOpen ? Characteristic.TargetDoorState.OPEN : Characteristic.TargetDoorState.CLOSED;
   var urlToCall = this.setTargetDoorStateCloseURL;
   var urlMethod = this.setTargetDoorStateCloseMethod;
+  var urlBody = this.setTargetDoorStateCloseBody;
+  var urlForm = this.setTargetDoorStateCloseForm;
+  var urlHeaders = this.setTargetDoorStateCloseHeaders;
   if (doOpen) {
     urlToCall = this.setTargetDoorStateOpenURL;
     urlMethod = this.setTargetDoorStateOpenMethod;
+    urlBody = this.setTargetDoorStateOpenBody;
+    urlForm = this.setTargetDoorStateOpenForm;
+    urlHeaders = this.setTargetDoorStateOpenHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
