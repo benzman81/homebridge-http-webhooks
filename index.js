@@ -813,8 +813,14 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.name = lightConfig["name"];
   this.onURL = lightConfig["on_url"] || "";
   this.onMethod = lightConfig["on_method"] || "GET";
+  this.onBody = lightConfig["on_body"] || "";
+  this.onForm = lightConfig["on_form"] || "";
+  this.onHeaders = lightConfig["on_headers"] || "{}";
   this.offURL = lightConfig["off_url"] || "";
   this.offMethod = lightConfig["off_method"] || "GET";
+  this.offBody = lightConfig["off_body"] || "";
+  this.offForm = lightConfig["off_form"] || "";
+  this.offHeaders = lightConfig["off_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.Lightbulb(this.name);
@@ -839,16 +845,34 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
   this.storage.setItemSync("http-webhook-" + this.id, powerOn);
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
+  var urlBody = this.onBody;
+  var urlForm = this.onForm;
+  var urlHeaders = this.onHeaders;
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
+    urlBody = this.offBody;
+    urlForm = this.offForm;
+    urlHeaders = this.offHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
