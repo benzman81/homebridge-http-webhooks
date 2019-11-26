@@ -1,3 +1,9 @@
+### 0.0.50
+
+New features:
+
+  - You can now set body, form and custom headers for switches, pushbuttons, lights, thermostats, garage door openers, window coverings, lock mechanism & security system. (by EddyK69)
+
 ### 0.0.49
 
 New features:
