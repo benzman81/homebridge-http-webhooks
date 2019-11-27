@@ -186,7 +186,7 @@ Example config.json:
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "off_url": "your url to switch the switch off", // (optional)
                         "off_method": "GET", // (optional)
-                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -196,7 +196,7 @@ Example config.json:
                         "name": "Push button name 1",
                         "push_url": "your url to be called on push", // (optional)
                         "push_method": "GET", // (optional)
-                        "push_body": "{ \"push\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "push_body": "{ \"push\": true }", // (optional only for POST and PUT; use "push_form" for x-www-form-urlencoded JSON)
                         "push_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -210,7 +210,7 @@ Example config.json:
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "off_url": "your url to switch the light off", // (optional)
                         "off_method": "GET", // (optional)
-                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -220,11 +220,11 @@ Example config.json:
                         "name": "Thermostat name 1",
                         "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
                         "set_target_temperature_method": "GET", // (optional)
-                        "set_target_temperature_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "set_target_temperature_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "set_target_temperature_form" for x-www-form-urlencoded JSON)
                         "set_target_temperature_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "set_target_heating_cooling_state_url": "http://127.0.0.1/thermostatscript.php?targetstate=%b",     // %b is replaced by the target state
                         "set_target_heating_cooling_state_method": "GET", // (optional)
-                        "set_target_heating_cooling_state_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "set_target_heating_cooling_state_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "set_target_heating_cooling_state_form" for x-www-form-urlencoded JSON)
                         "set_target_heating_cooling_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -238,7 +238,7 @@ Example config.json:
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "off_url": "your url to switch the outlet off", // (optional)
                         "off_method": "GET", // (optional)
-                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -248,7 +248,7 @@ Example config.json:
                         "name": "Security System",
                         "set_state_url": "http://localhost/security/mode/%d", // %d is replaced by the target state
                         "set_state_method": "GET", // (optional)
-                        "set_state_body": "{ \"on\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "set_state_body": "{ \"on\": true }", // (optional only for POST and PUT; use "set_state_form" for x-www-form-urlencoded JSON)
                         "set_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -258,11 +258,11 @@ Example config.json:
                         "name": "Garage Door Opener name 1",
                         "open_url" : "your url to open the garage door", // (optional)
                         "open_method" : "GET", // (optional)
-                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "close_url" : "your url to close the garage door", // (optional)
                         "close_method" : "GET", // (optional)
-                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
@@ -288,27 +288,27 @@ Example config.json:
                         "name": "Some Window Cover",
                         "open_url" : "http://your.url/to/open",
                         "open_method" : "GET", // (optional)
-                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "open_80_url" : "http://your.url/to/open80%",
                         "open_80_method" : "GET", // (optional)
-                        "open_80_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_80_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_80_form" for x-www-form-urlencoded JSON)
                         "open_80_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "open_60_url" : "http://your.url/to/open60%",
                         "open_60_method" : "GET", // (optional)
-                        "open_60_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_60_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_60_form" for x-www-form-urlencoded JSON)
                         "open_60_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "open_40_url" : "http://your.url/to/open40%",
                         "open_40_method" : "GET", // (optional)
-                        "open_40_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_40_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_40_form" for x-www-form-urlencoded JSON)
                         "open_40_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "open_20_url" : "http://your.url/to/open20%",
                         "open_20_method" : "GET", // (optional)
-                        "open_20_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_20_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_20_form" for x-www-form-urlencoded JSON)
                         "open_20_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "close_url" : "http://your.url/to/close",
                         "close_method" : "GET", // (optional)
-                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                      }
                 ],
@@ -318,11 +318,11 @@ Example config.json:
                         "name": "Door",
                         "open_url" : "your url to open the garage door", // (optional)
                         "open_method" : "GET",// (optional)
-                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "close_url" : "your url to close the garage door", // (optional)
                         "close_method" : "GET", // (optional)
-                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
+                        "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ]
