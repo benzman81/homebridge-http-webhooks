@@ -574,10 +574,12 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
   this.onBody = switchConfig["on_body"] || "";
+  this.onForm = switchConfig["on_form"] || "";
   this.onHeaders = switchConfig["on_headers"] || "{}";
   this.offURL = switchConfig["off_url"] || "";
   this.offMethod = switchConfig["off_method"] || "GET";
   this.offBody = switchConfig["off_body"] || "";
+  this.offForm = switchConfig["off_form"] || "";
   this.offHeaders = switchConfig["off_headers"] || "{}";
   this.storage = storage;
 
@@ -604,12 +606,14 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
   var urlBody = this.onBody;
+  var urlForm = this.onForm;
   var urlHeaders = this.onHeaders;
 
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
     urlBody = this.offBody;
+    urlForm = this.offForm;
     urlHeaders = this.offHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
@@ -619,9 +623,15 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
       timeout : DEFAULT_REQUEST_TIMEOUT,
       headers: JSON.parse(urlHeaders)
     };
-    if ((urlMethod === "POST" || urlMethod === "PUT") && urlBody) {
-      this.log("Adding Body " + urlBody);
-      theRequest.body = urlBody;
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
     }
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
@@ -730,6 +740,9 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
   this.name = pushButtonConfig["name"];
   this.pushURL = pushButtonConfig["push_url"] || "";
   this.pushMethod = pushButtonConfig["push_method"] || "GET";
+  this.pushBody = pushButtonConfig["push_body"] || "";
+  this.pushForm = pushButtonConfig["push_form"] || "";
+  this.pushHeaders = pushButtonConfig["push_headers"] || "{}";
 
   this.service = new Service.Switch(this.name);
   this.changeHandler = (function(newState) {
@@ -764,11 +777,27 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
   else {
     var urlToCall = this.pushURL;
     var urlMethod = this.pushMethod;
-    request({
+    var urlBody = this.pushBody;
+    var urlForm = this.pushForm;
+    var urlHeaders = this.pushHeaders;
+
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -794,8 +823,14 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.name = lightConfig["name"];
   this.onURL = lightConfig["on_url"] || "";
   this.onMethod = lightConfig["on_method"] || "GET";
+  this.onBody = lightConfig["on_body"] || "";
+  this.onForm = lightConfig["on_form"] || "";
+  this.onHeaders = lightConfig["on_headers"] || "{}";
   this.offURL = lightConfig["off_url"] || "";
   this.offMethod = lightConfig["off_method"] || "GET";
+  this.offBody = lightConfig["off_body"] || "";
+  this.offForm = lightConfig["off_form"] || "";
+  this.offHeaders = lightConfig["off_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.Lightbulb(this.name);
@@ -820,16 +855,34 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
   this.storage.setItemSync("http-webhook-" + this.id, powerOn);
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;
+  var urlBody = this.onBody;
+  var urlForm = this.onForm;
+  var urlHeaders = this.onHeaders;
   if (!powerOn) {
     urlToCall = this.offURL;
     urlMethod = this.offMethod;
+    urlBody = this.offBody;
+    urlForm = this.offForm;
+    urlHeaders = this.offHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -856,8 +909,14 @@ function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
   this.type = "thermostat";
   this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
   this.setTargetTemperatureMethod = thermostatConfig["set_target_temperature_method"] || "GET";
+  this.setTargetTemperatureBody = thermostatConfig["set_target_temperature_body"] || "";
+  this.setTargetTemperatureForm = thermostatConfig["set_target_temperature_form"] || "";
+  this.setTargetTemperatureHeaders = thermostatConfig["set_target_temperature_headers"] || "{}";
   this.setTargetHeatingCoolingStateURL = thermostatConfig["set_target_heating_cooling_state_url"] || "";
   this.setTargetHeatingCoolingStateMethod = thermostatConfig["set_target_heating_cooling_state_method"] || "GET";
+  this.setTargetHeatingCoolingStateBody = thermostatConfig["set_target_heating_cooling_state_body"] || "";
+  this.setTargetHeatingCoolingStateForm = thermostatConfig["set_target_heating_cooling_state_form"] || "";
+  this.setTargetHeatingCoolingStateHeaders = thermostatConfig["set_target_heating_cooling_state_headers"] || "{}";
   this.storage = storage;
   this.service = new Service.Thermostat(this.name);
   this.changeCurrentTemperatureHandler = (function(newTemp) {
@@ -902,12 +961,27 @@ HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, c
   this.storage.setItemSync("http-webhook-target-temperature-" + this.id, temp);
   var urlToCall = this.setTargetTemperatureURL.replace("%f", temp);
   var urlMethod = this.setTargetTemperatureMethod;
+  var urlBody = this.setTargetTemperatureBody;
+  var urlForm = this.setTargetTemperatureForm;
+  var urlHeaders = this.setTargetTemperatureHeaders;
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -948,12 +1022,27 @@ HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function
   this.storage.setItemSync("http-webhook-target-heating-cooling-state-" + this.id, newState);
   var urlToCall = this.setTargetHeatingCoolingStateURL.replace("%b", newState);
   var urlMethod = this.setTargetHeatingCoolingStateMethod;
+  var urlBody = this.setTargetHeatingCoolingStateBody;
+  var urlForm = this.setTargetHeatingCoolingStateForm;
+  var urlHeaders = this.setTargetHeatingCoolingStateHeaders;
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) {
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      }
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -990,8 +1079,14 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.type = "garagedooropener";
   this.setTargetDoorStateOpenURL = garageDoorOpenerConfig["open_url"] || "";
   this.setTargetDoorStateOpenMethod = garageDoorOpenerConfig["open_method"] || "GET";
+  this.setTargetDoorStateOpenBody = garageDoorOpenerConfig["open_body"] || "";
+  this.setTargetDoorStateOpenForm = garageDoorOpenerConfig["open_form"] || "";
+  this.setTargetDoorStateOpenHeaders = garageDoorOpenerConfig["open_headers"] || "{}";
   this.setTargetDoorStateCloseURL = garageDoorOpenerConfig["close_url"] || "";
   this.setTargetDoorStateCloseMethod = garageDoorOpenerConfig["close_method"] || "GET";
+  this.setTargetDoorStateCloseBody = garageDoorOpenerConfig["close_body"] || "";
+  this.setTargetDoorStateCloseForm = garageDoorOpenerConfig["close_form"] || "";
+  this.setTargetDoorStateCloseHeaders = garageDoorOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.GarageDoorOpener(this.name);
@@ -1038,16 +1133,34 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
   var newHomeKitStateTarget = doOpen ? Characteristic.TargetDoorState.OPEN : Characteristic.TargetDoorState.CLOSED;
   var urlToCall = this.setTargetDoorStateCloseURL;
   var urlMethod = this.setTargetDoorStateCloseMethod;
+  var urlBody = this.setTargetDoorStateCloseBody;
+  var urlForm = this.setTargetDoorStateCloseForm;
+  var urlHeaders = this.setTargetDoorStateCloseHeaders;
   if (doOpen) {
     urlToCall = this.setTargetDoorStateOpenURL;
     urlMethod = this.setTargetDoorStateOpenMethod;
+    urlBody = this.setTargetDoorStateOpenBody;
+    urlForm = this.setTargetDoorStateOpenForm;
+    urlHeaders = this.setTargetDoorStateOpenHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -1098,16 +1211,34 @@ function HttpWebHookWindowCoveringAccessory(log, windowcoveringConfig, storage) 
   this.type = "windowcovering";
   this.setTargetPositionOpenURL = windowcoveringConfig["open_url"] || "";
   this.setTargetPositionOpenMethod = windowcoveringConfig["open_method"] || "GET";
+  this.setTargetPositionOpenBody = windowcoveringConfig["open_body"] || "";
+  this.setTargetPositionOpenForm = windowcoveringConfig["open_form"] || "";
+  this.setTargetPositionOpenHeaders = windowcoveringConfig["open_headers"] || "{}";
   this.setTargetPositionOpen20URL = windowcoveringConfig["open_20_url"] || "";
   this.setTargetPositionOpen20Method = windowcoveringConfig["open_20_method"] || "GET";
+  this.setTargetPositionOpen20Body = windowcoveringConfig["open_20_body"] || "";
+  this.setTargetPositionOpen20Form = windowcoveringConfig["open_20_form"] || "";
+  this.setTargetPositionOpen20Headers = windowcoveringConfig["open_20_headers"] || "{}";
   this.setTargetPositionOpen40URL = windowcoveringConfig["open_40_url"] || "";
   this.setTargetPositionOpen40Method = windowcoveringConfig["open_40_method"] || "GET";
+  this.setTargetPositionOpen40Body = windowcoveringConfig["open_40_body"] || "";
+  this.setTargetPositionOpen40Form = windowcoveringConfig["open_40_form"] || "";
+  this.setTargetPositionOpen40Headers = windowcoveringConfig["open_40_headers"] || "{}";
   this.setTargetPositionOpen60URL = windowcoveringConfig["open_60_url"] || "";
   this.setTargetPositionOpen60Method = windowcoveringConfig["open_60_method"] || "GET";
+  this.setTargetPositionOpen60Body = windowcoveringConfig["open_60_body"] || "";
+  this.setTargetPositionOpen60Form = windowcoveringConfig["open_60_form"] || "";
+  this.setTargetPositionOpen60Headers = windowcoveringConfig["open_60_headers"] || "{}";
   this.setTargetPositionOpen80URL = windowcoveringConfig["open_80_url"] || "";
   this.setTargetPositionOpen80Method = windowcoveringConfig["open_80_method"] || "GET";
+  this.setTargetPositionOpen80Body = windowcoveringConfig["open_80_body"] || "";
+  this.setTargetPositionOpen80Form = windowcoveringConfig["open_80_form"] || "";
+  this.setTargetPositionOpen80Headers = windowcoveringConfig["open_80_headers"] || "{}";
   this.setTargetPositionCloseURL = windowcoveringConfig["close_url"] || "";
   this.setTargetPositionCloseMethod = windowcoveringConfig["close_method"] || "GET";
+  this.setTargetPositionCloseBody = windowcoveringConfig["close_body"] || "";
+  this.setTargetPositionCloseForm = windowcoveringConfig["close_form"] || "";
+  this.setTargetPositionCloseHeaders = windowcoveringConfig["close_headers"] || "{}";
   this.storage = storage;
   this.service = new Service.WindowCovering(this.name);
   this.changeCurrentPositionHandler = (function(newState) {
@@ -1149,36 +1280,69 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newSta
   this.storage.setItemSync("http-webhook-target-position-" + this.id, newState);
   var urlToCall = this.setTargetPositionCloseURL;
   var urlMethod = this.setTargetPositionCloseMethod;
+  var urlBody = this.setTargetPositionCloseBody;
+  var urlForm = this.setTargetPositionCloseForm;
+  var urlHeaders = this.setTargetPositionCloseHeaders;
   if (newState === 0) {
     urlToCall = this.setTargetPositionOpenURL;
     urlMethod = this.setTargetPositionOpenMethod;
+    urlBody = this.setTargetPositionOpenBody;
+    urlForm = this.setTargetPositionOpenForm;
+    urlHeaders = this.setTargetPositionOpenHeaders;
   }
   if (newState >= 1 && newState <= 25) {
     urlToCall = this.setTargetPositionOpen20URL;
     urlMethod = this.setTargetPositionOpen20Method;
+    urlBody = this.setTargetPositionOpen20Body;
+    urlForm = this.setTargetPositionOpen20Form;
+    urlHeaders = this.setTargetPositionOpen20Headers;
   }
   if (newState >= 26 && newState <= 45) {
     urlToCall = this.setTargetPositionOpen40URL;
     urlMethod = this.setTargetPositionOpen40Method;
+    urlBody = this.setTargetPositionOpen40Body;
+    urlForm = this.setTargetPositionOpen40Form;
+    urlHeaders = this.setTargetPositionOpen40Headers;
   }
   if (newState >= 46 && newState <= 65) {
     urlToCall = this.setTargetPositionOpen60URL;
     urlMethod = this.setTargetPositionOpen60Method;
+    urlBody = this.setTargetPositionOpen60Body;
+    urlForm = this.setTargetPositionOpen60Form;
+    urlHeaders = this.setTargetPositionOpen60Headers;
   }
   if (newState >= 66 && newState <= 94) {
     urlToCall = this.setTargetPositionOpen80URL;
     urlMethod = this.setTargetPositionOpen80Method;
+    urlBody = this.setTargetPositionOpen80Body;
+    urlForm = this.setTargetPositionOpen80Form;
+    urlHeaders = this.setTargetPositionOpen80Headers;
   }
   if (newState >= 95) {
     urlToCall = this.setTargetPositionCloseURL;
     urlMethod = this.setTargetPositionCloseMethod;
+    urlBody = this.setTargetPositionCloseBody;
+    urlForm = this.setTargetPositionCloseForm;
+    urlHeaders = this.setTargetPositionCloseHeaders;
   }
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : COVERS_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : COVERS_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -1225,8 +1389,14 @@ function HttpWebHookLockMechanismAccessory(log, lockMechanismOpenerConfig, stora
   this.type = "lockmechanism";
   this.setLockTargetStateOpenURL = lockMechanismOpenerConfig["open_url"] || "";
   this.setLockTargetStateOpenMethod = lockMechanismOpenerConfig["open_method"] || "GET";
+  this.setLockTargetStateOpenBody = lockMechanismOpenerConfig["open_body"] || "";
+  this.setLockTargetStateOpenForm = lockMechanismOpenerConfig["open_form"] || "";
+  this.setLockTargetStateOpenHeaders = lockMechanismOpenerConfig["open_headers"] || "{}";
   this.setLockTargetStateCloseURL = lockMechanismOpenerConfig["close_url"] || "";
   this.setLockTargetStateCloseMethod = lockMechanismOpenerConfig["close_method"] || "GET";
+  this.setLockTargetStateCloseBody = lockMechanismOpenerConfig["close_body"] || "";
+  this.setLockTargetStateCloseForm = lockMechanismOpenerConfig["close_form"] || "";
+  this.setLockTargetStateCloseHeaders = lockMechanismOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.LockMechanism(this.name);
@@ -1266,18 +1436,36 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
   this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, homeKitState);
   var urlToCall = this.setLockTargetStateCloseURL;
   var urlMethod = this.setLockTargetStateCloseMethod;
+  var urlBody = this.setLockTargetStateCloseBody;
+  var urlForm = this.setLockTargetStateCloseForm;
+  var urlHeaders = this.setLockTargetStateCloseHeaders;
 
   if (!doLock) {
     urlToCall = this.setLockTargetStateOpenURL;
     urlMethod = this.setLockTargetStateOpenMethod;
+    urlBody = this.setLockTargetStateOpenBody;
+    urlForm = this.setLockTargetStateOpenForm;
+    urlHeaders = this.setLockTargetStateOpenHeaders;
   }
 
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
@@ -1410,6 +1598,9 @@ function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
   this.type = "security";
   this.setStateURL = securityConfig["set_state_url"] || "";
   this.setStateMethod = securityConfig["set_state_method"] || "GET";
+  this.setStateBody = securityConfig["set_state_body"] || "";
+  this.setStateForm = securityConfig["set_state_form"] || "";
+  this.setStateHeaders = securityConfig["set_state_headers"] || "{}";
   this.storage = storage;
 
   this.service = new Service.SecuritySystem(this.name);
@@ -1440,12 +1631,28 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
   this.storage.setItemSync("http-webhook-target-security-state-" + this.id, newState);
   var urlToCall = this.setStateURL.replace("%d", newState);
   var urlMethod = this.setStateMethod;
+  var urlBody = this.setStateBody;
+  var urlForm = this.setStateForm;
+  var urlHeaders = this.setStateHeaders;
+ 
   if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
-    request({
+    var theRequest = {
       method : urlMethod,
       url : urlToCall,
-      timeout : DEFAULT_REQUEST_TIMEOUT
-    }, (function(err, response, body) {
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        this.log("Adding Form " + urlForm);
+        theRequest.form = JSON.parse(urlForm);
+      } 
+      else if (urlBody) {
+        this.log("Adding Body " + urlBody);
+        theRequest.body = urlBody;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode == 200) {
