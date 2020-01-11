@@ -1,3 +1,9 @@
+### 0.0.51
+
+Bugfix:
+
+  - Return valid Json in webhook (thanks to mshulman)
+
 ### 0.0.50
 
 New features:

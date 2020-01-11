@@ -15,8 +15,8 @@ To retrieve the current state you need to call the url `http://yourHomebridgeSer
 The returned JSON format is:
 ```
     {
-        success: true,
-        state: cachedState
+        "success": true,
+        "state": cachedState
     }
 ```
 
