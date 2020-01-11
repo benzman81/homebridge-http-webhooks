@@ -136,7 +136,7 @@ HttpWebHooksPlatform.prototype = {
         }
         else {
           var responseBody = {
-            success : true
+            "success" : true
           };
           var accessoryId = theUrlParams.accessoryId;
           for (var i = 0; i < accessoriesCount; i++) {
@@ -184,7 +184,7 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true
+                  "success" : true
                 };
               }
               else if (accessory.type == "garagedooropener") {
@@ -219,10 +219,10 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true,
-                  currentState : cachedCurrentDoorState,
-                  targetState : cachedTargetDoorState,
-                  obstruction : cachedObstructionDetected
+                  "success" : true,
+                  "currentState" : cachedCurrentDoorState,
+                  "targetState" : cachedTargetDoorState,
+                  "obstruction" : cachedObstructionDetected
                 };
               }
               else if (accessory.type == "windowcovering") {
@@ -258,10 +258,10 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true,
-                  CurrentPosition : cachedCurrentPosition,
-                  TargetPosition : cachedTargetPosition,
-                  PositionState : cachedPositionState
+                  "success" : true,
+                  "CurrentPosition" : cachedCurrentPosition,
+                  "TargetPosition" : cachedTargetPosition,
+                  "PositionState" : cachedPositionState
                 };
               }
               else if (accessory.type == "lockmechanism") {
@@ -286,9 +286,9 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true,
-                  currentState : cachedLockCurrentState,
-                  targetState : cachedLockTargetState
+                  "success" : true,
+                  "currentState" : cachedLockCurrentState,
+                  "targetState" : cachedLockTargetState
                 };
               }
 
@@ -314,7 +314,7 @@ HttpWebHooksPlatform.prototype = {
                   }
                 }
                 responseBody = {
-                  success : true
+                  "success" : true
                 };
               }
               else {
@@ -325,8 +325,8 @@ HttpWebHooksPlatform.prototype = {
                   }
                   if (!theUrlParams.value) {
                     responseBody = {
-                      success : true,
-                      state : cachedValue
+                      "success" : true,
+                      "state" : cachedValue
                     };
                   }
                   else {
@@ -348,9 +348,9 @@ HttpWebHooksPlatform.prototype = {
                   }
                   if (!theUrlParams.state && !theUrlParams.stateOutletInUse) {
                     responseBody = {
-                      success : true,
-                      state : cachedState,
-                      stateOutletInUse : cachedStateInUse
+                      "success" : true,
+                      "state" : cachedState,
+                      "stateOutletInUse" : cachedStateInUse
                     };
                   }
                   else {
@@ -381,8 +381,8 @@ HttpWebHooksPlatform.prototype = {
                 else if (accessory.type == "pushbutton") {
                   if (!theUrlParams.state) {
                     responseBody = {
-                      success : true,
-                      state : cachedState
+                      "success" : true,
+                      "state" : cachedState
                     };
                   }
                   else {
@@ -405,8 +405,8 @@ HttpWebHooksPlatform.prototype = {
                   }
                   if (!theUrlParams.state) {
                     responseBody = {
-                      success : true,
-                      state : cachedState
+                      "success" : true,
+                      "state" : cachedState
                     };
                   }
                   else {
