@@ -24,13 +24,13 @@ The returned JSON format is:
 To trigger a change of a boolean accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
 
 ## Contact sensor
-For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact.
+For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, than the state will be released after `autoReleaseTime`, if not set 5 seconds.
 
 ## Motion sensor
-For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released after 5 seconds.
+For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Occupancy sensor
-For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy. If `autoRelease` is used, than the state will be released after 5 seconds.
+For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Smoke sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
@@ -136,19 +136,23 @@ Example config.json:
                     {
                         "id": "sensor1",
                         "name": "Sensor name 1",
-                        "type": "contact"
+                        "type": "contact",
+                        "autoRelease": false, // (optional)
+                        "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor2",
                         "name": "Sensor name 2",
                         "type": "motion",
-                        "autoRelease": false // (optional)
+                        "autoRelease": false, // (optional)
+                        "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor3",
                         "name": "Sensor name 3",
                         "type": "occupancy",
-                        "autoRelease": false // (optional)
+                        "autoRelease": false, // (optional)
+                        "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor4",

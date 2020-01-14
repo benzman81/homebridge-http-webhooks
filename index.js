@@ -7,7 +7,7 @@ var DEFAULT_REQUEST_TIMEOUT = 10000;
 var COVERS_REQUEST_TIMEOUT = 35000;
 var CONTEXT_FROM_WEBHOOK = "fromHTTPWebhooks";
 var CONTEXT_FROM_TIMEOUTCALL = "fromTimeoutCall";
-var SENSOR_TIMEOUT = 5000;
+var DEFAULT_SENSOR_TIMEOUT = 5000;
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -453,13 +453,20 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
   this.name = sensorConfig["name"];
   this.type = sensorConfig["type"];
   this.autoRelease = sensorConfig["autoRelease"];
+  this.autoReleaseTime = sensorConfig["autoReleaseTime"] || DEFAULT_SENSOR_TIMEOUT;
   this.storage = storage;
 
   if (this.type === "contact") {
     this.service = new Service.ContactSensor(this.name);
     this.changeHandler = (function(newState) {
-      this.log("Change HomeKit state for contact sensor to '%s'.", newState);
+      //this.log("Change HomeKit state for contact sensor to '%s'.", newState);
       this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
+      if (this.autoRelease) {
+        setTimeout(function() {
+          this.storage.setItemSync("http-webhook-" + this.id, false);
+          this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
+        }.bind(this), this.autoReleaseTime);
+      }
     }).bind(this);
     this.service.getCharacteristic(Characteristic.ContactSensorState).on('get', this.getState.bind(this));
   }
@@ -472,7 +479,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         setTimeout(function() {
           this.storage.setItemSync("http-webhook-" + this.id, false);
           this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(false, undefined, CONTEXT_FROM_TIMEOUTCALL);
-        }.bind(this), SENSOR_TIMEOUT);
+        }.bind(this), this.autoReleaseTime);
       }
     }).bind(this);
     this.service.getCharacteristic(Characteristic.MotionDetected).on('get', this.getState.bind(this));
@@ -487,7 +494,7 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
         setTimeout(function() {
           this.storage.setItemSync("http-webhook-" + this.id, false);
           this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
-        }.bind(this), SENSOR_TIMEOUT);
+        }.bind(this), this.autoReleaseTime);
       }
     }).bind(this);
     this.service.getCharacteristic(Characteristic.OccupancyDetected).on('get', this.getState.bind(this));

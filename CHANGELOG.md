@@ -1,3 +1,9 @@
+### 0.0.52
+
+New features:
+
+  - Added auto release for contact sensor. Added auto release time to contact, motion, and occupancy sensor.
+
 ### 0.0.51
 
 Bugfix:
