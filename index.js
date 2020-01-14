@@ -463,8 +463,8 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(newState ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_WEBHOOK);
       if (this.autoRelease) {
         setTimeout(function() {
-          this.storage.setItemSync("http-webhook-" + this.id, false);
-          this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
+          this.storage.setItemSync("http-webhook-" + this.id, true);
+          this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_DETECTED, undefined, CONTEXT_FROM_TIMEOUTCALL);
         }.bind(this), this.autoReleaseTime);
       }
     }).bind(this);
