@@ -1,3 +1,9 @@
+### 0.0.53
+
+Bugfix:
+
+  - Added ReadMe about cache directory.
+
 ### 0.0.52
 
 New features:
