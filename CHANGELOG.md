@@ -2,7 +2,7 @@
 
 New features:
 
-  - You can now secure the webhook server using a self signed ssl certificate.
+  - You can now secure the webhook server using a self signed ssl certificate (beta state).
 
 ### 0.0.54
 
