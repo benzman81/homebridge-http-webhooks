@@ -1,5 +1,6 @@
 var request = require("request");
 var http = require('http');
+var https = require('https');
 var url = require('url');
 var auth = require('http-auth');
 var Service, Characteristic;
@@ -8,6 +9,7 @@ var COVERS_REQUEST_TIMEOUT = 35000;
 var CONTEXT_FROM_WEBHOOK = "fromHTTPWebhooks";
 var CONTEXT_FROM_TIMEOUTCALL = "fromTimeoutCall";
 var DEFAULT_SENSOR_TIMEOUT = 5000;
+var CERT_DAYS = 365;
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -44,6 +46,7 @@ function HttpWebHooksPlatform(log, config) {
   this.lockMechanisms = config["lockmechanisms"] || [];
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
+  this.https = config["https"] === true;
   this.storage = require('node-persist');
   this.storage.initSync({
     dir : this.cacheDirectory
@@ -106,6 +109,31 @@ HttpWebHooksPlatform.prototype = {
     var accessoriesCount = accessories.length;
 
     callback(accessories);
+    
+    var serverOptions = {};
+    if(this.https) {
+      var cachedSSLCert = this.storage.getItemSync("http-webhook-ssl-cert");
+      if(cachedSSLCert) {
+        var timestamp = Date.now() - cachedSSLCert.timestamp;
+        var diffInDays = timestamp/1000/60/60/24;
+        if(diffInDays > CERT_DAYS - 1) {
+          cachedSSLCert = null;
+        }
+      }
+      if(!cachedSSLCert) {
+        var selfsigned = require('selfsigned');
+        var certAttrs = [{ name: 'homebridgeHttpWebhooks', value: 'homebridgeHttpWebhooks.com' , type: 'homebridgeHttpWebhooks'}];
+        var pems = selfsigned.generate(certAttrs, { days: CERT_DAYS });
+        cachedSSLCert = pems;
+        cachedSSLCert.timestamp = Date.now();
+        this.storage.setItemSync("http-webhook-ssl-cert", cachedSSLCert);
+      }
+
+      serverOptions = {
+          key: cachedSSLCert.private,
+          cert: cachedSSLCert.cert
+      };
+    }
 
     var createServerCallback = (function(request, response) {
       var theUrl = request.url;
@@ -438,10 +466,20 @@ HttpWebHooksPlatform.prototype = {
       }, function(username, password, callback) {
         callback(username === httpAuthUser && password === httpAuthPass);
       });
-      http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      if(this.https) {
+        https.createServer(basicAuth, serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      }
+      else {
+        http.createServer(basicAuth, serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      }
     }
     else {
-      http.createServer(createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      if(this.https) {
+        https.createServer(serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      }
+      else {
+        http.createServer(serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+      }
     }
     this.log("Started server for webhooks on port '%s'.", this.webhookPort);
   }

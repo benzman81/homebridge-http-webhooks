@@ -1,3 +1,9 @@
+### 0.0.55
+
+New features:
+
+  - You can now secure the webhook server using a self signed ssl certificate.
+
 ### 0.0.54
 
 Bugfix:

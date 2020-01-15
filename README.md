@@ -132,6 +132,7 @@ Example config.json:
                 "cache_directory": "./.node-persist/storage", // (optional, default: "./.node-persist/storage")
                 "http_auth_user": "test", // (optional, only if you like to secure your api)
                 "http_auth_pass": "test", // (optional, only if you like to secure your api)
+                "https": true, // (optional, only if you like to secure your api using a selfsigned ssl certificate)
                 "sensors": [
                     {
                         "id": "sensor1",
