@@ -334,3 +334,6 @@ Example config.json:
         ]
     }
 ```
+
+## Cache directory storage (cache_directory)
+The cache directory is used to cache the state of the accessories. It must point to a **valid** and **empty** directory and the user that runs homebridge must have **write access**.
