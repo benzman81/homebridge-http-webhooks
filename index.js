@@ -110,7 +110,7 @@ HttpWebHooksPlatform.prototype = {
 
     callback(accessories);
     
-    var serverOptions = {};
+    var sslServerOptions = {};
     if(this.https) {
       var cachedSSLCert = this.storage.getItemSync("http-webhook-ssl-cert");
       if(cachedSSLCert) {
@@ -129,7 +129,7 @@ HttpWebHooksPlatform.prototype = {
         this.storage.setItemSync("http-webhook-ssl-cert", cachedSSLCert);
       }
 
-      serverOptions = {
+      sslServerOptions = {
           key: cachedSSLCert.private,
           cert: cachedSSLCert.cert
       };
@@ -467,18 +467,18 @@ HttpWebHooksPlatform.prototype = {
         callback(username === httpAuthUser && password === httpAuthPass);
       });
       if(this.https) {
-        https.createServer(basicAuth, serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        https.createServer(basicAuth, sslServerOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
       }
       else {
-        http.createServer(basicAuth, serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, "0.0.0.0");
       }
     }
     else {
       if(this.https) {
-        https.createServer(serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        https.createServer(sslServerOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
       }
       else {
-        http.createServer(serverOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        http.createServer(createServerCallback).listen(this.webhookPort, "0.0.0.0");
       }
     }
     this.log("Started server for webhooks on port '%s'.", this.webhookPort);

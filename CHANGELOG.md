@@ -1,3 +1,9 @@
+### 0.0.56
+
+Bugfix:
+
+  - Webhooks didn't work anymore. Please update.
+
 ### 0.0.55
 
 New features:
