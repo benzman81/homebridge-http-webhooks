@@ -132,7 +132,9 @@ Example config.json:
                 "cache_directory": "./.node-persist/storage", // (optional, default: "./.node-persist/storage")
                 "http_auth_user": "test", // (optional, only if you like to secure your api)
                 "http_auth_pass": "test", // (optional, only if you like to secure your api)
-                "https": true, // (beta state, optional, only if you like to secure your api using a selfsigned ssl certificate)
+                "https": true, // (beta state, optional, only if you like to secure your api using ssl certificate)
+                "https_keyfile": "/pathToKeyFile/server.key", // (beta state, optional, only if you like to secure your api using ssl certificate)
+                "https_certfile": "/pathToKeyFile/server.cert", // (beta state, optional, only if you like to secure your api using ssl certificate)
                 "sensors": [
                     {
                         "id": "sensor1",
@@ -338,3 +340,8 @@ Example config.json:
 
 ## Cache directory storage (cache_directory)
 The cache directory is used to cache the state of the accessories. It must point to a **valid** and **empty** directory and the user that runs homebridge must have **write access**.
+
+## HTTPS
+If you want to create a secure connection for the webhooks you need to enable it by setting *https* to true. Then a self signed 
+ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl
+certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.

@@ -1,3 +1,11 @@
+### 0.0.57
+
+New features:
+
+  - Added subjectAltName to generated SSL cert.
+  - Support SSL certificate update if code changes by using a version number.
+  - Support own SSL certificates using properties httpsKeyFile and httpsCertFile.
+
 ### 0.0.56
 
 Bugfix:

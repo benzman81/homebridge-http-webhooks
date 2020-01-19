@@ -3,12 +3,14 @@ var http = require('http');
 var https = require('https');
 var url = require('url');
 var auth = require('http-auth');
+var fs = require('fs')
 var Service, Characteristic;
 var DEFAULT_REQUEST_TIMEOUT = 10000;
 var COVERS_REQUEST_TIMEOUT = 35000;
 var CONTEXT_FROM_WEBHOOK = "fromHTTPWebhooks";
 var CONTEXT_FROM_TIMEOUTCALL = "fromTimeoutCall";
 var DEFAULT_SENSOR_TIMEOUT = 5000;
+var CERT_VERSION = 2;
 var CERT_DAYS = 365;
 
 module.exports = function(homebridge) {
@@ -47,6 +49,8 @@ function HttpWebHooksPlatform(log, config) {
   this.httpAuthUser = config["http_auth_user"] || null;
   this.httpAuthPass = config["http_auth_pass"] || null;
   this.https = config["https"] === true;
+  this.httpsKeyFile = config["https_keyfile"];
+  this.httpsCertFile = config["https_certfile"];
   this.storage = require('node-persist');
   this.storage.initSync({
     dir : this.cacheDirectory
@@ -112,27 +116,50 @@ HttpWebHooksPlatform.prototype = {
     
     var sslServerOptions = {};
     if(this.https) {
-      var cachedSSLCert = this.storage.getItemSync("http-webhook-ssl-cert");
-      if(cachedSSLCert) {
-        var timestamp = Date.now() - cachedSSLCert.timestamp;
-        var diffInDays = timestamp/1000/60/60/24;
-        if(diffInDays > CERT_DAYS - 1) {
-          cachedSSLCert = null;
+      if(!this.httpsKeyFile || !this.httpsCertFile) {
+        this.log("Using automatic created ssl certificate.");
+        var cachedSSLCert = this.storage.getItemSync("http-webhook-ssl-cert");
+        if(cachedSSLCert) {
+          var certVersion = cachedSSLCert.certVersion;
+          var timestamp = Date.now() - cachedSSLCert.timestamp;
+          var diffInDays = timestamp/1000/60/60/24;
+          if(diffInDays > CERT_DAYS - 1 || certVersion !== CERT_VERSION) {
+            cachedSSLCert = null;
+          }
         }
-      }
-      if(!cachedSSLCert) {
-        var selfsigned = require('selfsigned');
-        var certAttrs = [{ name: 'homebridgeHttpWebhooks', value: 'homebridgeHttpWebhooks.com' , type: 'homebridgeHttpWebhooks'}];
-        var pems = selfsigned.generate(certAttrs, { days: CERT_DAYS });
-        cachedSSLCert = pems;
-        cachedSSLCert.timestamp = Date.now();
-        this.storage.setItemSync("http-webhook-ssl-cert", cachedSSLCert);
-      }
+        if(!cachedSSLCert) {
+          this.log("Generating new ssl certificate.");
+          var selfsigned = require('selfsigned');
+          var certAttrs = [{ name: 'homebridgeHttpWebhooks', value: 'homebridgeHttpWebhooks.com' , type: 'homebridgeHttpWebhooks'}];
+          var certOpts = { days: CERT_DAYS};
+          certOpts.extensions = [{
+            name: 'subjectAltName',
+            altNames: [{
+                    type: 2,
+                    value: 'homebridgeHttpWebhooks.com'
+            }, {
+                    type: 2,
+                    value: 'localhost'
+            }]
+          }];
+          var pems = selfsigned.generate(certAttrs, certOpts);
+          cachedSSLCert = pems;
+          cachedSSLCert.timestamp = Date.now();
+          cachedSSLCert.certVersion = CERT_VERSION;
+          this.storage.setItemSync("http-webhook-ssl-cert", cachedSSLCert);
+        }
 
-      sslServerOptions = {
-          key: cachedSSLCert.private,
-          cert: cachedSSLCert.cert
-      };
+        sslServerOptions = {
+            key: cachedSSLCert.private,
+            cert: cachedSSLCert.cert
+        };
+      }
+      else {
+        sslServerOptions = {
+            key: fs.readFileSync(this.httpsKeyFile),
+            cert: fs.readFileSync(this.httpsCertFile)
+        };
+      }
     }
 
     var createServerCallback = (function(request, response) {
