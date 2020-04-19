@@ -1,3 +1,9 @@
+### 0.0.58
+
+New features:
+
+  - Set Manufacturer, Model and SerialNumber to address issue with Eve App v4.2+ (https://github.com/homebridge/homebridge/issues/2503)
+
 ### 0.0.57
 
 New features:

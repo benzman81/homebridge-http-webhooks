@@ -520,6 +520,11 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
   this.autoRelease = sensorConfig["autoRelease"];
   this.autoReleaseTime = sensorConfig["autoReleaseTime"] || DEFAULT_SENSOR_TIMEOUT;
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSensorAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSensorAccessory-"+this.id);
 
   if (this.type === "contact") {
     this.service = new Service.ContactSensor(this.name);
@@ -636,7 +641,7 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
 };
 
 HttpWebHookSensorAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
@@ -654,6 +659,11 @@ function HttpWebHookSwitchAccessory(log, switchConfig, storage) {
   this.offForm = switchConfig["off_form"] || "";
   this.offHeaders = switchConfig["off_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSwitchAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSwitchAccessory-"+this.id);
 
   this.service = new Service.Switch(this.name);
   this.changeHandler = (function(newState) {
@@ -722,7 +732,7 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
 };
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookStatelessSwitchAccessory(log, statelessSwitchConfig, storage) {
@@ -751,6 +761,12 @@ function HttpWebHookStatelessSwitchAccessory(log, statelessSwitchConfig, storage
       }
     }
   }).bind(this);
+  
+  var informationService = new Service.AccessoryInformation();
+  informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  informationService.setCharacteristic(Characteristic.Model, "HttpWebHookStatelessSwitchAccessory-"+this.name);
+  informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookStatelessSwitchAccessory-"+this.id);
+  this.service.push(informationService);
 };
 
 function GetStatelessSwitchProps(single_press, double_press, long_press) {
@@ -815,6 +831,11 @@ function HttpWebHookPushButtonAccessory(log, pushButtonConfig, storage) {
   this.pushBody = pushButtonConfig["push_body"] || "";
   this.pushForm = pushButtonConfig["push_form"] || "";
   this.pushHeaders = pushButtonConfig["push_headers"] || "{}";
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookPushButtonAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookPushButtonAccessory-"+this.id);
 
   this.service = new Service.Switch(this.name);
   this.changeHandler = (function(newState) {
@@ -886,7 +907,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
 };
 
 HttpWebHookPushButtonAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookLightAccessory(log, lightConfig, storage) {
@@ -904,6 +925,11 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.offForm = lightConfig["off_form"] || "";
   this.offHeaders = lightConfig["off_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookLightAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookLightAccessory-"+this.id);
 
   this.service = new Service.Lightbulb(this.name);
   this.changeHandler = (function(newState) {
@@ -971,7 +997,7 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
 };
 
 HttpWebHookLightAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
@@ -990,6 +1016,12 @@ function HttpWebHookThermostatAccessory(log, thermostatConfig, storage) {
   this.setTargetHeatingCoolingStateForm = thermostatConfig["set_target_heating_cooling_state_form"] || "";
   this.setTargetHeatingCoolingStateHeaders = thermostatConfig["set_target_heating_cooling_state_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookThermostatAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookThermostatAccessory-"+this.id);
+  
   this.service = new Service.Thermostat(this.name);
   this.changeCurrentTemperatureHandler = (function(newTemp) {
     this.log("Change current Temperature for thermostat to '%d'.", newTemp);
@@ -1141,7 +1173,7 @@ HttpWebHookThermostatAccessory.prototype.getCurrentHeatingCoolingState = functio
 };
 
 HttpWebHookThermostatAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, storage) {
@@ -1160,6 +1192,11 @@ function HttpWebHookGarageDoorOpenerAccessory(log, garageDoorOpenerConfig, stora
   this.setTargetDoorStateCloseForm = garageDoorOpenerConfig["close_form"] || "";
   this.setTargetDoorStateCloseHeaders = garageDoorOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookGarageDoorOpenerAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookGarageDoorOpenerAccessory-"+this.id);
 
   this.service = new Service.GarageDoorOpener(this.name);
   this.changeCurrentDoorStateHandler = (function(newState) {
@@ -1271,7 +1308,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getObstructionDetected = function
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 // START WINDOW COVERING
@@ -1312,6 +1349,12 @@ function HttpWebHookWindowCoveringAccessory(log, windowcoveringConfig, storage) 
   this.setTargetPositionCloseForm = windowcoveringConfig["close_form"] || "";
   this.setTargetPositionCloseHeaders = windowcoveringConfig["close_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookWindowCoveringAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookWindowCoveringAccessory-"+this.id);
+  
   this.service = new Service.WindowCovering(this.name);
   this.changeCurrentPositionHandler = (function(newState) {
     this.log("Change Current Window Covering for covers to '%s'.", newState);
@@ -1449,7 +1492,7 @@ HttpWebHookWindowCoveringAccessory.prototype.getPositionState = function(callbac
   callback(null, state);
 };
 HttpWebHookWindowCoveringAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 // END WINDOW COVERINGS
@@ -1471,6 +1514,11 @@ function HttpWebHookLockMechanismAccessory(log, lockMechanismOpenerConfig, stora
   this.setLockTargetStateCloseHeaders = lockMechanismOpenerConfig["close_headers"] || "{}";
   this.storage = storage;
 
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookLockMechanismAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookLockMechanismAccessory-"+this.id);
+  
   this.service = new Service.LockMechanism(this.name);
   this.changeLockCurrentStateHandler = (function(newState) {
     if (newState) {
@@ -1570,7 +1618,7 @@ HttpWebHookLockMechanismAccessory.prototype.getLockCurrentState = function(callb
 };
 
 HttpWebHookLockMechanismAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookOutletAccessory(log, outletConfig, storage) {
@@ -1587,6 +1635,11 @@ function HttpWebHookOutletAccessory(log, outletConfig, storage) {
   this.offBody = outletConfig["off_body"] || "";
   this.offHeaders = outletConfig["off_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookOutletAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookOutletAccessory-"+this.id);
 
   this.service = new Service.Outlet(this.name);
   this.changeHandler = (function(newState) {
@@ -1660,7 +1713,7 @@ HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, cont
 };
 
 HttpWebHookOutletAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
 
 function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
@@ -1674,6 +1727,11 @@ function HttpWebHookSecurityAccessory(log, securityConfig, storage) {
   this.setStateForm = securityConfig["set_state_form"] || "";
   this.setStateHeaders = securityConfig["set_state_headers"] || "{}";
   this.storage = storage;
+  
+  this.informationService = new Service.AccessoryInformation();
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSecurityAccessory-"+this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSecurityAccessory-"+this.id);
 
   this.service = new Service.SecuritySystem(this.name);
   this.changeCurrentStateHandler = (function(newState) {
@@ -1751,5 +1809,5 @@ HttpWebHookSecurityAccessory.prototype.getCurrentSecurityState = function(callba
 };
 
 HttpWebHookSecurityAccessory.prototype.getServices = function() {
-  return [ this.service ];
+  return [ this.service, this.informationService ];
 };
