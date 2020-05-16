@@ -373,7 +373,7 @@ HttpWebHooksPlatform.prototype = {
                 };
               }
               else {
-                if (accessory.type == "humidity" || accessory.type == "temperature" || accessory.type == "airquality" || accessory.type == "light") {
+                if (accessory.type == "leak" || accessory.type == "humidity" || accessory.type == "temperature" || accessory.type == "airquality" || accessory.type == "light") {
                   var cachedValue = this.storage.getItemSync("http-webhook-" + accessoryId);
                   if (cachedValue === undefined) {
                     cachedValue = 0;
@@ -612,6 +612,14 @@ function HttpWebHookSensorAccessory(log, sensorConfig, storage) {
       this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
     }).bind(this);
     this.service.getCharacteristic(Characteristic.CurrentAmbientLightLevel).on('get', this.getState.bind(this));
+  }
+ else if (this.type === "leak") {
+    this.service = new Service.LeakSensor(this.name);
+    this.changeHandler = (function(newState) {
+      this.log("Change HomeKit value for Leak sensor to '%s'.", newState);
+      this.service.getCharacteristic(Characteristic.LeakDetected).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    }).bind(this);
+    this.service.getCharacteristic(Characteristic.LeakDetected).on('get', this.getState.bind(this));
   }
 
 }
