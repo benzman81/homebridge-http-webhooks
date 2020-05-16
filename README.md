@@ -185,6 +185,11 @@ Example config.json:
                         "id": "sensor8",
                         "name": "Sensor name 8",
                         "type": "light"
+                    },
+                    {
+                        "id": "sensor9",
+                        "name": "Sensor name 8",
+                        "type": "leak"
                     }
                 ],
                 "switches": [
