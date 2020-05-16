@@ -188,7 +188,7 @@ Example config.json:
                     },
                     {
                         "id": "sensor9",
-                        "name": "Sensor name 8",
+                        "name": "Sensor name 9",
                         "type": "leak"
                     }
                 ],
