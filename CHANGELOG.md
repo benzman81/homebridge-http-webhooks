@@ -2,7 +2,7 @@
 
 New features:
 
-  - Added Leak Sensor
+  - Added Leak Sensor (thanks to RamSet)
 
 ### 0.0.58
 
