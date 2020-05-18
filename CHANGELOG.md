@@ -1,3 +1,9 @@
+### 0.0.59
+
+New features:
+
+  - Added Leak Sensor
+
 ### 0.0.58
 
 New features:
