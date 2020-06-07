@@ -753,7 +753,7 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -928,7 +928,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1029,7 +1029,7 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1092,7 +1092,7 @@ HttpWebHookLightAccessory.prototype.setBrightness = function(brightness, callbac
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1201,7 +1201,7 @@ HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, c
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1262,7 +1262,7 @@ HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1385,7 +1385,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newHomeKitStateTarget, undefined, null);
         this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newHomeKitState, undefined, null);
         callback(null);
@@ -1573,7 +1573,7 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newSta
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1701,7 +1701,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
         this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
         this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
@@ -1812,7 +1812,7 @@ HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, cont
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         callback(null);
       }
       else {
@@ -1898,7 +1898,7 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
       this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode == 200) {
+      if (!err && statusCode >= 200 && statusCode < 300) {
         this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, null);
         callback(null);
       }

@@ -1,3 +1,9 @@
+### 0.0.61
+
+Bugfix:
+
+  - Now all http status codes >= 200 && < 300 are treated as success.
+
 ### 0.0.60
 
 New features:
