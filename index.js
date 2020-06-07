@@ -346,7 +346,6 @@ HttpWebHooksPlatform.prototype = {
                   "targetState" : cachedLockTargetState
                 };
               }
-
               else if (accessory.type == "security") {
                 if (theUrlParams.currentstate != null) {
                   var cachedState = this.storage.getItemSync("http-webhook-current-security-state-" + accessoryId);
@@ -451,6 +450,34 @@ HttpWebHooksPlatform.prototype = {
                 else if (accessory.type == "statelessswitch") {
                   if (theUrlParams.event && theUrlParams.event) {
                     accessory.changeHandler(theUrlParams.buttonName, theUrlParams.event);
+                  }
+                }
+                else if (accessory.type == "lightbulb") {
+                  var cachedState = this.storage.getItemSync("http-webhook-" + accessoryId);
+                  if (cachedState === undefined) {
+                    cachedState = false;
+                  }
+                  var cachedBrightness = this.storage.getItemSync("http-webhook-brightness-" + accessoryId);
+                  if (cachedBrightness === undefined) {
+                    cachedBrightness = -1;
+                  }
+                  if (!theUrlParams.state && !theUrlParams.value) {
+                    responseBody = {
+                      "success" : true,
+                      "brightness" : cachedBrightness,
+                      "state" : cachedState
+                    };
+                  }
+                  else {
+                    var brightness = theUrlParams.value || cachedBrightness;
+                    var state = theUrlParams.state || cachedState;
+                    var stateBool = state === "true" || state === true;
+                    this.storage.setItemSync("http-webhook-" + accessoryId, stateBool);
+                    var brightnessInt = parseInt(brightness);
+                    this.storage.setItemSync("http-webhook-brightness-" + accessoryId, brightnessInt);
+                    if (cachedState !== stateBool || cachedBrightness != brightnessInt) {
+                      accessory.changeHandler(stateBool, brightnessInt);
+                    }
                   }
                 }
                 else {
@@ -921,6 +948,7 @@ HttpWebHookPushButtonAccessory.prototype.getServices = function() {
 function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.log = log;
   this.id = lightConfig["id"];
+  this.type = "lightbulb";
   this.name = lightConfig["name"];
   this.onURL = lightConfig["on_url"] || "";
   this.onMethod = lightConfig["on_method"] || "GET";
@@ -932,6 +960,12 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.offBody = lightConfig["off_body"] || "";
   this.offForm = lightConfig["off_form"] || "";
   this.offHeaders = lightConfig["off_headers"] || "{}";
+  this.brightnessURL = lightConfig["brightness_url"] || "";
+  this.brightnessMethod = lightConfig["brightness_method"] || "GET";
+  this.brightnessBody = lightConfig["brightness_body"] || "";
+  this.brightnessForm = lightConfig["brightness_form"] || "";
+  this.brightnessHeaders = lightConfig["brightness_headers"] || "{}";
+  this.brightnessFactor = lightConfig["brightness_factor"] || 1;
   this.storage = storage;
   
   this.informationService = new Service.AccessoryInformation();
@@ -940,11 +974,15 @@ function HttpWebHookLightAccessory(log, lightConfig, storage) {
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookLightAccessory-"+this.id);
 
   this.service = new Service.Lightbulb(this.name);
-  this.changeHandler = (function(newState) {
+  this.changeHandler = (function(newState, newBrightness) {
+    var brightnessToSet = Math.ceil(newBrightness / this.brightnessFactor);
     this.log("Change HomeKit state for light to '%s'.", newState);
+    this.log("Change HomeKit brightness for light to '%s'.", brightnessToSet);
     this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, CONTEXT_FROM_WEBHOOK);
+    this.service.getCharacteristic(Characteristic.Brightness).updateValue(brightnessToSet, undefined, CONTEXT_FROM_WEBHOOK);
   }).bind(this);
   this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+  this.service.getCharacteristic(Characteristic.Brightness).on('get', this.getBrightness.bind(this)).on('set', this.setBrightness.bind(this));
 }
 
 HttpWebHookLightAccessory.prototype.getState = function(callback) {
@@ -1002,6 +1040,73 @@ HttpWebHookLightAccessory.prototype.setState = function(powerOn, callback, conte
   else {
     callback(null);
   }
+};
+
+HttpWebHookLightAccessory.prototype.getBrightness = function(callback) {
+  this.log("Getting current brightness for '%s'...", this.id);
+  var state = this.storage.getItemSync("http-webhook-" + this.id);
+  if (state === undefined) {
+    state = false;
+  }
+  var brightness = 0;
+  if(state) {
+    brightness = this.storage.getItemSync("http-webhook-brightness-" + this.id);
+    if (brightness === undefined) {
+      brightness = 100;
+    }
+  }
+  callback(null, parseInt(brightness));
+};
+
+HttpWebHookLightAccessory.prototype.setBrightness = function(brightness, callback, context) {
+  this.log("Light brightness for '%s'...", this.id);
+  var newState = brightness > 0;
+  this.storage.setItemSync("http-webhook-" + this.id, newState);
+  this.storage.setItemSync("http-webhook-brightness-" + this.id, brightness);
+  var brightnessFactor = this.brightnessFactor;
+  var brightnessToSet = Math.ceil(brightness * brightnessFactor);
+  var urlToCall = this.replaceVariables(this.brightnessURL, newState, brightnessToSet);
+  var urlMethod = this.brightnessMethod;
+  var urlBody = this.brightnessBody;
+  var urlForm = this.brightnessForm;
+  var urlHeaders = this.brightnessHeaders;
+  if (urlToCall !== "" && context !== CONTEXT_FROM_WEBHOOK) {
+    var theRequest = {
+      method : urlMethod,
+      url : urlToCall,
+      timeout : DEFAULT_REQUEST_TIMEOUT,
+      headers: JSON.parse(urlHeaders)
+    };
+    if (urlMethod === "POST" || urlMethod === "PUT") {
+      if (urlForm) { 
+        var urlFormReplaced = this.replaceVariables(urlForm, newState, brightnessToSet);
+        this.log("Adding Form " + urlFormReplaced);
+        theRequest.form = JSON.parse(urlFormReplaced);
+      } 
+      else if (urlBody) {
+        var urlBodyReplaced = this.replaceVariables(urlBody, newState, brightnessToSet);
+        this.log("Adding Body " + urlBodyReplaced);
+        theRequest.body = urlBodyReplaced;
+      }
+    }
+    request(theRequest, (function(err, response, body) {
+      var statusCode = response && response.statusCode ? response.statusCode : -1;
+      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      if (!err && statusCode == 200) {
+        callback(null);
+      }
+      else {
+        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
+      }
+    }).bind(this));
+  }
+  else {
+    callback(null);
+  }
+};
+
+HttpWebHookLightAccessory.prototype.replaceVariables = function(text, state, brightness) {
+  return text.replace("%statusPlaceholder", state).replace("%brightnessPlaceholder", brightness);
 };
 
 HttpWebHookLightAccessory.prototype.getServices = function() {

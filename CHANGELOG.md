@@ -1,3 +1,9 @@
+### 0.0.60
+
+New features:
+
+  - Added brightness to light.
+
 ### 0.0.59
 
 New features:

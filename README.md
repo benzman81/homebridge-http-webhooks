@@ -3,7 +3,7 @@ A http plugin with support of webhooks for [Homebridge](https://github.com/nfari
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons, lights (only on/off), temperature sensors, humidity sensors, thermostats and leak sensors.
+Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons, lights (only on/off and brightness), temperature sensors, humidity sensors, thermostats and leak sensors.
 
 # Installation
 1. Install homebridge using: `npm install -g homebridge`
@@ -83,6 +83,8 @@ For air quality sensors the value for `NEWVALUE` is the new air quality value (B
 ## Leak sensor
 For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
 
+## Light (brightness)
+For light brightness the value for `NEWVALUE` is the new light brightness (as integer, between 0 and 100 with respect to brightness factor).
 
 # Thermostat
 To update a thermostat you can update four different values:
@@ -227,7 +229,12 @@ Example config.json:
                         "off_url": "your url to switch the light off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST and PUT; use "off_form" for x-www-form-urlencoded JSON)
-                        "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
+                        "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
+                        "brightness_url": "your url to change the light brightness", // (optional)
+                        "brightness_method": "GET", // (optional)
+                        "brightness_body": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON, variables are replaced on the fly)
+                        "brightness_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
+                        "brightness_factor": 2.55 // (optional to convert homekit brightness to target system brightness)
                     }
                 ],
                 "thermostats": [
