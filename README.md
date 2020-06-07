@@ -3,7 +3,7 @@ A http plugin with support of webhooks for [Homebridge](https://github.com/nfari
 
 The plugin gets its states from any system that is calling the url to trigger a state change.
 
-Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons, lights (only on/off), temperature sensors, humidity sensors and thermostats.
+Currently supports contact, motion, occupancy, smoke sensors, switches, push buttons, lights (only on/off), temperature sensors, humidity sensors, thermostats and leak sensors.
 
 # Installation
 1. Install homebridge using: `npm install -g homebridge`
@@ -79,6 +79,10 @@ For humidity sensors the value for `NEWVALUE` is the new relative humidity perce
 
 ## Air Quality sensor
 For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
+
+## Leak sensor
+For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
+
 
 # Thermostat
 To update a thermostat you can update four different values:
@@ -181,6 +185,11 @@ Example config.json:
                         "id": "sensor8",
                         "name": "Sensor name 8",
                         "type": "light"
+                    },
+                    {
+                        "id": "sensor9",
+                        "name": "Sensor name 9",
+                        "type": "leak"
                     }
                 ],
                 "switches": [
