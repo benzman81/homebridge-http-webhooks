@@ -35,6 +35,7 @@ function HttpWebHooksPlatform(log, config) {
   this.log = log;
   this.cacheDirectory = config["cache_directory"] || "./.node-persist/storage";
   this.webhookPort = config["webhook_port"] || 51828;
+  this.webhookListenHost = config["webhook_listen_host"] || "0.0.0.0";
   this.sensors = config["sensors"] || [];
   this.switches = config["switches"] || [];
   this.pushButtons = config["pushbuttons"] || [];
@@ -521,21 +522,21 @@ HttpWebHooksPlatform.prototype = {
         callback(username === httpAuthUser && password === httpAuthPass);
       });
       if(this.https) {
-        https.createServer(basicAuth, sslServerOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        https.createServer(basicAuth, sslServerOptions, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
       }
       else {
-        http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
       }
     }
     else {
       if(this.https) {
-        https.createServer(sslServerOptions, createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        https.createServer(sslServerOptions, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
       }
       else {
-        http.createServer(createServerCallback).listen(this.webhookPort, "0.0.0.0");
+        http.createServer(createServerCallback).listen(this.webhookPort, this.webhookListenHost);
       }
     }
-    this.log("Started server for webhooks on port '%s'.", this.webhookPort);
+    this.log("Started server for webhooks on port '%s' listening for host '%s'.", this.webhookPort, this.webhookListenHost);
   }
 }
 

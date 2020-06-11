@@ -1,3 +1,9 @@
+### 0.0.62
+
+New features:
+
+  - You can now change the host to listen to. Default is "0.0.0.0". For ipv6 you can use "::".
+
 ### 0.0.61
 
 Bugfix:
