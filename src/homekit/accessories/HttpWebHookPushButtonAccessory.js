@@ -1,6 +1,5 @@
 const Constants = require('../../Constants');
-
-var request = require("request");
+const Util = require('../../Util');
 
 function HttpWebHookPushButtonAccessory(ServiceParam, CharacteristicParam, platform, pushButtonConfig) {
   Service = ServiceParam;
@@ -61,35 +60,13 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
     var urlForm = this.pushForm;
     var urlHeaders = this.pushHeaders;
 
-    var theRequest = {
-      method : urlMethod,
-      url : urlToCall,
-      timeout : Constants.DEFAULT_REQUEST_TIMEOUT,
-      headers : JSON.parse(urlHeaders)
-    };
-    if (urlMethod === "POST" || urlMethod === "PUT") {
-      if (urlForm) {
-        this.log("Adding Form " + urlForm);
-        theRequest.form = JSON.parse(urlForm);
-      }
-      else if (urlBody) {
-        this.log("Adding Body " + urlBody);
-        theRequest.body = urlBody;
-      }
-    }
-    request(theRequest, (function(err, response, body) {
-      var statusCode = response && response.statusCode ? response.statusCode : -1;
-      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode >= 200 && statusCode < 300) {
-        callback(null);
-      }
-      else {
-        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
-      }
+    var onSuccessAndFailureCallback = (function() {
       setTimeout(function() {
         this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
       }.bind(this), 1000);
-    }).bind(this));
+    }).bind(this);
+
+    Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, onSuccessAndFailureCallback, onSuccessAndFailureCallback);
   }
 };
 

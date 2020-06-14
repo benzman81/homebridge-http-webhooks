@@ -1,7 +1,5 @@
 const Constants = require('../../Constants');
 
-var request = require("request");
-
 function HttpWebHookSensorAccessory(ServiceParam, CharacteristicParam, platform, sensorConfig) {
   Service = ServiceParam;
   Characteristic = CharacteristicParam;

@@ -1,6 +1,5 @@
 const Constants = require('../../Constants');
-
-var request = require("request");
+const Util = require('../../Util');
 
 function HttpWebHookLockMechanismAccessory(ServiceParam, CharacteristicParam, platform, lockMechanismOpenerConfig) {
   Service = ServiceParam;
@@ -77,43 +76,15 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     urlHeaders = this.setLockTargetStateOpenHeaders;
   }
 
-  if (urlToCall !== "" && context !== Constants.CONTEXT_FROM_WEBHOOK) {
-    var theRequest = {
-      method : urlMethod,
-      url : urlToCall,
-      timeout : Constants.DEFAULT_REQUEST_TIMEOUT,
-      headers : JSON.parse(urlHeaders)
-    };
-    if (urlMethod === "POST" || urlMethod === "PUT") {
-      if (urlForm) {
-        this.log("Adding Form " + urlForm);
-        theRequest.form = JSON.parse(urlForm);
-      }
-      else if (urlBody) {
-        this.log("Adding Body " + urlBody);
-        theRequest.body = urlBody;
-      }
-    }
-    request(theRequest, (function(err, response, body) {
-      var statusCode = response && response.statusCode ? response.statusCode : -1;
-      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
-      if (!err && statusCode >= 200 && statusCode < 300) {
-        this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
-        this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
-        this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
-        callback(null);
-      }
-      else {
-        this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, Characteristic.LockCurrentState.UNKNOWN);
-        this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
-        this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(Characteristic.LockCurrentState.UNKNOWN, undefined, null);
-        callback(err || new Error("Request to '" + urlToCall + "' was not succesful."));
-      }
-    }).bind(this));
-  }
-  else {
-    callback(null);
-  }
+  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+    this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
+    this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
+    this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
+  }).bind(this), (function() {
+    this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, Characteristic.LockCurrentState.UNKNOWN);
+    this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
+    this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(Characteristic.LockCurrentState.UNKNOWN, undefined, null);
+  }).bind(this));
 };
 
 HttpWebHookLockMechanismAccessory.prototype.getLockCurrentState = function(callback) {

@@ -1,7 +1,5 @@
 const Constants = require('../../Constants');
 
-var request = require("request");
-
 function HttpWebHookStatelessSwitchAccessory(ServiceParam, CharacteristicParam, platform, statelessSwitchConfig) {
   Service = ServiceParam;
   Characteristic = CharacteristicParam;
