@@ -11,11 +11,11 @@ var Service, Characteristic;
 function Server(ServiceParam, CharacteristicParam, platform, platformConfig) {
   Service = ServiceParam;
   Characteristic = CharacteristicParam;
-  
+
   this.platform = platform;
   this.log = platform.log;
   this.storage = platform.storage;
-  
+
   this.webhookPort = platformConfig["webhook_port"] || Constants.DEFAULT_PORT;
   this.webhookListenHost = platformConfig["webhook_listen_host"] || Constants.DEFAULT_LISTEN_HOST;
   this.httpAuthUser = platformConfig["http_auth_user"] || null;
@@ -29,8 +29,29 @@ Server.prototype.setAccessories = function(accessories) {
   this.accessories = accessories;
 };
 
-Server.prototype.start = function() {
-  
+Server.prototype.createSSLCertificate = function() {
+  this.log("Generating new ssl certificate.");
+  var selfsigned = require('selfsigned');
+  var certAttrs = [{ name: 'homebridgeHttpWebhooks', value: 'homebridgeHttpWebhooks.com' , type: 'homebridgeHttpWebhooks'}];
+  var certOpts = { days: Constants.CERT_DAYS};
+  certOpts.extensions = [{
+    name: 'subjectAltName',
+    altNames: [{
+            type: 2,
+            value: 'homebridgeHttpWebhooks.com'
+    }, {
+            type: 2,
+            value: 'localhost'
+    }]
+  }];
+  var pems = selfsigned.generate(certAttrs, certOpts);
+  var cachedSSLCert = pems;
+  cachedSSLCert.timestamp = Date.now();
+  cachedSSLCert.certVersion = Constants.CERT_VERSION;
+  return cachedSSLCert;
+};
+
+Server.prototype.getSSLServerOptions = function() {
   var sslServerOptions = {};
   if(this.https) {
     if(!this.httpsKeyFile || !this.httpsCertFile) {
@@ -45,24 +66,7 @@ Server.prototype.start = function() {
         }
       }
       if(!cachedSSLCert) {
-        this.log("Generating new ssl certificate.");
-        var selfsigned = require('selfsigned');
-        var certAttrs = [{ name: 'homebridgeHttpWebhooks', value: 'homebridgeHttpWebhooks.com' , type: 'homebridgeHttpWebhooks'}];
-        var certOpts = { days: Constants.CERT_DAYS};
-        certOpts.extensions = [{
-          name: 'subjectAltName',
-          altNames: [{
-                  type: 2,
-                  value: 'homebridgeHttpWebhooks.com'
-          }, {
-                  type: 2,
-                  value: 'localhost'
-          }]
-        }];
-        var pems = selfsigned.generate(certAttrs, certOpts);
-        cachedSSLCert = pems;
-        cachedSSLCert.timestamp = Date.now();
-        cachedSSLCert.certVersion = Constants.CERT_VERSION;
+        cachedSSLCert = this.createSSLCertificate();
         this.storage.setItemSync("http-webhook-ssl-cert", cachedSSLCert);
       }
 
@@ -78,8 +82,11 @@ Server.prototype.start = function() {
       };
     }
   }
+  return sslServerOptions;
+};
 
-  var createServerCallback = (function(request, response) {
+Server.prototype.createServerCallback = function() {
+  return (function(request, response) {
     var theUrl = request.url;
     var theUrlParts = url.parse(theUrl, true);
     var theUrlParams = theUrlParts.query;
@@ -428,6 +435,12 @@ Server.prototype.start = function() {
       }
     }).bind(this));
   }).bind(this);
+};
+
+Server.prototype.start = function() {
+  var sslServerOptions = this.getSSLServerOptions();
+
+  var serverCallback = this.createServerCallback();
 
   if (this.httpAuthUser && this.httpAuthPass) {
     var httpAuthUser = this.httpAuthUser;
@@ -438,18 +451,18 @@ Server.prototype.start = function() {
       callback(username === httpAuthUser && password === httpAuthPass);
     });
     if(this.https) {
-      https.createServer(basicAuth, sslServerOptions, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
+      https.createServer(basicAuth, sslServerOptions, serverCallback).listen(this.webhookPort, this.webhookListenHost);
     }
     else {
-      http.createServer(basicAuth, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
+      http.createServer(basicAuth, serverCallback).listen(this.webhookPort, this.webhookListenHost);
     }
   }
   else {
     if(this.https) {
-      https.createServer(sslServerOptions, createServerCallback).listen(this.webhookPort, this.webhookListenHost);
+      https.createServer(sslServerOptions, serverCallback).listen(this.webhookPort, this.webhookListenHost);
     }
     else {
-      http.createServer(createServerCallback).listen(this.webhookPort, this.webhookListenHost);
+      http.createServer(serverCallback).listen(this.webhookPort, this.webhookListenHost);
     }
   }
   this.log("Started server for webhooks on port '%s' listening for host '%s'.", this.webhookPort, this.webhookListenHost);
