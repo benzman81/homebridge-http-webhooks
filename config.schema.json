@@ -1,1 +1,886 @@
-schema
+{
+  "pluginAlias": "HttpWebHooks",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, and `leak` sensors.",
+  "footerDisplay": "Optional content to display below the plugin config. Supports markdown.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "webhook_port": {
+        "title": "Webhook Port",
+        "type": "string",
+        "placeholder": "51828",
+        "required": true,
+        "typeahead": {
+          "source": [
+            "51828"
+          ]
+        }
+      },
+      "webhook_listen_host": {
+        "title": "Webhook Listen Host",
+        "type": "string",
+        "placeholder": "::",
+        "required": false
+      },
+      "cache_directory": {
+        "title": "Cache Directory",
+        "type": "string",
+        "placeholder": "./.node-persist/storage",
+        "required": false
+      },
+      "http_auth_user": {
+        "title": "HTTP Auth User",
+        "type": "string",
+        "placeholder": "admin",
+        "required": false
+      },
+      "http_auth_pass": {
+        "title": "HTTP Auth Pass",
+        "type": "string",
+        "placeholder": "admin",
+        "required": false
+      },
+      "https": {
+        "title": "HTTPS",
+        "type": "boolean",
+        "placeholder": false,
+        "required": false
+      },
+      "https_keyfile": {
+        "title": "HTTPS Key Location",
+        "type": "string",
+        "placeholder": "/pathToKeyFile/server.key",
+        "required": false
+      },
+      "https_certfile": {
+        "title": "HTTPS Cert Location",
+        "type": "string",
+        "placeholder": "/pathToKeyFile/server.cert",
+        "required": false
+      },
+      "sensors": {
+        "type": "array",
+        "title": "Sensors",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Sensors",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "sensor1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Sensor 1",
+              "required": false
+            },
+            "type": {
+              "title": "Type",
+              "type": "string",
+              "required": false,
+              "enum": [
+                "contact",
+                "motion",
+                "occupancy",
+                "smoke",
+                "temperature",
+                "humidity",
+                "airquality",
+                "light",
+                "leak"
+              ]
+            },
+            "autoRelease": {
+              "title": "Enable Auto Release",
+              "type": "boolean",
+              "required": false
+            },
+            "autoReleaseTime": {
+              "title": "Auto Release Time",
+              "type": "integer",
+              "placeholder": "7500",
+              "required": false
+            }
+          }
+        }
+      },
+      "switches": {
+        "type": "array",
+        "title": "Switches",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Switches",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "Switch1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Switch 1",
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the switch on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the switch off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "pushbuttons": {
+        "type": "array",
+        "title": "Sensors",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Sensors",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "pushbutton1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Push Button 1",
+              "required": false
+            },
+            "push_url": {
+              "title": "Push URL",
+              "type": "string",
+              "placeholder": "your url to be called on push",
+              "required": false
+            },
+            "push_method": {
+              "title": "Push Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "push_body": {
+              "title": "Push Body",
+              "type": "string",
+              "placeholder": "{ \"push\": true }",
+              "required": false
+            },
+            "push_headers": {
+              "title": "Push Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "lights": {
+        "type": "array",
+        "title": "Lights",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Lights",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "light1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Light 1",
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the light on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the light off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "brightness_url": {
+              "title": "Brightness URL",
+              "type": "string",
+              "placeholder": "your url to change the light brightness",
+              "required": false
+            },
+            "brightness_method": {
+              "title": "Brightness Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "brightness_body": {
+              "title": "Brightness Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}",
+              "required": false
+            },
+            "brightness_headers": {
+              "title": "Brightness Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "brightness_factor": {
+              "title": "Brightness Factor",
+              "type": "number",
+              "placeholder": 2.55,
+              "required": false,
+              "typeahead": {
+                "source": [
+                  2.55
+                ]
+              }
+            }
+          }
+        }
+      },
+      "thermostats": {
+        "type": "array",
+        "title": "Thermostats",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Thermostats",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "thermostat1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Thermostat 1",
+              "required": false
+            },
+            "set_target_temperature_url": {
+              "title": "Set Target Temperature URL",
+              "type": "string",
+              "placeholder": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",
+              "required": false
+            },
+            "set_target_temperature_method": {
+              "title": "Set Target Temperature Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "set_target_temperature_body": {
+              "title": "Set Target Temperature Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "set_target_temperature_headers": {
+              "title": "Set Target Temperature Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "set_target_heating_cooling_state_url": {
+              "title": "Set Target Heating/Cooling State URL",
+              "type": "string",
+              "placeholder": "http://127.0.0.1/thermostatscript.php?targetstate=%b",
+              "required": false
+            },
+            "set_target_heating_cooling_state_method": {
+              "title": "Set Target Heating/Cooling State Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "set_target_heating_cooling_state_body": {
+              "title": "Set Target Heating/Cooling State Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "set_target_heating_cooling_state_headers": {
+              "title": "Set Target Heating/Cooling State Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "outlets": {
+        "type": "array",
+        "title": "Outlets",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Outlets",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "outlet1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Outlet 1",
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the outlet on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the outlet off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "security": {
+        "type": "array",
+        "title": "Security",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Security",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "security1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Security 1",
+              "required": false
+            },
+            "set_state_url": {
+              "title": "Set State URL",
+              "type": "string",
+              "placeholder": "http://localhost/security/mode/%d",
+              "required": false
+            },
+            "set_state_method": {
+              "title": "Set State Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "set_state_body": {
+              "title": "Set State Body",
+              "type": "string",
+              "placeholder": "{ \"on\": true }",
+              "required": false
+            },
+            "set_state_headers": {
+              "title": "Set State Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "garagedooropeners": {
+        "type": "array",
+        "title": "Garage Door Openers",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Garage Door Openers",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "garagedooropeners1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Garage Door Opener 1",
+              "required": false
+            },
+            "open_url": {
+              "title": "Open URL",
+              "type": "string",
+              "placeholder": "your url to open the garage door",
+              "required": false
+            },
+            "open_method": {
+              "title": "Open Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_body": {
+              "title": "Open Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_headers": {
+              "title": "Open Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "close_url": {
+              "title": "Close URL",
+              "type": "string",
+              "placeholder": "your url to close the garage door",
+              "required": false
+            },
+            "close_method": {
+              "title": "Close Method",
+              "type": "string",
+              "placeholder": "Get",
+              "required": false
+            },
+            "close_body": {
+              "title": "Close Body",
+              "type": "string",
+              "placeholder": "{ \"open\": false }",
+              "required": false
+            },
+            "close_headers": {
+              "title": "Close Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "statelessswitches": {
+        "type": "array",
+        "title": "Stateless Switches",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Stateless Switches",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "statelessswitches1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Stateless Switch 1",
+              "required": false
+            },
+            "buttons": {
+              "type": "array",
+              "title": "Buttons",
+              "items": {
+                "title": "Buttons",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "placeholder": "Button1",
+                    "required": false
+                  },
+                  "double_press": {
+                    "title": "Double Press",
+                    "type": "boolean",
+                    "required": false
+                  },
+                  "long_press": {
+                    "title": "Long Press",
+                    "type": "boolean",
+                    "required": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "windowcoverings": {
+        "type": "array",
+        "title": "Window Coverings",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Window Coverings",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "windowcovering1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Window Covering 1",
+              "required": false
+            },
+            "open_url": {
+              "title": "Open URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/open",
+              "required": false
+            },
+            "open_method": {
+              "title": "Open Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_body": {
+              "title": "Open Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_headers": {
+              "title": "Open Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "open_80_url": {
+              "title": "Open 80 URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/open80%",
+              "required": false
+            },
+            "open_80_method": {
+              "title": "Open 80 Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_80_body": {
+              "title": "Open 80 Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_80_headers": {
+              "title": "Open 80 Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "open_60_url": {
+              "title": "Open 60 URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/open60%",
+              "required": false
+            },
+            "open_60_method": {
+              "title": "Open 60 Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_60_body": {
+              "title": "Open 60 Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_60_headers": {
+              "title": "Open 60 Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "open_40_url": {
+              "title": "Open 40 URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/open40%",
+              "required": false
+            },
+            "open_40_method": {
+              "title": "Open 40 Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_40_body": {
+              "title": "Open 40 Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_40_headers": {
+              "title": "Open 40 Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "open_20_url": {
+              "title": "Open 20 URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/open20%",
+              "required": false
+            },
+            "open_20_method": {
+              "title": "Open 20 Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_20_body": {
+              "title": "Open 20 Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_20_headers": {
+              "title": "Open 20 Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "close_url": {
+              "title": "Close URL",
+              "type": "string",
+              "placeholder": "http://your.url/to/close",
+              "required": false
+            },
+            "close_method": {
+              "title": "Close Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "close_body": {
+              "title": "Close Body",
+              "type": "string",
+              "placeholder": "{ \"open\": false }",
+              "required": false
+            },
+            "close_headers": {
+              "title": "Close Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "lockmechanisms": {
+        "type": "array",
+        "title": "Lock Mechanisms",
+        "description": "An explanation about the purpose of this instance.",
+        "items": {
+          "title": "Lock Mechanisms",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "lockmechanisms1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Lock 1",
+              "required": false
+            },
+            "open_url": {
+              "title": "Open URL",
+              "type": "string",
+              "placeholder": "your url to open the garage door",
+              "required": false
+            },
+            "open_method": {
+              "title": "Open Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "open_body": {
+              "title": "Open Body",
+              "type": "string",
+              "placeholder": "{ \"open\": true }",
+              "required": false
+            },
+            "open_headers": {
+              "title": "Open Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "close_url": {
+              "title": "Close URL",
+              "type": "string",
+              "placeholder": "your url to close the garage door",
+              "required": false
+            },
+            "close_method": {
+              "title": "Close Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "close_body": {
+              "title": "Close Body",
+              "type": "string",
+              "placeholder": "{ \"open\": false }",
+              "required": false
+            },
+            "close_headers": {
+              "title": "Close Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
