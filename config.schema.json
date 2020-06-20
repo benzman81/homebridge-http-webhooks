@@ -882,5 +882,331 @@
         }
       }
     }
-  }
+  },
+  "layout": [
+    {
+      "type": "section",
+      "title": "Webhook Settings",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Webhook Settings",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "webhook_port",
+            "webhook_listen_host",
+            "cache_directory",
+            "http_auth_user",
+            "http_auth_pass",
+            "https",
+            "https_keyfile",
+            "https_certfile"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Sensors",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Sensors",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "sensors[].id",
+            "sensors[].name",
+            "sensors[].type",
+            "sensors[].autoRelease",
+            "sensors[].autoReleaseTime"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Switches",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Switches",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "switches[].id",
+            "switches[].name",
+            "switches[].on_url",
+            "switches[].on_method",
+            "switches[].on_body",
+            "switches[].on_headers",
+            "switches[].off_url",
+            "switches[].off_method",
+            "switches[].off_body",
+            "switches[].off_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Push Button",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Push Button",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "pushbuttons[].id",
+            "pushbuttons[].name",
+            "pushbuttons[].push_url",
+            "pushbuttons[].push_method",
+            "pushbuttons[].push_body",
+            "pushbuttons[].push_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Lights",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Lights",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "lights[].id",
+            "lights[].name",
+            "lights[].on_url",
+            "lights[].on_method",
+            "lights[].on_body",
+            "lights[].on_headers",
+            "lights[].off_url",
+            "lights[].off_method",
+            "lights[].off_body",
+            "lights[].off_headers",
+            "lights[].brightness_url",
+            "lights[].brightness_method",
+            "lights[].brightness_body",
+            "lights[].brightness_headers",
+            "lights[].brightness_factor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Thermostats",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Thermostats",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "thermostats[].id",
+            "thermostats[].name",
+            "thermostats[].set_target_temperature_url",
+            "thermostats[].set_target_temperature_method",
+            "thermostats[].set_target_temperature_body",
+            "thermostats[].set_target_temperature_headers",
+            "thermostats[].set_target_heating_cooling_state_url",
+            "thermostats[].set_target_heating_cooling_state_method",
+            "thermostats[].set_target_heating_cooling_state_body",
+            "thermostats[].set_target_heating_cooling_state_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Outlets",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Outlets",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "outlets[].id",
+            "outlets[].name",
+            "outlets[].on_url",
+            "outlets[].on_method",
+            "outlets[].on_body",
+            "outlets[].on_headers",
+            "outlets[].off_url",
+            "outlets[].off_method",
+            "outlets[].off_body",
+            "outlets[].off_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Security",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Security",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "security[].id",
+            "security[].name",
+            "security[].set_state_url",
+            "security[].set_state_method",
+            "security[].set_state_body",
+            "security[].set_state_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Garage Door Openers",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Garage Door Openers",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "garagedooropeners[].id",
+            "garagedooropeners[].name",
+            "garagedooropeners[].open_url",
+            "garagedooropeners[].open_method",
+            "garagedooropeners[].open_body",
+            "garagedooropeners[].open_headers",
+            "garagedooropeners[].close_url",
+            "garagedooropeners[].close_method",
+            "garagedooropeners[].close_body",
+            "garagedooropeners[].close_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Stateless Switches",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Stateless Switches",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            {
+              "type": "section",
+              "title": "Stateless Switches",
+              "expandable": true,
+              "expanded": true,
+              "items": [
+                "statelessswitches[].id",
+                "statelessswitches[].name",
+                {
+                  "type": "section",
+                  "title": "Buttons",
+                  "expandable": true,
+                  "expanded": true,
+                  "items": [
+                    {
+                      "title": "Buttons",
+                      "type": "array",
+                      "orderable": false,
+                      "items": [
+                        "statelessswitches[].buttons[].name",
+                        "statelessswitches[].buttons[].double_press",
+                        "statelessswitches[].buttons[].long_press"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Window Coverings",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Window Coverings",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "windowcoverings[].id",
+            "windowcoverings[].name",
+            "windowcoverings[].open_url",
+            "windowcoverings[].open_method",
+            "windowcoverings[].open_body",
+            "windowcoverings[].open_headers",
+            "windowcoverings[].open_80_url",
+            "windowcoverings[].open_80_method",
+            "windowcoverings[].open_80_body",
+            "windowcoverings[].open_80_headers",
+            "windowcoverings[].open_60_url",
+            "windowcoverings[].open_60_method",
+            "windowcoverings[].open_60_body",
+            "windowcoverings[].open_60_headers",
+            "windowcoverings[].open_40_url",
+            "windowcoverings[].open_40_method",
+            "windowcoverings[].open_40_body",
+            "windowcoverings[].open_40_headers",
+            "windowcoverings[].open_20_url",
+            "windowcoverings[].open_20_method",
+            "windowcoverings[].open_20_body",
+            "windowcoverings[].open_20_headers",
+            "windowcoverings[].close_url",
+            "windowcoverings[].close_method",
+            "windowcoverings[].close_body",
+            "windowcoverings[].close_headers"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Lock Mechanisms",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        {
+          "title": "Lock Mechanisms",
+          "type": "array",
+          "orderable": false,
+          "items": [
+            "lockmechanisms[].id",
+            "lockmechanisms[].name",
+            "lockmechanisms[].open_url",
+            "lockmechanisms[].open_method",
+            "lockmechanisms[].open_body",
+            "lockmechanisms[].open_headers",
+            "lockmechanisms[].close_url",
+            "lockmechanisms[].close_method",
+            "lockmechanisms[].close_body",
+            "lockmechanisms[].close_headers"
+          ]
+        }
+      ]
+    }
+  ]
 }
