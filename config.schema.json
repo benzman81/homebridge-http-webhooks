@@ -885,7 +885,7 @@
   },
   "layout": [
     {
-      "type": "section",
+      "type": "fieldset",
       "title": "Webhook Settings",
       "expandable": true,
       "expanded": false,
@@ -908,7 +908,7 @@
       ]
     },
     {
-      "type": "section",
+      "type": "fieldset",
       "title": "Webhook Devices",
       "expandable": true,
       "expanded": false,
