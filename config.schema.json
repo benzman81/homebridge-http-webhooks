@@ -3,7 +3,7 @@
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, and `leak` sensors.",
-  "footerDisplay": "Optional content to display below the plugin config. Supports markdown.",
+  "footerDisplay": "Visit the Project [Readme](https://github.com/benzman81/homebridge-http-webhooks#readme) for more details.",
   "schema": {
     "type": "object",
     "properties": {
@@ -63,7 +63,7 @@
       "sensors": {
         "type": "array",
         "title": "Sensors",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Create a contact, motion, occupancy, smoke, temperature, humidity, airquality, light, or leak sensors.",
         "items": {
           "title": "Sensors",
           "type": "object",
@@ -113,7 +113,7 @@
       "switches": {
         "type": "array",
         "title": "Switches",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Turn On and Off switches by triggering a URL of any system.",
         "items": {
           "title": "Switches",
           "type": "object",
@@ -184,7 +184,7 @@
       "pushbuttons": {
         "type": "array",
         "title": "Sensors",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Push Buttons by triggerring a URL of any system. The button will be released automatically.",
         "items": {
           "title": "Sensors",
           "type": "object",
@@ -231,7 +231,7 @@
       "lights": {
         "type": "array",
         "title": "Lights",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Turn On and Off Lights by triggering a URL of any system.",
         "items": {
           "title": "Lights",
           "type": "object",
@@ -337,7 +337,7 @@
       "thermostats": {
         "type": "array",
         "title": "Thermostats",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Control a thermostat by updating four different values.",
         "items": {
           "title": "Thermostats",
           "type": "object",
@@ -408,7 +408,7 @@
       "outlets": {
         "type": "array",
         "title": "Outlets",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Turn On and Off Outls by triggering a URL of any system.",
         "items": {
           "title": "Outlets",
           "type": "object",
@@ -479,7 +479,7 @@
       "security": {
         "type": "array",
         "title": "Security",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Control a security system by updating two different values.",
         "items": {
           "title": "Security",
           "type": "object",
@@ -526,7 +526,7 @@
       "garagedooropeners": {
         "type": "array",
         "title": "Garage Door Openers",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Control a garage door opener by updating three different values.",
         "items": {
           "title": "Garage Door Openers",
           "type": "object",
@@ -597,7 +597,7 @@
       "statelessswitches": {
         "type": "array",
         "title": "Stateless Switches",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger: Single press = 0, Double press = 1, Long press = 2.",
         "items": {
           "title": "Stateless Switches",
           "type": "object",
@@ -646,7 +646,7 @@
       "windowcoverings": {
         "type": "array",
         "title": "Window Coverings",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Control a window coverings by updating three different values.",
         "items": {
           "title": "Window Coverings",
           "type": "object",
@@ -813,7 +813,7 @@
       "lockmechanisms": {
         "type": "array",
         "title": "Lock Mechanisms",
-        "description": "An explanation about the purpose of this instance.",
+        "description": "Control a lock mechanism by updating two different values.",
         "items": {
           "title": "Lock Mechanisms",
           "type": "object",
