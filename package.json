@@ -1,6 +1,7 @@
 {
   "name": "homebridge-http-webhooks",
   "version": "0.0.62",
+  "displayName": "Homebridge Webooks",
   "description": "A http plugin with support of webhooks for Homebridge: https://github.com/nfarina/homebridge",
   "license": "GPL-3.0",
   "keywords": [
@@ -22,7 +23,7 @@
   },
   "engines": {
     "node": ">=9.11.2",
-    "homebridge": ">=0.3.0"
+    "homebridge": ">=1.0.0"
   },
   "dependencies": {
     "http-auth": "^3.2.4",
