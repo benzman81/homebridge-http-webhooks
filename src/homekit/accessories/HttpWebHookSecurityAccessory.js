@@ -24,17 +24,36 @@ function HttpWebHookSecurityAccessory(ServiceParam, CharacteristicParam, platfor
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSecurityAccessory-" + this.id);
 
   this.service = new Service.SecuritySystem(this.name);
-  this.changeCurrentStateHandler = (function(newState) {
-    this.log("Change current state for security to '%d'.", newState);
-    this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
-  this.changeTargetStateHandler = (function(newState) {
-    this.log("Change target state for security to '%d'.", newState);
-    this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
-
   this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getTargetSecurityState.bind(this)).on('set', this.setTargetSecurityState.bind(this));
   this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).on('get', this.getCurrentSecurityState.bind(this));
+}
+
+HttpWebHookSecurityAccessory.prototype.changeFromServer = function(urlParams) {
+  if (urlParams.currentstate != null) {
+    var cachedState = this.storage.getItemSync("http-webhook-current-security-state-" + this.id);
+    if (cachedState === undefined) {
+      cachedState = Characteristic.SecuritySystemCurrentState.DISARMED;
+    }
+    this.storage.setItemSync("http-webhook-current-security-state-" + this.id, urlParams.currentstate);
+    if (cachedState !== urlParams.currentstate) {
+      this.log("Change current state for security to '%d'.", urlParams.currentstate);
+      this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(urlParams.currentstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+    }
+  }
+  if (urlParams.targetstate != null) {
+    var cachedState = this.storage.getItemSync("http-webhook-target-security-state-" + this.id);
+    if (cachedState === undefined) {
+      cachedState = Characteristic.SecuritySystemTargetState.DISARM;
+    }
+    this.storage.setItemSync("http-webhook-target-security-state-" + this.id, urlParams.targetstate);
+    if (cachedState !== urlParams.targetstate) {
+      this.log("Change target state for security to '%d'.", urlParams.targetstate);
+      this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).updateValue(urlParams.targetstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+    }
+  }
+  return {
+    "success" : true
+  };
 }
 
 HttpWebHookSecurityAccessory.prototype.getTargetSecurityState = function(callback) {
@@ -54,7 +73,7 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
   var urlBody = this.setStateBody;
   var urlForm = this.setStateForm;
   var urlHeaders = this.setStateHeaders;
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
     this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, null);
   }).bind(this));
 };

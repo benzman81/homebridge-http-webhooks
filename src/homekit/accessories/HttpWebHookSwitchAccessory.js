@@ -28,11 +28,34 @@ function HttpWebHookSwitchAccessory(ServiceParam, CharacteristicParam, platform,
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSwitchAccessory-" + this.id);
 
   this.service = new Service.Switch(this.name);
-  this.changeHandler = (function(newState) {
-    this.log("Change HomeKit state for switch to '%s'.", newState);
-    this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
   this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+}
+
+HttpWebHookSwitchAccessory.prototype.changeFromServer = function(urlParams) {
+  var cachedState = this.storage.getItemSync("http-webhook-" + this.id);
+  if (cachedState === undefined) {
+    cachedState = false;
+  }
+  if (!urlParams.state) {
+    return {
+      "success" : true,
+      "state" : cachedState
+    };
+  }
+  else {
+    var state = urlParams.state;
+    var stateBool = state === "true";
+    this.storage.setItemSync("http-webhook-" + this.id, stateBool);
+    // this.log("[INFO Http WebHook Server] State change of '%s'
+    // to '%s'.",accessory.id,stateBool);
+    if (cachedState !== stateBool) {
+      this.log("Change HomeKit state for switch to '%s'.", stateBool);
+      this.service.getCharacteristic(Characteristic.On).updateValue(stateBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+    }
+    return {
+      "success" : true
+    };
+  }
 }
 
 HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
@@ -61,7 +84,7 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
     urlHeaders = this.offHeaders;
   }
 
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
 };
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {

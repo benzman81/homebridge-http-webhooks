@@ -15,12 +15,12 @@ function HttpWebHookOutletAccessory(ServiceParam, CharacteristicParam, platform,
   this.onURL = outletConfig["on_url"] || "";
   this.onMethod = outletConfig["on_method"] || "GET";
   this.onBody = outletConfig["on_body"] || "";
-  this.onForm = pushButtonConfig["on_form"] || "";
+  this.onForm = outletConfig["on_form"] || "";
   this.onHeaders = outletConfig["on_headers"] || "{}";
   this.offURL = outletConfig["off_url"] || "";
   this.offMethod = outletConfig["off_method"] || "GET";
   this.offBody = outletConfig["off_body"] || "";
-  this.offForm = pushButtonConfig["off_form"] || "";
+  this.offForm = outletConfig["off_form"] || "";
   this.offHeaders = outletConfig["off_headers"] || "{}";
 
   this.informationService = new Service.AccessoryInformation();
@@ -29,16 +29,55 @@ function HttpWebHookOutletAccessory(ServiceParam, CharacteristicParam, platform,
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookOutletAccessory-" + this.id);
 
   this.service = new Service.Outlet(this.name);
-  this.changeHandler = (function(newState) {
-    this.log("Change HomeKit state for outlet to '%s'.", newState);
-    this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
-  this.changeHandlerInUse = (function(newState) {
-    this.log("Change HomeKit stateInUse for outlet to '%s'.", newState);
-    this.service.getCharacteristic(Characteristic.OutletInUse).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
   this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
   this.service.getCharacteristic(Characteristic.OutletInUse).on('get', this.getStateInUse.bind(this));
+}
+
+HttpWebHookOutletAccessory.prototype.changeFromServer = function(urlParams) {
+  var cachedState = this.storage.getItemSync("http-webhook-" + this.id);
+  if (cachedState === undefined) {
+    cachedState = false;
+  }
+  var cachedStateInUse = this.storage.getItemSync("http-webhook-" + this.id + "-inUse");
+  if (cachedStateInUse === undefined) {
+    cachedStateInUse = false;
+  }
+  if (!urlParams.state && !urlParams.stateOutletInUse) {
+    return {
+      "success" : true,
+      "state" : cachedState,
+      "stateOutletInUse" : cachedStateInUse
+    };
+  }
+  else {
+    if (urlParams.state) {
+      var state = urlParams.state;
+      var stateBool = state === "true";
+      this.storage.setItemSync("http-webhook-" + this.id, stateBool);
+      // this.log("[INFO Http WebHook Server] State change of
+      // '%s'
+      // to '%s'.",accessory.id,stateBool);
+      if (cachedState !== stateBool) {
+        this.log("Change HomeKit state for outlet to '%s'.", stateBool);
+        this.service.getCharacteristic(Characteristic.On).updateValue(stateBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+    if (urlParams.stateOutletInUse) {
+      var stateOutletInUse = urlParams.stateOutletInUse;
+      var stateOutletInUseBool = stateOutletInUse === "true";
+      this.storage.setItemSync("http-webhook-" + this.id + "-inUse", stateOutletInUseBool);
+      // this.log("[INFO Http WebHook Server] State change of
+      // '%s'
+      // to '%s'.",accessory.id,stateBool);
+      if (cachedStateInUse !== stateOutletInUseBool) {
+        this.log("Change HomeKit stateInUse for outlet to '%s'.", stateOutletInUseBool);
+        this.service.getCharacteristic(Characteristic.OutletInUse).updateValue(stateOutletInUseBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+    return {
+      "success" : true
+    };
+  }
 }
 
 HttpWebHookOutletAccessory.prototype.getState = function(callback) {
@@ -75,7 +114,7 @@ HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, cont
     urlHeaders = this.offHeaders;
   }
 
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
 };
 
 HttpWebHookOutletAccessory.prototype.getServices = function() {

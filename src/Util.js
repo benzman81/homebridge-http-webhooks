@@ -2,7 +2,7 @@ const Constants = require('./Constants');
 
 var request = require("request");
 
-const callHttpApi = function(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, homeKitCallback, context, onSuccessCallback, onFailureCallback, timeout) {
+const callHttpApi = function(log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, homeKitCallback, context, onSuccessCallback, onFailureCallback, timeout) {
   if (urlToCall !== "" && context !== Constants.CONTEXT_FROM_WEBHOOK) {
     var theRequest = {
       method : urlMethod,
@@ -12,17 +12,17 @@ const callHttpApi = function(urlToCall, urlMethod, urlBody, urlForm, urlHeaders,
     };
     if (urlMethod === "POST" || urlMethod === "PUT") {
       if (urlForm) {
-        this.log("Adding Form " + urlForm);
+        log("Adding Form " + urlForm);
         theRequest.form = JSON.parse(urlForm);
       }
       else if (urlBody) {
-        this.log("Adding Body " + urlBody);
+        log("Adding Body " + urlBody);
         theRequest.body = urlBody;
       }
     }
     request(theRequest, (function(err, response, body) {
       var statusCode = response && response.statusCode ? response.statusCode : -1;
-      this.log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
+      log("Request to '%s' finished with status code '%s' and body '%s'.", urlToCall, statusCode, body, err);
       if (!err && statusCode >= 200 && statusCode < 300) {
         if (onSuccessCallback) {
           onSuccessCallback();

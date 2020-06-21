@@ -29,28 +29,57 @@ function HttpWebHookGarageDoorOpenerAccessory(ServiceParam, CharacteristicParam,
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookGarageDoorOpenerAccessory-" + this.id);
 
   this.service = new Service.GarageDoorOpener(this.name);
-  this.changeCurrentDoorStateHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Current Door State for garage door opener to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-  this.changeTargetDoorStateHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Target Door State for garage door opener to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-  this.changeObstructionDetectedHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Obstruction Detected for garage door opener to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.ObstructionDetected).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-
   this.service.getCharacteristic(Characteristic.TargetDoorState).on('get', this.getTargetDoorState.bind(this)).on('set', this.setTargetDoorState.bind(this));
   this.service.getCharacteristic(Characteristic.CurrentDoorState).on('get', this.getCurrentDoorState.bind(this));
   this.service.getCharacteristic(Characteristic.ObstructionDetected).on('get', this.getObstructionDetected.bind(this));
+}
+
+HttpWebHookGarageDoorOpenerAccessory.prototype.changeFromServer = function(urlParams) {
+  if (urlParams.currentdoorstate != null) {
+    var cachedCurrentDoorState = this.storage.getItemSync("http-webhook-current-door-state-" + this.id);
+    if (cachedCurrentDoorState === undefined) {
+      cachedCurrentDoorState = Characteristic.CurrentDoorState.CLOSED;
+    }
+    this.storage.setItemSync("http-webhook-current-door-state-" + this.id, urlParams.currentdoorstate);
+    if (cachedCurrentDoorState !== urlParams.currentdoorstate) {
+      if (urlParams.currentdoorstate) {
+        this.log("Change Current Door State for garage door opener to '%s'.", urlParams.currentdoorstate);
+        this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(urlParams.currentdoorstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  if (urlParams.targetdoorstate != null) {
+    var cachedTargetDoorState = this.storage.getItemSync("http-webhook-target-door-state-" + this.id);
+    if (cachedTargetDoorState === undefined) {
+      cachedTargetDoorState = Characteristic.TargetDoorState.CLOSED;
+    }
+    this.storage.setItemSync("http-webhook-target-door-state-" + this.id, urlParams.targetdoorstate);
+    if (cachedTargetDoorState !== urlParams.targetdoorstate) {
+      if (urlParams.targetdoorstate) {
+        this.log("Change Target Door State for garage door opener to '%s'.", urlParams.targetdoorstate);
+        this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(urlParams.targetdoorstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  if (urlParams.obstructiondetected != null) {
+    var cachedObstructionDetected = this.storage.getItemSync("http-webhook-obstruction-detected-" + this.id);
+    if (cachedObstructionDetected === undefined) {
+      cachedObstructionDetected = false;
+    }
+    this.storage.setItemSync("http-webhook-obstruction-detected-" + this.id, urlParams.obstructiondetected);
+    if (cachedObstructionDetected !== urlParams.obstructiondetected) {
+      if (urlParams.obstructiondetected) {
+        this.log("Change Obstruction Detected for garage door opener to '%s'.", urlParams.obstructiondetected);
+        this.service.getCharacteristic(Characteristic.ObstructionDetected).updateValue(urlParams.obstructiondetected, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  return {
+    "success" : true,
+    "currentState" : cachedCurrentDoorState,
+    "targetState" : cachedTargetDoorState,
+    "obstruction" : cachedObstructionDetected
+  };
 }
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(callback) {
@@ -66,7 +95,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
   this.log("Target Door State for '%s'...", this.id);
   this.storage.setItemSync("http-webhook-target-door-state-" + this.id, newState);
 
-  var doOpen = newState == Characteristic.TargetDoorState.OPEN;
+  var doOpen = newState === Characteristic.TargetDoorState.OPEN;
   var newHomeKitState = doOpen ? Characteristic.CurrentDoorState.OPEN : Characteristic.CurrentDoorState.CLOSED;
   var newHomeKitStateTarget = doOpen ? Characteristic.TargetDoorState.OPEN : Characteristic.TargetDoorState.CLOSED;
   var urlToCall = this.setTargetDoorStateCloseURL;
@@ -81,7 +110,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
     urlForm = this.setTargetDoorStateOpenForm;
     urlHeaders = this.setTargetDoorStateOpenHeaders;
   }
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
     this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newHomeKitStateTarget, undefined, null);
     this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newHomeKitState, undefined, null);
   }).bind(this));

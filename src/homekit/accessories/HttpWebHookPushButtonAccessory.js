@@ -24,16 +24,32 @@ function HttpWebHookPushButtonAccessory(ServiceParam, CharacteristicParam, platf
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookPushButtonAccessory-" + this.id);
 
   this.service = new Service.Switch(this.name);
-  this.changeHandler = (function(newState) {
-    if (newState) {
-      this.log("Change HomeKit state for push button to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.On).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+  this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+}
+
+HttpWebHookPushButtonAccessory.prototype.changeFromServer = function(urlParams) {
+  if (!urlParams.state) {
+    return {
+      "success" : true,
+      "state" : cachedState
+    };
+  }
+  else {
+    var state = urlParams.state;
+    var stateBool = state === "true";
+    // this.log("[INFO Http WebHook Server] State change of '%s'
+    // to '%s'.",accessory.id,stateBool);
+    if (stateBool) {
+      this.log("Change HomeKit state for push button to '%s'.", stateBool);
+      this.service.getCharacteristic(Characteristic.On).updateValue(stateBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       setTimeout(function() {
         this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
       }.bind(this), 1000);
     }
-  }).bind(this);
-  this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+    return {
+      "success" : true
+    };
+  }
 }
 
 HttpWebHookPushButtonAccessory.prototype.getState = function(callback) {
@@ -66,7 +82,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
       }.bind(this), 1000);
     }).bind(this);
 
-    Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, onSuccessAndFailureCallback, onSuccessAndFailureCallback);
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, onSuccessAndFailureCallback, onSuccessAndFailureCallback);
   }
 };
 

@@ -122,7 +122,7 @@ Target lock state (unsecured=0 / secured=1): http://yourHomebridgeServerIp:webho
 To update a window coverings you can update three different values:
 * Current position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentposition=%s` (%s is replaced by corresponding current position)
 * Target position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetposition=%s` (%s is replaced by corresponding target position)
-Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close  
+Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
 * Position State (Decreasing=0 / Increasing=1 / Stopped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
 
 
@@ -233,7 +233,7 @@ Example config.json:
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "brightness_url": "your url to change the light brightness", // (optional)
                         "brightness_method": "GET", // (optional)
-                        "brightness_body": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON, variables are replaced on the fly)
+                        "brightness_body": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}", // (optional only for POST and PUT; use "brightness_form" for x-www-form-urlencoded JSON, variables are replaced on the fly)
                         "brightness_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
                         "brightness_factor": 2.55 // (optional to convert homekit brightness to target system brightness)
                     }
@@ -294,7 +294,7 @@ Example config.json:
                     {
                     "id": "statelessswitch1",
                     "name": "Stateless Switch 1",
-                    "buttons": [//the buttons of the switch 
+                    "buttons": [//the buttons of the switch
                         {
                             "name": "Button1" // (The name does not appear in Home app but appear in Eve app)
                         },
@@ -359,6 +359,6 @@ Example config.json:
 The cache directory is used to cache the state of the accessories. It must point to a **valid** and **empty** directory and the user that runs homebridge must have **write access**.
 
 ## HTTPS
-If you want to create a secure connection for the webhooks you need to enable it by setting *https* to true. Then a self signed 
+If you want to create a secure connection for the webhooks you need to enable it by setting *https* to true. Then a self signed
 ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl
 certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.

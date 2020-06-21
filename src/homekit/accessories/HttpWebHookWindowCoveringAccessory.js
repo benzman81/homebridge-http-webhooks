@@ -49,26 +49,56 @@ function HttpWebHookWindowCoveringAccessory(ServiceParam, CharacteristicParam, p
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookWindowCoveringAccessory-" + this.id);
 
   this.service = new Service.WindowCovering(this.name);
-  this.changeCurrentPositionHandler = (function(newState) {
-    this.log("Change Current Window Covering for covers to '%s'.", newState);
-    this.service.getCharacteristic(Characteristic.CurrentPosition).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-  }).bind(this);
-  this.changeTargetPositionHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Target Position for covers to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.TargetPosition).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-  this.changePositionStateHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Position State for covers to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.PositionState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-
   this.service.getCharacteristic(Characteristic.TargetPosition).on('get', this.getTargetPosition.bind(this)).on('set', this.setTargetPosition.bind(this));
   this.service.getCharacteristic(Characteristic.CurrentPosition).on('get', this.getCurrentPosition.bind(this));
   this.service.getCharacteristic(Characteristic.PositionState).on('get', this.getPositionState.bind(this));
+}
+
+HttpWebHookWindowCoveringAccessory.prototype.changeFromServer = function(urlParams) {
+  if (urlParams.currentposition != null) {
+    var cachedCurrentPosition = this.storage.getItemSync("http-webhook-current-position-" + this.id);
+    if (cachedCurrentPosition === undefined) {
+      cachedCurrentPosition = 100;
+    }
+    this.storage.setItemSync("http-webhook-current-position-" + this.id, urlParams.currentposition);
+    if (cachedCurrentPosition !== urlParams.currentposition) {
+      this.log("Change Current Window Covering for covers to '%s'.", urlParams.currentposition);
+      this.service.getCharacteristic(Characteristic.CurrentPosition).updateValue(urlParams.currentposition, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+    }
+  }
+
+  if (urlParams.targetposition != null) {
+    var cachedTargetPosition = this.storage.getItemSync("http-webhook-target-position-" + this.id);
+    if (cachedTargetPosition === undefined) {
+      cachedTargetPosition = 100;
+    }
+    this.storage.setItemSync("http-webhook-target-position-" + this.id, urlParams.targetposition);
+    if (cachedTargetPosition !== urlParams.targetposition) {
+      if (urlParams.targetposition) {
+        this.log("Change Target Position for covers to '%s'.", urlParams.targetposition);
+        this.service.getCharacteristic(Characteristic.TargetPosition).updateValue(urlParams.targetposition, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  if (urlParams.positionstate != null) {
+    var cachedPositionState = this.storage.getItemSync("http-webhook-position-state-" + this.id);
+    if (cachedPositionState === undefined) {
+      cachedPositionState = false;
+    }
+    this.storage.setItemSync("http-webhook-position-state-" + this.id, urlParams.positionstate);
+    if (cachedPositionState !== urlParams.positionstate) {
+      if (urlParams.positionstate) {
+        this.log("Change Position State for covers to '%s'.", urlParams.positionstate);
+        this.service.getCharacteristic(Characteristic.PositionState).updateValue(urlParams.positionstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  return {
+    "success" : true,
+    "CurrentPosition" : cachedCurrentPosition,
+    "TargetPosition" : cachedTargetPosition,
+    "PositionState" : cachedPositionState
+  };
 }
 
 HttpWebHookWindowCoveringAccessory.prototype.getTargetPosition = function(callback) {
@@ -132,7 +162,7 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newSta
     urlHeaders = this.setTargetPositionCloseHeaders;
   }
 
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, null, null, Constants.COVERS_REQUEST_TIMEOUT);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, null, null, Constants.COVERS_REQUEST_TIMEOUT);
 };
 
 HttpWebHookWindowCoveringAccessory.prototype.getCurrentPosition = function(callback) {

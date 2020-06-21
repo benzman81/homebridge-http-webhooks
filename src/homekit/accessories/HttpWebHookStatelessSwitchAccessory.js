@@ -15,23 +15,14 @@ function HttpWebHookStatelessSwitchAccessory(ServiceParam, CharacteristicParam, 
 
   this.service = [];
   for (var index = 0; index < this.buttons.length; index++) {
-    var single_press = this.buttons[index]["single_press"] == undefined ? true : this.buttons[index]["single_press"];
-    var double_press = this.buttons[index]["double_press"] == undefined ? true : this.buttons[index]["double_press"];
-    var long_press = this.buttons[index]["long_press"] == undefined ? true : this.buttons[index]["long_press"];
+    var single_press = this.buttons[index]["single_press"] === undefined ? true : this.buttons[index]["single_press"];
+    var double_press = this.buttons[index]["double_press"] === undefined ? true : this.buttons[index]["double_press"];
+    var long_press = this.buttons[index]["long_press"] === undefined ? true : this.buttons[index]["long_press"];
     var button = new Service.StatelessProgrammableSwitch(this.buttons[index].name, '' + index);
     button.getCharacteristic(Characteristic.ProgrammableSwitchEvent).setProps(GetStatelessSwitchProps(single_press, double_press, long_press));
     button.getCharacteristic(Characteristic.ServiceLabelIndex).setValue(index + 1);
     this.service.push(button);
   }
-  this.changeHandler = (function(buttonName, event) {
-    for (var index = 0; index < this.service.length; index++) {
-      var serviceName = this.service[index].getCharacteristic(Characteristic.Name).value;
-      if (serviceName === buttonName) {
-        this.log("Pressing '%s' with event '%i'", buttonName, event)
-        this.service[index].getCharacteristic(Characteristic.ProgrammableSwitchEvent).updateValue(event, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-      }
-    }
-  }).bind(this);
 
   var informationService = new Service.AccessoryInformation();
   informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
@@ -39,6 +30,18 @@ function HttpWebHookStatelessSwitchAccessory(ServiceParam, CharacteristicParam, 
   informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookStatelessSwitchAccessory-" + this.id);
   this.service.push(informationService);
 };
+
+HttpWebHookStatelessSwitchAccessory.prototype.changeFromServer = function(urlParams) {
+  if (urlParams.event && urlParams.event) {
+    for (var index = 0; index < this.service.length; index++) {
+      var serviceName = this.service[index].getCharacteristic(Characteristic.Name).value;
+      if (serviceName === urlParams.buttonName) {
+        this.log("Pressing '%s' with event '%i'", urlParams.buttonName, urlParams.event)
+        this.service[index].getCharacteristic(Characteristic.ProgrammableSwitchEvent).updateValue(urlParams.event, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+}
 
 function GetStatelessSwitchProps(single_press, double_press, long_press) {
   var props;

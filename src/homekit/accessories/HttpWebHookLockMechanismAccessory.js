@@ -29,21 +29,42 @@ function HttpWebHookLockMechanismAccessory(ServiceParam, CharacteristicParam, pl
   this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookLockMechanismAccessory-" + this.id);
 
   this.service = new Service.LockMechanism(this.name);
-  this.changeLockCurrentStateHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Current Lock State for locking to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-  this.changeLockTargetStateHandler = (function(newState) {
-    if (newState) {
-      this.log("Change Target Lock State for locking to '%s'.", newState);
-      this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newState, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
-  }).bind(this);
-
   this.service.getCharacteristic(Characteristic.LockTargetState).on('get', this.getLockTargetState.bind(this)).on('set', this.setLockTargetState.bind(this));
   this.service.getCharacteristic(Characteristic.LockCurrentState).on('get', this.getLockCurrentState.bind(this));
+}
+
+HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParams) {
+  if (urlParams.lockcurrentstate != null) {
+    var cachedLockCurrentState = this.storage.getItemSync("http-webhook--lock-current-state-" + this.id);
+    if (cachedLockCurrentState === undefined) {
+      cachedLockCurrentState = Characteristic.LockCurrentState.SECURED;
+    }
+    this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, urlParams.lockcurrentstate);
+    if (cachedLockCurrentState !== urlParams.lockcurrentstate) {
+      if (urlParams.lockcurrentstate) {
+        this.log("Change Current Lock State for locking to '%s'.", urlParams.lockcurrentstate);
+        this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(urlParams.lockcurrentstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  if (urlParams.locktargetstate != null) {
+    var cachedLockTargetState = this.storage.getItemSync("http-webhook-lock-target-state-" + this.id);
+    if (cachedLockTargetState === undefined) {
+      cachedLockTargetState = Characteristic.LockTargetState.SECURED;
+    }
+    this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, urlParams.locktargetstate);
+    if (cachedLockTargetState !== urlParams.locktargetstate) {
+      if (urlParams.locktargetstate) {
+        this.log("Change Target Lock State for locking to '%s'.", urlParams.locktargetstate);
+        this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(urlParams.locktargetstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+      }
+    }
+  }
+  return {
+    "success" : true,
+    "currentState" : cachedLockCurrentState,
+    "targetState" : cachedLockTargetState
+  };
 }
 
 HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callback) {
@@ -56,7 +77,7 @@ HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callba
 };
 
 HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKitState, callback, context) {
-  var doLock = homeKitState == Characteristic.LockTargetState.SECURED;
+  var doLock = homeKitState === Characteristic.LockTargetState.SECURED;
   var newHomeKitState = doLock ? Characteristic.LockCurrentState.SECURED : Characteristic.LockCurrentState.UNSECURED;
   var newHomeKitStateTarget = doLock ? Characteristic.LockTargetState.SECURED : Characteristic.LockTargetState.UNSECURED;
 
@@ -76,7 +97,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     urlHeaders = this.setLockTargetStateOpenHeaders;
   }
 
-  Util.callHttpApi(urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
     this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
     this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
     this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);
