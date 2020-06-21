@@ -1,3 +1,11 @@
+### 0.1.0
+
+Major restructuring for better maintainance. I tried best to not break anything. If I did, please report issue and I will fix it.
+
+New features:
+
+  - "on_form"/"off_form" now supported for outlets
+
 ### 0.0.62
 
 New features:
@@ -130,7 +138,7 @@ New features:
 New features:
 
   - Added lock mechanism. (thanks to kaowiec).
-  
+
 ### 0.0.40
 
 New features:
@@ -174,7 +182,7 @@ New features:
 Bugfix:
 
   - Last fix wasn't correct. Removed cache handling for push button as state is always false.
-  
+
 ### 0.0.33
 
 Bugfix:
@@ -223,7 +231,7 @@ New features:
 New features:
 
   - Added light. Currently just on/off is supported.
-  
+
 ## 0.0.25
 
 Bugfix:
