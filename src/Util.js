@@ -38,6 +38,7 @@ const callHttpApi = function(log, urlToCall, urlMethod, urlBody, urlForm, urlHea
     }).bind(this));
   }
   else {
+    onSuccessCallback();
     homeKitCallback(null);
   }
 };

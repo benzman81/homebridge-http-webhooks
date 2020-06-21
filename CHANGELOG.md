@@ -1,3 +1,14 @@
+### 0.1.1
+
+New features:
+
+  - You can now query the state of security system by avoiding currentstate and targetstate parameter.
+
+Bugfix:
+
+  - Fixed bug that success callback is not called if no url is called.
+  - Fixed bug, that security system shows correct status after restart.
+
 ### 0.1.0
 
 Major restructuring for better maintainance. I tried best to not break anything. If I did, please report issue and I will fix it.
