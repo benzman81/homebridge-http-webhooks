@@ -4,7 +4,7 @@ const Server = require('../Server');
 var HttpWebHookSensorAccessory = require('./accessories/HttpWebHookSensorAccessory');
 var HttpWebHookSwitchAccessory = require('./accessories/HttpWebHookSwitchAccessory');
 var HttpWebHookPushButtonAccessory = require('./accessories/HttpWebHookPushButtonAccessory');
-var HttpWebHookLightAccessory = require('./accessories/HttpWebHookLightAccessory');
+var HttpWebHookLightBulbAccessory = require('./accessories/HttpWebHookLightBulbAccessory');
 var HttpWebHookThermostatAccessory = require('./accessories/HttpWebHookThermostatAccessory');
 var HttpWebHookOutletAccessory = require('./accessories/HttpWebHookOutletAccessory');
 var HttpWebHookSecurityAccessory = require('./accessories/HttpWebHookSecurityAccessory');
@@ -60,7 +60,7 @@ HttpWebHooksPlatform.prototype.accessories = function(callback) {
   }
 
   for (var i = 0; i < this.lights.length; i++) {
-    var lightAccessory = new HttpWebHookLightAccessory(Service, Characteristic, this, this.lights[i]);
+    var lightAccessory = new HttpWebHookLightBulbAccessory(Service, Characteristic, this, this.lights[i]);
     accessories.push(lightAccessory);
   }
 
