@@ -1,3 +1,15 @@
+### 0.1.3
+
+Bugfix:
+
+  - Fixed bug if no url is called and no success callback is set.
+
+### 0.1.2
+
+New features:
+
+  - Support Config UI X (thanks to donavanbecker).
+
 ### 0.1.1
 
 New features:
