@@ -30,8 +30,7 @@ function HttpWebHookPushButtonAccessory(ServiceParam, CharacteristicParam, platf
 HttpWebHookPushButtonAccessory.prototype.changeFromServer = function(urlParams) {
   if (!urlParams.state) {
     return {
-      "success" : true,
-      "state" : cachedState
+      "success" : true
     };
   }
   else {
