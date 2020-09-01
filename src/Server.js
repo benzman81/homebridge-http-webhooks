@@ -87,6 +87,17 @@ Server.prototype.getSSLServerOptions = function() {
 
 Server.prototype.createServerCallback = function() {
   return (function(request, response) {
+    // Based on https://gist.github.com/balupton/3696140
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Request-Method', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+    response.setHeader('Access-Control-Allow-Headers', '*');
+    if (request.method === 'OPTIONS') {
+      response.writeHead(200);
+      response.end();
+      return;
+    }
+    
     var theUrl = request.url;
     var theUrlParts = url.parse(theUrl, true);
     var theUrlParams = theUrlParts.query;
