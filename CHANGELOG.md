@@ -1,3 +1,9 @@
+### 0.1.7
+
+Bugfix:
+
+  - Missed to add "webhook_enable_cors" and "auto_set_current_position" to config.schema.json for Config UI X.
+
 ### 0.1.6
 
 New features:

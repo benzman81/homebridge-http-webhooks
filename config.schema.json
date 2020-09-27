@@ -24,6 +24,12 @@
         "placeholder": "::",
         "required": false
       },
+      "webhook_enable_cors": {
+        "title": "Webhook enable CORS",
+        "type": "boolean",
+        "placeholder": false,
+        "required": false
+      },
       "cache_directory": {
         "title": "Cache Directory",
         "type": "string",
@@ -805,6 +811,12 @@
               "title": "Close Headers",
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "auto_set_current_position": {
+              "title": "Auto set current position",
+              "type": "boolean",
+              "placeholder": false,
               "required": false
             }
           }
