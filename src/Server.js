@@ -18,6 +18,7 @@ function Server(ServiceParam, CharacteristicParam, platform, platformConfig) {
 
   this.webhookPort = platformConfig["webhook_port"] || Constants.DEFAULT_PORT;
   this.webhookListenHost = platformConfig["webhook_listen_host"] || Constants.DEFAULT_LISTEN_HOST;
+  this.webhookEnableCORS = platformConfig["webhook_enable_cors"] || false;
   this.httpAuthUser = platformConfig["http_auth_user"] || null;
   this.httpAuthPass = platformConfig["http_auth_pass"] || null;
   this.https = platformConfig["https"] === true;
@@ -87,6 +88,18 @@ Server.prototype.getSSLServerOptions = function() {
 
 Server.prototype.createServerCallback = function() {
   return (function(request, response) {
+    if(this.webhookEnableCORS) {
+      // Based on https://gist.github.com/balupton/3696140
+      response.setHeader('Access-Control-Allow-Origin', '*');
+      response.setHeader('Access-Control-Request-Method', '*');
+      response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+      response.setHeader('Access-Control-Allow-Headers', '*');
+      if (request.method === 'OPTIONS') {
+        response.writeHead(200);
+        response.end();
+        return;
+      }
+    }
     var theUrl = request.url;
     var theUrlParts = url.parse(theUrl, true);
     var theUrlParams = theUrlParts.query;

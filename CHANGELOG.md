@@ -1,3 +1,9 @@
+### 0.1.6
+
+New features:
+
+  - You can now set "webhook_enable_cors" to true to enable cors for webhook server (thanks to konstantinkobs).
+
 ### 0.1.5
 
 New features:

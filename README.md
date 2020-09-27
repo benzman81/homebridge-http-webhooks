@@ -137,6 +137,7 @@ Example config.json:
                 "platform": "HttpWebHooks",
                 "webhook_port": "51828",
                 "webhook_listen_host": "::", // (optional, default: "0.0.0.0")
+                "webhook_enable_cors": true, // (optional, default: false)
                 "cache_directory": "./.node-persist/storage", // (optional, default: "./.node-persist/storage")
                 "http_auth_user": "test", // (optional, only if you like to secure your api)
                 "http_auth_pass": "test", // (optional, only if you like to secure your api)
@@ -335,7 +336,7 @@ Example config.json:
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "auto_set_current_position": true // (optional)
+                        "auto_set_current_position": true // (optional, default: false)
                      }
                 ],
                 "lockmechanisms": [
