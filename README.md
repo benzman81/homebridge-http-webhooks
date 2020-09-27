@@ -125,6 +125,7 @@ To update a window coverings you can update three different values:
 Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
 * Position State (Decreasing=0 / Increasing=1 / Stopped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
 
+If you dont use callbacks to let your covering give feedback of current position back to homekit you can set "auto_set_current_position" to true.
 
 
 # Configuration
@@ -333,7 +334,8 @@ Example config.json:
                         "close_url" : "http://your.url/to/close",
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
-                        "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
+                        "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
+                        "auto_set_current_position": true // (optional)
                      }
                 ],
                 "lockmechanisms": [

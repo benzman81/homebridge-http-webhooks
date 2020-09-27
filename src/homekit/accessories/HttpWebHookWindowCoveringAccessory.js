@@ -42,6 +42,7 @@ function HttpWebHookWindowCoveringAccessory(ServiceParam, CharacteristicParam, p
   this.setTargetPositionCloseBody = windowcoveringConfig["close_body"] || "";
   this.setTargetPositionCloseForm = windowcoveringConfig["close_form"] || "";
   this.setTargetPositionCloseHeaders = windowcoveringConfig["close_headers"] || "{}";
+  this.autoSetCurrentPosition = windowcoveringConfig["auto_set_current_position"] || false;
 
   this.informationService = new Service.AccessoryInformation();
   this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
@@ -112,8 +113,11 @@ HttpWebHookWindowCoveringAccessory.prototype.getTargetPosition = function(callba
 
 HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newState, callback, context) {
   this.log("Target Position State for '%s'...", this.id);
-  this.log("newstate is: " + newState);
+  this.log("new target state is: " + newState);
   this.storage.setItemSync("http-webhook-target-position-" + this.id, newState);
+  if(this.autoSetCurrentPosition) {
+    this.storage.setItemSync("http-webhook-current-position-" + this.id, newState);
+  }
   var urlToCall = this.setTargetPositionCloseURL;
   var urlMethod = this.setTargetPositionCloseMethod;
   var urlBody = this.setTargetPositionCloseBody;
@@ -162,14 +166,21 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newSta
     urlHeaders = this.setTargetPositionCloseHeaders;
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, null, null, Constants.COVERS_REQUEST_TIMEOUT);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+    this.service.getCharacteristic(Characteristic.TargetPosition).updateValue(newState, undefined, null);
+    if(this.autoSetCurrentPosition) {
+      this.log("new current state is: " + newState);
+      setTimeout(function() {
+        this.service.getCharacteristic(Characteristic.CurrentPosition).updateValue(newState, undefined, null);
+      }.bind(this), 1000);
+    }
+  }).bind(this), null, Constants.COVERS_REQUEST_TIMEOUT);
 };
 
 HttpWebHookWindowCoveringAccessory.prototype.getCurrentPosition = function(callback) {
   this.log("Getting Current Position for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-position-" + this.id);
   if (state === undefined) {
-    // state = Characteristic.CurrentPosition = 100;
     state = 100;
   }
   callback(null, state);

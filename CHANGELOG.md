@@ -1,3 +1,9 @@
+### 0.1.5
+
+New features:
+
+  - You can now set "auto_set_current_position" in for window coverings to true if you dont use callbacks to let your covering give feedback of current position back to homekit.
+
 ### 0.1.4
 
 Bugfix:
