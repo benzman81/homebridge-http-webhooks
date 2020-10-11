@@ -1,3 +1,10 @@
+### 0.1.8
+
+Bugfix:
+
+  - Stateless switch web hook did not return a response.
+
+
 ### 0.1.7
 
 Bugfix:

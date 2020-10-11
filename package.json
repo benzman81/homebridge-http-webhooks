@@ -1,6 +1,6 @@
 {
   "name": "homebridge-http-webhooks",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "displayName": "Homebridge Webhooks",
   "description": "A http plugin with support of webhooks for Homebridge: https://github.com/nfarina/homebridge",
   "license": "GPL-3.0",

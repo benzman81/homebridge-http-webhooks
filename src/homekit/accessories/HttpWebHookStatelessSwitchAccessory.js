@@ -41,6 +41,9 @@ HttpWebHookStatelessSwitchAccessory.prototype.changeFromServer = function(urlPar
       }
     }
   }
+  return {
+    "success" : true
+  };
 }
 
 function GetStatelessSwitchProps(single_press, double_press, long_press) {
