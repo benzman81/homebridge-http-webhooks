@@ -66,14 +66,16 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
   if (cached === undefined) {
     cached = isNumberBased ? 0 : false;
   }
-  var urlValue = isNumberBased ? urlParams.value : urlParams.state === "true";
-  this.log("urlValue: "+ urlValue);
-  if (!urlValue && urlValue !== false) {
+  var noUrlValue = isNumberBased ? urlParams.value === undefined : urlParams.state === undefined;
+  if (noUrlValue) {
+    this.log("No urlValue");
     return {
       "success" : true,
       "state" : cached
     };
   }
+  var urlValue = isNumberBased ? urlParams.value : urlParams.state === "true";
+  this.log("urlValue: "+ urlValue);
   this.storage.setItemSync("http-webhook-" + this.id, urlValue);
   this.log("cached: "+ cached);
   this.log("cached !== urlValue: "+ (cached !== urlValue));
