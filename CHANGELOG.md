@@ -1,3 +1,9 @@
+### 0.1.9
+
+Bugfix:
+
+  - Sensors now return cached value if state and value is not provided in URL (thanks to tritter).
+
 ### 0.1.8
 
 Bugfix:
