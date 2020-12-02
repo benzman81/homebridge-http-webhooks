@@ -2,13 +2,14 @@ const Constants = require('./Constants');
 
 var request = require("request");
 
-const callHttpApi = function(log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, homeKitCallback, context, onSuccessCallback, onFailureCallback, timeout) {
+const callHttpApi = function(log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, rejectUnauthorized, homeKitCallback, context, onSuccessCallback, onFailureCallback, timeout) {
   if (urlToCall !== "" && context !== Constants.CONTEXT_FROM_WEBHOOK) {
     var theRequest = {
       method : urlMethod,
       url : urlToCall,
       timeout : timeout || Constants.DEFAULT_REQUEST_TIMEOUT,
-      headers : JSON.parse(urlHeaders)
+      headers : JSON.parse(urlHeaders),
+      rejectUnauthorized: rejectUnauthorized
     };
     if (urlMethod === "POST" || urlMethod === "PUT") {
       if (urlForm) {

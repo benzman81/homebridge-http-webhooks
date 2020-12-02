@@ -11,6 +11,7 @@ function HttpWebHookSwitchAccessory(ServiceParam, CharacteristicParam, platform,
 
   this.id = switchConfig["id"];
   this.name = switchConfig["name"];
+  this.rejectUnauthorized = switchConfig["rejectUnauthorized"] === undefined ? true: switchConfig["rejectUnauthorized"] === true;
   this.onURL = switchConfig["on_url"] || "";
   this.onMethod = switchConfig["on_method"] || "GET";
   this.onBody = switchConfig["on_body"] || "";
@@ -84,7 +85,7 @@ HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, cont
     urlHeaders = this.offHeaders;
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookSwitchAccessory.prototype.getServices = function() {

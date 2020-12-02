@@ -201,6 +201,7 @@ Example config.json:
                     {
                         "id": "switch1",
                         "name": "Switch name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "on_url": "your url to switch the switch on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
@@ -215,6 +216,7 @@ Example config.json:
                     {
                         "id": "pushbutton1",
                         "name": "Push button name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "push_url": "your url to be called on push", // (optional)
                         "push_method": "GET", // (optional)
                         "push_body": "{ \"push\": true }", // (optional only for POST and PUT; use "push_form" for x-www-form-urlencoded JSON)
@@ -225,6 +227,7 @@ Example config.json:
                     {
                         "id": "light1",
                         "name": "Light name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "on_url": "your url to switch the light on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
@@ -244,6 +247,7 @@ Example config.json:
                     {
                         "id": "thermostat1",
                         "name": "Thermostat name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
                         "set_target_temperature_method": "GET", // (optional)
                         "set_target_temperature_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "set_target_temperature_form" for x-www-form-urlencoded JSON)
@@ -258,6 +262,7 @@ Example config.json:
                     {
                         "id": "outlet1",
                         "name": "Outlet name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "on_url": "your url to switch the outlet on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST and PUT; use "on_form" for x-www-form-urlencoded JSON)
@@ -272,6 +277,7 @@ Example config.json:
                     {
                         "id": "security1",
                         "name": "Security System",
+                        "rejectUnauthorized": false, // (optional)
                         "set_state_url": "http://localhost/security/mode/%d", // %d is replaced by the target state
                         "set_state_method": "GET", // (optional)
                         "set_state_body": "{ \"on\": true }", // (optional only for POST and PUT; use "set_state_form" for x-www-form-urlencoded JSON)
@@ -282,6 +288,7 @@ Example config.json:
                     {
                         "id": "garagedooropener1",
                         "name": "Garage Door Opener name 1",
+                        "rejectUnauthorized": false, // (optional)
                         "open_url" : "your url to open the garage door", // (optional)
                         "open_method" : "GET", // (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)
@@ -312,6 +319,7 @@ Example config.json:
                     {
                         "id": "windowcovering1",
                         "name": "Some Window Cover",
+                        "rejectUnauthorized": false, // (optional)
                         "open_url" : "http://your.url/to/open",
                         "open_method" : "GET", // (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)
@@ -343,6 +351,7 @@ Example config.json:
                     {
                         "id": "doorlock1",
                         "name": "Door",
+                        "rejectUnauthorized": false, // (optional)
                         "open_url" : "your url to open the garage door", // (optional)
                         "open_method" : "GET",// (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST and PUT; use "open_form" for x-www-form-urlencoded JSON)

@@ -12,6 +12,7 @@ function HttpWebHookLightBulbAccessory(ServiceParam, CharacteristicParam, platfo
   this.id = lightConfig["id"];
   this.type = "lightbulb";
   this.name = lightConfig["name"];
+  this.rejectUnauthorized = lightConfig["rejectUnauthorized"] === undefined ? true: lightConfig["rejectUnauthorized"] === true;
   this.onURL = lightConfig["on_url"] || "";
   this.onMethod = lightConfig["on_method"] || "GET";
   this.onBody = lightConfig["on_body"] || "";
@@ -99,7 +100,7 @@ HttpWebHookLightBulbAccessory.prototype.setState = function(powerOn, callback, c
     urlForm = this.offForm;
     urlHeaders = this.offHeaders;
   }
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookLightBulbAccessory.prototype.getBrightness = function(callback) {
@@ -138,7 +139,7 @@ HttpWebHookLightBulbAccessory.prototype.setBrightness = function(brightness, cal
     urlBody = this.replaceVariables(urlBody, newState, brightnessToSet);
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookLightBulbAccessory.prototype.replaceVariables = function(text, state, brightness) {

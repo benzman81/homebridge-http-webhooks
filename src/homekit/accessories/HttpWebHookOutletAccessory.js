@@ -12,6 +12,7 @@ function HttpWebHookOutletAccessory(ServiceParam, CharacteristicParam, platform,
   this.id = outletConfig["id"];
   this.name = outletConfig["name"];
   this.type = "outlet";
+  this.rejectUnauthorized = outletConfig["rejectUnauthorized"] === undefined ? true: outletConfig["rejectUnauthorized"] === true;
   this.onURL = outletConfig["on_url"] || "";
   this.onMethod = outletConfig["on_method"] || "GET";
   this.onBody = outletConfig["on_body"] || "";
@@ -114,7 +115,7 @@ HttpWebHookOutletAccessory.prototype.setState = function(powerOn, callback, cont
     urlHeaders = this.offHeaders;
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookOutletAccessory.prototype.getServices = function() {

@@ -1,3 +1,13 @@
+### 0.1.10
+
+New features:
+
+  - You can now set "rejectUnauthorized" to false on each accessory to allow calls via https on using unsecure certificate.
+
+Bugfix:
+
+  - Reduced some log messages by using debug (thanks to jsiegenthaler).
+
 ### 0.1.9
 
 Bugfix:

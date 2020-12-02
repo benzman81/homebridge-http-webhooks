@@ -12,6 +12,7 @@ function HttpWebHookPushButtonAccessory(ServiceParam, CharacteristicParam, platf
   this.id = pushButtonConfig["id"];
   this.type = "pushbutton";
   this.name = pushButtonConfig["name"];
+  this.rejectUnauthorized = pushButtonConfig["rejectUnauthorized"] === undefined ? true: pushButtonConfig["rejectUnauthorized"] === true;
   this.pushURL = pushButtonConfig["push_url"] || "";
   this.pushMethod = pushButtonConfig["push_method"] || "GET";
   this.pushBody = pushButtonConfig["push_body"] || "";
@@ -81,7 +82,7 @@ HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, 
       }.bind(this), 1000);
     }).bind(this);
 
-    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, onSuccessAndFailureCallback, onSuccessAndFailureCallback);
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context, onSuccessAndFailureCallback, onSuccessAndFailureCallback);
   }
 };
 

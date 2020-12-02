@@ -12,6 +12,7 @@ function HttpWebHookLockMechanismAccessory(ServiceParam, CharacteristicParam, pl
   this.id = lockMechanismOpenerConfig["id"];
   this.name = lockMechanismOpenerConfig["name"];
   this.type = "lockmechanism";
+  this.rejectUnauthorized = lockMechanismOpenerConfig["rejectUnauthorized"] === undefined ? true: lockMechanismOpenerConfig["rejectUnauthorized"] === true;
   this.setLockTargetStateOpenURL = lockMechanismOpenerConfig["open_url"] || "";
   this.setLockTargetStateOpenMethod = lockMechanismOpenerConfig["open_method"] || "GET";
   this.setLockTargetStateOpenBody = lockMechanismOpenerConfig["open_body"] || "";
@@ -97,7 +98,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
     urlHeaders = this.setLockTargetStateOpenHeaders;
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context, (function() {
     this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, newHomeKitState);
     this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(newHomeKitStateTarget, undefined, null);
     this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(newHomeKitState, undefined, null);

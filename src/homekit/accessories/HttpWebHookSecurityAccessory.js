@@ -12,6 +12,7 @@ function HttpWebHookSecurityAccessory(ServiceParam, CharacteristicParam, platfor
   this.id = securityConfig["id"];
   this.name = securityConfig["name"];
   this.type = "security";
+  this.rejectUnauthorized = securityConfig["rejectUnauthorized"] === undefined ? true: securityConfig["rejectUnauthorized"] === true;
   this.setStateURL = securityConfig["set_state_url"] || "";
   this.setStateMethod = securityConfig["set_state_method"] || "GET";
   this.setStateBody = securityConfig["set_state_body"] || "";
@@ -82,7 +83,7 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
   var urlBody = this.setStateBody;
   var urlForm = this.setStateForm;
   var urlHeaders = this.setStateHeaders;
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context, (function() {
     this.service.getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(newState, undefined, null);
   }).bind(this));
 };

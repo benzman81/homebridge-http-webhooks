@@ -12,6 +12,7 @@ function HttpWebHookThermostatAccessory(ServiceParam, CharacteristicParam, platf
   this.id = thermostatConfig["id"];
   this.name = thermostatConfig["name"];
   this.type = "thermostat";
+  this.rejectUnauthorized = thermostatConfig["rejectUnauthorized"] === undefined ? true: thermostatConfig["rejectUnauthorized"] === true;
   this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
   this.setTargetTemperatureMethod = thermostatConfig["set_target_temperature_method"] || "GET";
   this.setTargetTemperatureBody = thermostatConfig["set_target_temperature_body"] || "";
@@ -107,7 +108,7 @@ HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function(temp, c
   var urlForm = this.setTargetTemperatureForm;
   var urlHeaders = this.setTargetTemperatureHeaders;
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookThermostatAccessory.prototype.getCurrentTemperature = function(callback) {
@@ -137,7 +138,7 @@ HttpWebHookThermostatAccessory.prototype.setTargetHeatingCoolingState = function
   var urlForm = this.setTargetHeatingCoolingStateForm;
   var urlHeaders = this.setTargetHeatingCoolingStateHeaders;
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context);
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
 HttpWebHookThermostatAccessory.prototype.getCurrentHeatingCoolingState = function(callback) {

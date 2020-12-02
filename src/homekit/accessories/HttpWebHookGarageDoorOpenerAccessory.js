@@ -12,6 +12,7 @@ function HttpWebHookGarageDoorOpenerAccessory(ServiceParam, CharacteristicParam,
   this.id = garageDoorOpenerConfig["id"];
   this.name = garageDoorOpenerConfig["name"];
   this.type = "garagedooropener";
+  this.rejectUnauthorized = garageDoorOpenerConfig["rejectUnauthorized"] === undefined ? true: garageDoorOpenerConfig["rejectUnauthorized"] === true;
   this.setTargetDoorStateOpenURL = garageDoorOpenerConfig["open_url"] || "";
   this.setTargetDoorStateOpenMethod = garageDoorOpenerConfig["open_method"] || "GET";
   this.setTargetDoorStateOpenBody = garageDoorOpenerConfig["open_body"] || "";
@@ -110,7 +111,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
     urlForm = this.setTargetDoorStateOpenForm;
     urlHeaders = this.setTargetDoorStateOpenHeaders;
   }
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context, (function() {
     this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(newHomeKitStateTarget, undefined, null);
     this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(newHomeKitState, undefined, null);
   }).bind(this));

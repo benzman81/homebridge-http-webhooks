@@ -12,6 +12,7 @@ function HttpWebHookWindowCoveringAccessory(ServiceParam, CharacteristicParam, p
   this.id = windowcoveringConfig["id"];
   this.name = windowcoveringConfig["name"];
   this.type = "windowcovering";
+  this.rejectUnauthorized = windowcoveringConfig["rejectUnauthorized"] === undefined ? true: windowcoveringConfig["rejectUnauthorized"] === true;
   this.setTargetPositionOpenURL = windowcoveringConfig["open_url"] || "";
   this.setTargetPositionOpenMethod = windowcoveringConfig["open_method"] || "GET";
   this.setTargetPositionOpenBody = windowcoveringConfig["open_body"] || "";
@@ -166,7 +167,7 @@ HttpWebHookWindowCoveringAccessory.prototype.setTargetPosition = function(newSta
     urlHeaders = this.setTargetPositionCloseHeaders;
   }
 
-  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, callback, context, (function() {
+  Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context, (function() {
     this.service.getCharacteristic(Characteristic.TargetPosition).updateValue(newState, undefined, null);
     if(this.autoSetCurrentPosition) {
       this.log("new current state is: " + newState);
