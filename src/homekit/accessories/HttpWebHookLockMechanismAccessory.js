@@ -69,7 +69,7 @@ HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParam
 }
 
 HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callback) {
-  this.log("Getting current Target Lock State for '%s'...", this.id);
+  this.log.debug("Getting current Target Lock State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-lock-target-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.LockTargetState.SECURED;
@@ -110,7 +110,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
 };
 
 HttpWebHookLockMechanismAccessory.prototype.getLockCurrentState = function(callback) {
-  this.log("Getting Current Lock State for '%s'...", this.id);
+  this.log.debug("Getting Current Lock State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-lock-current-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.LockCurrentState.SECURED;
