@@ -66,7 +66,7 @@ HttpWebHookSecurityAccessory.prototype.changeFromServer = function(urlParams) {
 }
 
 HttpWebHookSecurityAccessory.prototype.getTargetSecurityState = function(callback) {
-  this.log("Getting Target Security state for '%s'...", this.id);
+  this.log.debug("Getting Target Security state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-target-security-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.SecuritySystemTargetState.DISARM;
@@ -89,7 +89,7 @@ HttpWebHookSecurityAccessory.prototype.setTargetSecurityState = function(newStat
 };
 
 HttpWebHookSecurityAccessory.prototype.getCurrentSecurityState = function(callback) {
-  this.log("Getting Current Security state for '%s'...", this.id);
+  this.log.debug("Getting Current Security state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-security-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.SecuritySystemCurrentState.DISARMED;
