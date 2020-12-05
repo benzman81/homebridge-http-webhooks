@@ -1,3 +1,9 @@
+### 0.1.11
+
+Bugfix:
+
+  - Reduced some more log messages by using debug (thanks to jsiegenthaler).
+
 ### 0.1.10
 
 New features:
