@@ -77,7 +77,7 @@ HttpWebHookLightBulbAccessory.prototype.changeFromServer = function(urlParams) {
 };
 
 HttpWebHookLightBulbAccessory.prototype.getState = function(callback) {
-  this.log("Getting current state for '%s'...", this.id);
+  this.log.debug("Getting current state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-" + this.id);
   if (state === undefined) {
     state = false;
@@ -104,7 +104,7 @@ HttpWebHookLightBulbAccessory.prototype.setState = function(powerOn, callback, c
 };
 
 HttpWebHookLightBulbAccessory.prototype.getBrightness = function(callback) {
-  this.log("Getting current brightness for '%s'...", this.id);
+  this.log.debug("Getting current brightness for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-" + this.id);
   if (state === undefined) {
     state = false;
