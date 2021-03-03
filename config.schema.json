@@ -946,6 +946,83 @@
             }
           }
         }
+      },
+      "fanv2s": {
+        "type": "array",
+        "title": "Fanv2",
+        "description": "Turn On and Off Fanv2 by triggering a URL of any system.",
+        "items": {
+          "title": "Fanv2s",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "fanv2-1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Fanv2 1",
+              "required": false
+            },
+            "rejectUnauthorized": {
+              "title": "Reject Unauthorized SSL Certificate",
+              "type": "boolean",
+              "placeholder": true,
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the fanv2 on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the fanv2 off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
       }
     }
   },
@@ -1285,6 +1362,32 @@
                 "lockmechanisms[].close_method",
                 "lockmechanisms[].close_body",
                 "lockmechanisms[].close_headers"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Fanv2",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            {
+              "title": "Fanv2",
+              "type": "array",
+              "orderable": false,
+              "items": [
+                "fanv2s[].id",
+                "fanv2s[].name",
+                "fanv2s[].rejectUnauthorized",
+                "fanv2s[].on_url",
+                "fanv2s[].on_method",
+                "fanv2s[].on_body",
+                "fanv2s[].on_headers",
+                "fanv2s[].off_url",
+                "ligfanv2shts[].off_method",
+                "fanv2s[].off_body",
+                "fanv2s[].off_headers"
               ]
             }
           ]

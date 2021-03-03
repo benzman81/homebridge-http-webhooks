@@ -10,6 +10,7 @@ var HttpWebHookGarageDoorOpenerAccessory = require('./src/homekit/accessories/Ht
 var HttpWebHookStatelessSwitchAccessory = require('./src/homekit/accessories/HttpWebHookStatelessSwitchAccessory');
 var HttpWebHookLockMechanismAccessory = require('./src/homekit/accessories/HttpWebHookLockMechanismAccessory');
 var HttpWebHookWindowCoveringAccessory = require('./src/homekit/accessories/HttpWebHookWindowCoveringAccessory');
+var HttpWebHookFanv2Accessory = require('./src/homekit/accessories/HttpWebHookFanv2Accessory');
 
 module.exports = function(homebridge) {
   homebridge.registerPlatform("homebridge-http-webhooks", "HttpWebHooks", HttpWebHooksPlatform);
@@ -24,4 +25,5 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookStatelessSwitch", HttpWebHookStatelessSwitchAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLockMechanism", HttpWebHookLockMechanismAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookWindowCovering", HttpWebHookWindowCoveringAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookFanv2", HttpWebHookFanv2Accessory);
 };
