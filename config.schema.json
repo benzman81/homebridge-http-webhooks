@@ -1115,7 +1115,7 @@
               "required": false
             },
             "target_state_url": {
-              "title": "Target State RL",
+              "title": "Target State URL",
               "type": "string",
               "placeholder": "your url to change the fanv2's target state",
               "required": false
@@ -1129,11 +1129,40 @@
             "target_state_body": {
               "title": "Target State Body",
               "type": "string",
-              "placeholder": "{ \"mode\": true }",
+              "placeholder": "{ \"mode\": %targetState }",
               "required": false
             },
             "target_state_headers": {
               "title": "Target State Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "enableSwingModeControls": {
+              "title": "Enable Swing Mode Controls",
+              "type": "boolean",
+              "required": false
+            },
+            "swing_mode_url": {
+              "title": "Swing Mode URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's swing mode",
+              "required": false
+            },
+            "swing_mode_method": {
+              "title": "Swing Mode Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "swing_mode_body": {
+              "title": "Swing Mode Body",
+              "type": "string",
+              "placeholder": "{ \"swing_mode\": %swingMode }",
+              "required": false
+            },
+            "swing_mode_headers": {
+              "title": "Swing Mode Headers",
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
               "required": false
@@ -1523,7 +1552,12 @@
                 "fanv2s[].target_state_url",
                 "fanv2s[].target_state_method",
                 "fanv2s[].target_state_body",
-                "fanv2s[].target_state_headers"
+                "fanv2s[].target_state_headers",
+                "fanv2s[].enableSwingModeControls",
+                "fanv2s[].swing_mode_url",
+                "fanv2s[].swing_mode_method",
+                "fanv2s[].swing_mode_body",
+                "fanv2s[].swing_mode_headers"
               ]
             }
           ]

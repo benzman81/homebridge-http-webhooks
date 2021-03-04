@@ -51,6 +51,13 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.targetStateForm = fanv2Config["target_state_form"] || "";
     this.targetStateHeaders = fanv2Config["target_state_headers"] || "{}";
 
+    this.enableSwingModeControls = fanv2Config["enableSwingModeControls"] || false;
+    this.swingModeURL = fanv2Config["swing_mode_url"] || "";
+    this.swingModeMethod = fanv2Config["swing_mode_method"] || "GET";
+    this.swingModeBody = fanv2Config["swing_mode_body"] || "";
+    this.swingModeForm = fanv2Config["swing_mode_form"] || "";
+    this.swingModeHeaders = fanv2Config["swing_mode_headers"] || "{}";
+
     this.informationService = new Service.AccessoryInformation();
     this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
     this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookFanv2Accessory-" + this.name);
@@ -66,6 +73,10 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
 
     if (this.enableTargetStateControls) {
         this.service.getCharacteristic(Characteristic.TargetFanState).on('get', this.getTargetState.bind(this)).on('set', this.setTargetState.bind(this));
+    }
+
+    if (this.enableSwingModeControls) {
+        this.service.getCharacteristic(Characteristic.SwingMode).on('get', this.getSwingMode.bind(this)).on('set', this.setSwingMode.bind(this));
     }
 }
 
@@ -180,9 +191,34 @@ HttpWebHookFanv2Accessory.prototype.setTargetState = function (targetState, call
     }
     var urlToCall = this.targetStateURL.replace("%targetState", targetState);
     var urlMethod = this.targetStateMethod;
-    var urlBody = this.targetStateBody;
+    var urlBody = this.targetStateBody.replace("%targetState", targetState);;
     var urlForm = this.targetStateForm;
     var urlHeaders = this.targetStateHeaders;
+
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
+};
+
+HttpWebHookFanv2Accessory.prototype.getSwingMode = function (callback) {
+    this.log.debug("Getting current swing mode for '%s'...", this.id);
+    var swingMode = this.storage.getItemSync("http-webhook-swingmode-" + this.id);
+    if (swingMode === undefined) {
+        swingMode = false;
+    }
+    callback(null, swingMode);
+};
+
+HttpWebHookFanv2Accessory.prototype.setSwingMode = function (swingMode, callback, context) {
+    this.log("Fanv2 swing mode for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-swingmode-" + this.id, swingMode);
+    var state = this.storage.getItemSync("http-webhook-" + this.id);
+    if (state === undefined) {
+        state = false;
+    }
+    var urlToCall = this.swingModeURL.replace("%swingMode", swingMode);
+    var urlMethod = this.swingModeMethod;
+    var urlBody = this.swingModeBody.replace("%swingMode", swingMode);;
+    var urlForm = this.swingModeForm;
+    var urlHeaders = this.swingModeHeaders;
 
     Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
