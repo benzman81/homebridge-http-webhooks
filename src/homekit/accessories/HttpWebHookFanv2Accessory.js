@@ -14,7 +14,7 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.name = fanv2Config["name"];
     this.rejectUnauthorized = fanv2Config["rejectUnauthorized"] === undefined ? true :
         fanv2Config["rejectUnauthorized"] === true;
-    //TODO
+
     this.onURL = fanv2Config["on_url"] || "";
     this.onMethod = fanv2Config["on_method"] || "GET";
     this.onBody = fanv2Config["on_body"] || "";
@@ -58,6 +58,12 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.swingModeForm = fanv2Config["swing_mode_form"] || "";
     this.swingModeHeaders = fanv2Config["swing_mode_headers"] || "{}";
 
+    this.rotationDirectionURL = fanv2Config["rotation_direction_url"] || "";
+    this.rotationDirectionMethod = fanv2Config["rotation_direction_method"] || "GET";
+    this.rotationDirectionBody = fanv2Config["rotation_direction_body"] || "";
+    this.rotationDirectionForm = fanv2Config["rotation_direction_form"] || "";
+    this.rotationDirectionHeaders = fanv2Config["rotation_direction_headers"] || "{}";
+
     this.informationService = new Service.AccessoryInformation();
     this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
     this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookFanv2Accessory-" + this.name);
@@ -66,6 +72,7 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.service = new Service.Fanv2(this.name);
     this.service.getCharacteristic(Characteristic.Active).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
     this.service.getCharacteristic(Characteristic.RotationSpeed).on('get', this.getSpeed.bind(this)).on('set', this.setSpeed.bind(this));
+    this.service.getCharacteristic(Characteristic.RotationDirection).on('get', this.getRotationDirection.bind(this)).on('set', this.setRotationDirection.bind(this));
 
     if (this.enableLockPhysicalControls) {
         this.service.getCharacteristic(Characteristic.LockPhysicalControls).on('get', this.getLockState.bind(this)).on('set', this.setLockState.bind(this));
@@ -219,6 +226,27 @@ HttpWebHookFanv2Accessory.prototype.setSwingMode = function (swingMode, callback
     var urlBody = this.swingModeBody.replace("%swingMode", swingMode);;
     var urlForm = this.swingModeForm;
     var urlHeaders = this.swingModeHeaders;
+
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
+};
+
+HttpWebHookFanv2Accessory.prototype.getRotationDirection = function (callback) {
+    this.log.debug("Getting current rotation direction for '%s'...", this.id);
+    var rotationDirection = this.storage.getItemSync("http-webhook-rotationdirection-" + this.id);
+    if (rotationDirection === undefined) {
+        rotationDirection = false;
+    }
+    callback(null, rotationDirection);
+};
+
+HttpWebHookFanv2Accessory.prototype.setRotationDirection = function (rotationDirection, callback, context) {
+    this.log("Fanv2 rotation direction for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-rotationdirection-" + this.id, rotationDirection);
+    var urlToCall = this.rotationDirectionURL.replace("%rotationDirection", rotationDirection);
+    var urlMethod = this.rotationDirectionMethod;
+    var urlBody = this.rotationDirectionBody.replace("%rotationDirection", rotationDirection);;
+    var urlForm = this.rotationDirectionForm;
+    var urlHeaders = this.rotationDirectionHeaders;
 
     Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };

@@ -1166,6 +1166,30 @@
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
               "required": false
+            },
+            "rotation_direction_url": {
+              "title": "Rotation Direction URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's rotation direction",
+              "required": false
+            },
+            "rotation_direction_method": {
+              "title": "Rotation Direction Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "rotation_direction_body": {
+              "title": "Rotation Direction Body",
+              "type": "string",
+              "placeholder": "{ \"rotation_direction\": %rotationDirection }",
+              "required": false
+            },
+            "rotation_direction_headers": {
+              "title": "Rotation Direction Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
             }
           }
         }
@@ -1557,7 +1581,11 @@
                 "fanv2s[].swing_mode_url",
                 "fanv2s[].swing_mode_method",
                 "fanv2s[].swing_mode_body",
-                "fanv2s[].swing_mode_headers"
+                "fanv2s[].swing_mode_headers",
+                "fanv2s[].rotation_direction_url",
+                "fanv2s[].rotation_direction_method",
+                "fanv2s[].rotation_direction_body",
+                "fanv2s[].rotation_direction_headers"
               ]
             }
           ]
