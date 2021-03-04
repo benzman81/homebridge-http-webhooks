@@ -1108,6 +1108,35 @@
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
               "required": false
+            },
+            "enableModeControls": {
+              "title": "Enable mode controls",
+              "type": "boolean",
+              "required": false
+            },
+            "mode_url": {
+              "title": "Mode URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's mode",
+              "required": false
+            },
+            "mode_method": {
+              "title": "Mode Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "Mode_body": {
+              "title": "Mode Body",
+              "type": "string",
+              "placeholder": "{ \"mode\": true }",
+              "required": false
+            },
+            "mode_headers": {
+              "title": "Mode Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
             }
           }
         }
@@ -1489,7 +1518,12 @@
                 "fanv2s[].unlock_url",
                 "fanv2s[].unlock_method",
                 "fanv2s[].unlock_body",
-                "fanv2s[].unlock_headers"
+                "fanv2s[].unlock_headers",
+                "fanv2s[].enableModeControls",
+                "fanv2s[].mode_url",
+                "fanv2s[].mode_method",
+                "fanv2s[].mode_body",
+                "fanv2s[].mode_headers"
               ]
             }
           ]
