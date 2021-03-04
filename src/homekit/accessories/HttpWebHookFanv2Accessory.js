@@ -44,12 +44,12 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.unlockForm = fanv2Config["unlock_form"] || "";
     this.unlockHeaders = fanv2Config["unlock_headers"] || "{}";
 
-    this.enableModeControls = fanv2Config["enableModeControls"] || false;
-    this.modeURL = fanv2Config["mode_url"] || "";
-    this.modeMethod = fanv2Config["mode_method"] || "GET";
-    this.modeBody = fanv2Config["mode_body"] || "";
-    this.modeForm = fanv2Config["mode_form"] || "";
-    this.modeHeaders = fanv2Config["mode_headers"] || "{}";
+    this.enableTargetStateControls = fanv2Config["enableTargetStateControls"] || false;
+    this.targetStateURL = fanv2Config["target_state_url"] || "";
+    this.targetStateMethod = fanv2Config["target_state_method"] || "GET";
+    this.targetStateBody = fanv2Config["target_state_body"] || "";
+    this.targetStateForm = fanv2Config["target_state_form"] || "";
+    this.targetStateHeaders = fanv2Config["target_state_headers"] || "{}";
 
     this.informationService = new Service.AccessoryInformation();
     this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
@@ -64,7 +64,7 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
         this.service.getCharacteristic(Characteristic.LockPhysicalControls).on('get', this.getLockState.bind(this)).on('set', this.setLockState.bind(this));
     }
 
-    if (this.enableModeControls) {
+    if (this.enableTargetStateControls) {
         this.service.getCharacteristic(Characteristic.TargetFanState).on('get', this.getTargetState.bind(this)).on('set', this.setTargetState.bind(this));
     }
 }
@@ -178,11 +178,11 @@ HttpWebHookFanv2Accessory.prototype.setTargetState = function (targetState, call
     if (state === undefined) {
         state = false;
     }
-    var urlToCall = this.modeURL.replace("%targetMode", targetState);
-    var urlMethod = this.modeMethod;
-    var urlBody = this.modeBody;
-    var urlForm = this.modeForm;
-    var urlHeaders = this.modeHeaders;
+    var urlToCall = this.targetStateURL.replace("%targetState", targetState);
+    var urlMethod = this.targetStateMethod;
+    var urlBody = this.targetStateBody;
+    var urlForm = this.targetStateForm;
+    var urlHeaders = this.targetStateHeaders;
 
     Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };

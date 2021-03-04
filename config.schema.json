@@ -1109,31 +1109,31 @@
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
               "required": false
             },
-            "enableModeControls": {
-              "title": "Enable mode controls",
+            "enableTargetStateControls": {
+              "title": "Enable Target State Controls",
               "type": "boolean",
               "required": false
             },
-            "mode_url": {
-              "title": "Mode URL",
+            "target_state_url": {
+              "title": "Target State RL",
               "type": "string",
-              "placeholder": "your url to change the fanv2's mode",
+              "placeholder": "your url to change the fanv2's target state",
               "required": false
             },
-            "mode_method": {
-              "title": "Mode Method",
+            "target_state_method": {
+              "title": "Target State Method",
               "type": "string",
               "placeholder": "GET",
               "required": false
             },
-            "Mode_body": {
-              "title": "Mode Body",
+            "target_state_body": {
+              "title": "Target State Body",
               "type": "string",
               "placeholder": "{ \"mode\": true }",
               "required": false
             },
-            "mode_headers": {
-              "title": "Mode Headers",
+            "target_state_headers": {
+              "title": "Target State Headers",
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
               "required": false
@@ -1519,11 +1519,11 @@
                 "fanv2s[].unlock_method",
                 "fanv2s[].unlock_body",
                 "fanv2s[].unlock_headers",
-                "fanv2s[].enableModeControls",
-                "fanv2s[].mode_url",
-                "fanv2s[].mode_method",
-                "fanv2s[].mode_body",
-                "fanv2s[].mode_headers"
+                "fanv2s[].enableTargetStateControls",
+                "fanv2s[].target_state_url",
+                "fanv2s[].target_state_method",
+                "fanv2s[].target_state_body",
+                "fanv2s[].target_state_headers"
               ]
             }
           ]
