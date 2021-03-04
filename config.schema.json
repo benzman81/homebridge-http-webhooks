@@ -1055,6 +1055,59 @@
                   2.55
                 ]
               }
+            },
+            "enableLockPhysicalControls": {
+              "title": "Enable lock physical controls",
+              "type": "boolean",
+              "required": false
+            },
+            "lock_url": {
+              "title": "Lock URL",
+              "type": "string",
+              "placeholder": "your url to lock the fanv2's physical controls",
+              "required": false
+            },
+            "lock_method": {
+              "title": "Lock Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "lock_body": {
+              "title": "Lock Body",
+              "type": "string",
+              "placeholder": "{ \"physicalLock\": true }",
+              "required": false
+            },
+            "lock_headers": {
+              "title": "Lock Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "unlock_url": {
+              "title": "Unlock URL",
+              "type": "string",
+              "placeholder": "your url to unlock the fanv2's physical controls",
+              "required": false
+            },
+            "unlock_method": {
+              "title": "Unlock Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "unlock_body": {
+              "title": "Unlock Body",
+              "type": "string",
+              "placeholder": "{ \"physicalLock\": false }",
+              "required": false
+            },
+            "unlock_headers": {
+              "title": "Unlock Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
             }
           }
         }
@@ -1427,7 +1480,16 @@
                 "fanv2s[].speed_method",
                 "fanv2s[].speed_body",
                 "fanv2s[].speed_headers",
-                "fanv2s[].speed_factor"
+                "fanv2s[].speed_factor",
+                "fanv2s[].enableLockPhysicalControls",
+                "fanv2s[].lock_url",
+                "fanv2s[].lock_method",
+                "fanv2s[].lock_body",
+                "fanv2s[].lock_headers",
+                "fanv2s[].unlock_url",
+                "fanv2s[].unlock_method",
+                "fanv2s[].unlock_body",
+                "fanv2s[].unlock_headers"
               ]
             }
           ]

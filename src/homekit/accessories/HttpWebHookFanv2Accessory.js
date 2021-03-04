@@ -31,6 +31,17 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.speedForm = fanv2Config["speed_form"] || "";
     this.speedHeaders = fanv2Config["speed_headers"] || "{}";
     this.speedFactor = fanv2Config["speed_factor"] || 1;
+    this.enableLockPhysicalControls = fanv2Config["enableLockPhysicalControls"] || false;
+    this.lockURL = fanv2Config["lock_url"] || "";
+    this.lockMethod = fanv2Config["lock_method"] || "GET";
+    this.lockBody = fanv2Config["lock_body"] || "";
+    this.lockForm = fanv2Config["lock_form"] || "";
+    this.lockHeaders = fanv2Config["lock_headers"] || "{}";
+    this.unlockURL = fanv2Config["unlock_url"] || "";
+    this.unlockMethod = fanv2Config["unlock_method"] || "GET";
+    this.unlockBody = fanv2Config["unlock_body"] || "";
+    this.unlockForm = fanv2Config["unlock_form"] || "";
+    this.unlockHeaders = fanv2Config["unlock_headers"] || "{}";
 
     this.informationService = new Service.AccessoryInformation();
     this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
@@ -40,6 +51,10 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.service = new Service.Fanv2(this.name);
     this.service.getCharacteristic(Characteristic.Active).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
     this.service.getCharacteristic(Characteristic.RotationSpeed).on('get', this.getSpeed.bind(this)).on('set', this.setSpeed.bind(this));
+
+    if (this.enableLockPhysicalControls) {
+        this.service.getCharacteristic(Characteristic.LockPhysicalControls).on('get', this.getLockState.bind(this)).on('set', this.setLockState.bind(this));
+    }
 }
 
 HttpWebHookFanv2Accessory.prototype.getState = function (callback) {
@@ -53,6 +68,7 @@ HttpWebHookFanv2Accessory.prototype.getState = function (callback) {
 
 HttpWebHookFanv2Accessory.prototype.setState = function (powerOn, callback, context) {
     this.log("Fanv2 state for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-" + this.id, powerOn);
     var urlToCall = this.onURL;
     var urlMethod = this.onMethod;
     var urlBody = this.onBody;
@@ -104,6 +120,33 @@ HttpWebHookFanv2Accessory.prototype.setSpeed = function (speed, callback, contex
         urlBody = this.replaceVariables(urlBody, newState, speedToSet);
     }
 
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
+};
+
+HttpWebHookFanv2Accessory.prototype.getLockState = function (callback) {
+    this.log.debug("Getting current lock state for '%s'...", this.id);
+    var lockstate = this.storage.getItemSync("http-webhook-lockstate-" + this.id);
+    if (lockstate === undefined) {
+        lockstate = false;
+    }
+    callback(null, lockstate);
+};
+
+HttpWebHookFanv2Accessory.prototype.setLockState = function (lockState, callback, context) {
+    this.log("Fanv2 lock state for '%s'...", this.id);
+    this.storage.setItemSync("http-webhook-lockstate-" + this.id, lockState);
+    var urlToCall = this.lockURL;
+    var urlMethod = this.lockMethod;
+    var urlBody = this.lockBody;
+    var urlForm = this.lockForm;
+    var urlHeaders = this.lockHeaders;
+    if (!lockState) {
+        urlToCall = this.unlockURL;
+        urlMethod = this.unlockMethod;
+        urlBody = this.unlockBody;
+        urlForm = this.unlockForm;
+        urlHeaders = this.unlockHeaders;
+    }
     Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
 
