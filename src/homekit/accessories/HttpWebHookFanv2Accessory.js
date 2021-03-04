@@ -32,8 +32,14 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.speedHeaders = fanv2Config["speed_headers"] || "{}";
     this.speedFactor = fanv2Config["speed_factor"] || 1;
 
+    this.informationService = new Service.AccessoryInformation();
+    this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
+    this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookFanv2Accessory-" + this.name);
+    this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookFanv2Accessory-" + this.id);
+
     this.service = new Service.Fanv2(this.name);
     this.service.getCharacteristic(Characteristic.Active).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));
+    this.service.getCharacteristic(Characteristic.RotationSpeed).on('get', this.getSpeed.bind(this)).on('set', this.setSpeed.bind(this));
 }
 
 HttpWebHookFanv2Accessory.prototype.getState = function (callback) {
@@ -61,6 +67,50 @@ HttpWebHookFanv2Accessory.prototype.setState = function (powerOn, callback, cont
     }
     Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
 };
+
+HttpWebHookFanv2Accessory.prototype.getSpeed = function (callback) {
+    this.log.debug("Getting current speed for '%s'...", this.id);
+    var state = this.storage.getItemSync("http-webhook-" + this.id);
+    if (state === undefined) {
+        state = false;
+    }
+    var speed = 0;
+    if (state) {
+        speed = this.storage.getItemSync("http-webhook-speed-" + this.id);
+        if (speed === undefined) {
+            speed = 100;
+        }
+    }
+    callback(null, parseInt(speed));
+};
+
+HttpWebHookFanv2Accessory.prototype.setSpeed = function (speed, callback, context) {
+    this.log("Fanv2 rotation speed for '%s'...", this.id);
+    var newState = speed > 0;
+    this.storage.setItemSync("http-webhook-" + this.id, newState);
+    this.storage.setItemSync("http-webhook-speed-" + this.id, speed);
+    var speedFactor = this.speedFactor;
+    var speedToSet = Math.ceil(speed * speedFactor);
+    var urlToCall = this.replaceVariables(this.speedURL, newState, speedToSet);
+    var urlMethod = this.speedMethod;
+    var urlBody = this.speedBody;
+    var urlForm = this.speedForm;
+    var urlHeaders = this.speedHeaders;
+
+    if (urlForm) {
+        urlForm = this.replaceVariables(urlForm, newState, speedToSet);
+    }
+    else if (urlBody) {
+        urlBody = this.replaceVariables(urlBody, newState, speedToSet);
+    }
+
+    Util.callHttpApi(this.log, urlToCall, urlMethod, urlBody, urlForm, urlHeaders, this.rejectUnauthorized, callback, context);
+};
+
+HttpWebHookFanv2Accessory.prototype.replaceVariables = function (text, state, speed) {
+    return text.replace("%statusPlaceholder", state).replace("%speedPlaceholder", speed);
+};
+
 
 HttpWebHookFanv2Accessory.prototype.getServices = function () {
     return [this.service, this.informationService];
