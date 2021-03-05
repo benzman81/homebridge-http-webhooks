@@ -36,7 +36,7 @@ function HttpWebHookLockMechanismAccessory(ServiceParam, CharacteristicParam, pl
 
 HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParams) {
   if (urlParams.lockcurrentstate != null) {
-    var cachedLockCurrentState = this.storage.getItemSync("http-webhook--lock-current-state-" + this.id);
+    var cachedLockCurrentState = this.storage.getItemSync("http-webhook-lock-current-state-" + this.id);
     if (cachedLockCurrentState === undefined) {
       cachedLockCurrentState = Characteristic.LockCurrentState.SECURED;
     }
