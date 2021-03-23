@@ -946,6 +946,253 @@
             }
           }
         }
+      },
+      "fanv2s": {
+        "type": "array",
+        "title": "Fanv2",
+        "description": "Turn On and Off Fanv2 by triggering a URL of any system.",
+        "items": {
+          "title": "Fanv2s",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "fanv2-1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Fanv2 1",
+              "required": false
+            },
+            "rejectUnauthorized": {
+              "title": "Reject Unauthorized SSL Certificate",
+              "type": "boolean",
+              "placeholder": true,
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the fanv2 on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the fanv2 off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "speed_url": {
+              "title": "Speed URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2 rotation speed",
+              "required": false
+            },
+            "speed_method": {
+              "title": "Speed Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "speed_body": {
+              "title": "Speed Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : %statusPlaceholder, \"speed\" : %speedPlaceholder}",
+              "required": false
+            },
+            "speed_headers": {
+              "title": "Speed Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "speed_factor": {
+              "title": "Speed Factor",
+              "type": "number",
+              "placeholder": 2.55,
+              "required": false,
+              "typeahead": {
+                "source": [
+                  2.55
+                ]
+              }
+            },
+            "enableLockPhysicalControls": {
+              "title": "Enable lock physical controls",
+              "type": "boolean",
+              "required": false
+            },
+            "lock_url": {
+              "title": "Lock URL",
+              "type": "string",
+              "placeholder": "your url to lock the fanv2's physical controls",
+              "required": false
+            },
+            "lock_method": {
+              "title": "Lock Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "lock_body": {
+              "title": "Lock Body",
+              "type": "string",
+              "placeholder": "{ \"physicalLock\": true }",
+              "required": false
+            },
+            "lock_headers": {
+              "title": "Lock Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "unlock_url": {
+              "title": "Unlock URL",
+              "type": "string",
+              "placeholder": "your url to unlock the fanv2's physical controls",
+              "required": false
+            },
+            "unlock_method": {
+              "title": "Unlock Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "unlock_body": {
+              "title": "Unlock Body",
+              "type": "string",
+              "placeholder": "{ \"physicalLock\": false }",
+              "required": false
+            },
+            "unlock_headers": {
+              "title": "Unlock Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "enableTargetStateControls": {
+              "title": "Enable Target State Controls",
+              "type": "boolean",
+              "required": false
+            },
+            "target_state_url": {
+              "title": "Target State URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's target state",
+              "required": false
+            },
+            "target_state_method": {
+              "title": "Target State Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "target_state_body": {
+              "title": "Target State Body",
+              "type": "string",
+              "placeholder": "{ \"mode\": %targetState }",
+              "required": false
+            },
+            "target_state_headers": {
+              "title": "Target State Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "enableSwingModeControls": {
+              "title": "Enable Swing Mode Controls",
+              "type": "boolean",
+              "required": false
+            },
+            "swing_mode_url": {
+              "title": "Swing Mode URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's swing mode",
+              "required": false
+            },
+            "swing_mode_method": {
+              "title": "Swing Mode Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "swing_mode_body": {
+              "title": "Swing Mode Body",
+              "type": "string",
+              "placeholder": "{ \"swing_mode\": %swingMode }",
+              "required": false
+            },
+            "swing_mode_headers": {
+              "title": "Swing Mode Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "rotation_direction_url": {
+              "title": "Rotation Direction URL",
+              "type": "string",
+              "placeholder": "your url to change the fanv2's rotation direction",
+              "required": false
+            },
+            "rotation_direction_method": {
+              "title": "Rotation Direction Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "rotation_direction_body": {
+              "title": "Rotation Direction Body",
+              "type": "string",
+              "placeholder": "{ \"rotation_direction\": %rotationDirection }",
+              "required": false
+            },
+            "rotation_direction_headers": {
+              "title": "Rotation Direction Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
       }
     }
   },
@@ -1285,6 +1532,60 @@
                 "lockmechanisms[].close_method",
                 "lockmechanisms[].close_body",
                 "lockmechanisms[].close_headers"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Fanv2",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            {
+              "title": "Fanv2",
+              "type": "array",
+              "orderable": false,
+              "items": [
+                "fanv2s[].id",
+                "fanv2s[].name",
+                "fanv2s[].rejectUnauthorized",
+                "fanv2s[].on_url",
+                "fanv2s[].on_method",
+                "fanv2s[].on_body",
+                "fanv2s[].on_headers",
+                "fanv2s[].off_url",
+                "fanv2s[].off_method",
+                "fanv2s[].off_body",
+                "fanv2s[].off_headers",
+                "fanv2s[].speed_url",
+                "fanv2s[].speed_method",
+                "fanv2s[].speed_body",
+                "fanv2s[].speed_headers",
+                "fanv2s[].speed_factor",
+                "fanv2s[].enableLockPhysicalControls",
+                "fanv2s[].lock_url",
+                "fanv2s[].lock_method",
+                "fanv2s[].lock_body",
+                "fanv2s[].lock_headers",
+                "fanv2s[].unlock_url",
+                "fanv2s[].unlock_method",
+                "fanv2s[].unlock_body",
+                "fanv2s[].unlock_headers",
+                "fanv2s[].enableTargetStateControls",
+                "fanv2s[].target_state_url",
+                "fanv2s[].target_state_method",
+                "fanv2s[].target_state_body",
+                "fanv2s[].target_state_headers",
+                "fanv2s[].enableSwingModeControls",
+                "fanv2s[].swing_mode_url",
+                "fanv2s[].swing_mode_method",
+                "fanv2s[].swing_mode_body",
+                "fanv2s[].swing_mode_headers",
+                "fanv2s[].rotation_direction_url",
+                "fanv2s[].rotation_direction_method",
+                "fanv2s[].rotation_direction_body",
+                "fanv2s[].rotation_direction_headers"
               ]
             }
           ]
