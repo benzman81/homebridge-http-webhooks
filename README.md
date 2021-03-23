@@ -51,6 +51,9 @@ For outlets the value for `NEWSTATE` is either `true` for on or `false` for off.
 For outlets the additional state `stateOutletInUse` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
 can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&stateOutletInUse=NEWSTATE`
 
+## Fanv2
+For fanv2 the value for `NEWSTATE` is either `true` for on or `false` for off.
+
 # Trigger action
 
 ## Switch
@@ -64,6 +67,9 @@ For lights you can trigger a url of any system for switching the light on or off
 
 ## Outlet
 For outlets you can trigger a url of any system for switching the outlet on or off.
+
+## Fanv2
+For fanv2 you can trigger a url of any system for switching the fanv2 on or off.
 
 # Update a numeric accessory
 To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
@@ -126,6 +132,14 @@ Setting of target position you can realize by send link to: open, 20%, 40%, 60% 
 * Position State (Decreasing=0 / Increasing=1 / Stopped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
 
 If you dont use callbacks to let your covering give feedback of current position back to homekit you can set "auto_set_current_position" to true.
+
+# Fanv2
+To update a fanv2 you can update five different values:
+* Rotation Speed (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&speed=%s` (%s is replaced by fan's rotation speed)
+* Swing Mode (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&swingMode=0 (or 1)` (To use this feature, "enableSwingModeControls" in confing must be set to true.)
+* Rotation Direction (CLOCKWISE=0 / COUNTER_CLOCKWISE=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&rotationDirection=0 (or 1)` 
+* Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in confing must be set to true.)
+* Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
 
 
 # Configuration
@@ -360,6 +374,49 @@ Example config.json:
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST and PUT; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
+                    }
+                ],
+                "fanv2s": [
+                    {
+                        "id": "fanv2-1",
+                        "name": "Fanv2-1",
+                        "rejectUnauthorized": true, // (optional)
+                        "on_url": "your url to switch the fanv2 on",
+                        "on_method": "GET",
+                        "on_body": "{ \"on\" : true }",
+                        "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "off_url": "your url to switch the fanv2 off",
+                        "off_method": "GET",
+                        "off_body": "{ \"off\" : true }",
+                        "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "speed_url": "your url to change the fanv2 rotation speed",
+                        "speed_method": "GET",
+                        "speed_body": "{ \"on\" : %statusPlaceholder, \"speed\" : %speedPlaceholder}",
+                        "speed_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "speed_factor":2.55,
+                        "enableLockPhysicalControls": true,
+                        "lock_url": "your url to lock the fanv2's physical controls",
+                        "lock_method": "GET",
+                        "lock_body": "{ \"physicalLock\": true }",
+                        "lock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "unlock_url": "your url to unlock the fanv2's physical controls",
+                        "unlock_method": "GET",
+                        "unlock_body": "{ \"physicalLock\": false }",
+                        "unlock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "enableTargetStateControls": true,
+                        "target_state_url": "your url to change the fanv2's target state",
+                        "target_state_method": "GET",
+                        "target_state_body": "{ \"mode\": %targetState }",
+                        "target_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "enableSwingModeControls": true,
+                        "swing_mode_url": "your url to change the fanv2's swing mode",
+                        "swing_mode_method": "GET",
+                        "swing_mode_body": "{ \"swing_mode\": %swingMode }",
+                        "swing_mode_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+                        "rotation_direction_url": "your url to change the fanv2's rotation direction",
+                        "rotation_direction_method": "GET",
+                        "rotation_direction_body": "{ \"rotation_direction\": %rotationDirection }",
+                        "rotation_direction_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}"
                     }
                 ]
             }
