@@ -1,3 +1,9 @@
+### 0.1.12
+
+New features:
+
+  - Added Fanv2 (thanks to p-x9)
+
 ### 0.1.11
 
 Bugfix:
