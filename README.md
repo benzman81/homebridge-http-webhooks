@@ -86,6 +86,9 @@ For humidity sensors the value for `NEWVALUE` is the new relative humidity perce
 ## Air Quality sensor
 For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
 
+## CO2 Sensor
+For a CO2 sensor the value for `NEWVALUE` is the new PPM reading.
+
 ## Leak sensor
 For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
 
@@ -272,6 +275,13 @@ Example config.json:
                         "set_target_heating_cooling_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ],
+                "co2sensors" : [
+                    {
+                        "id": "co2sensor1",
+                        "name": "CO2 sensor name 1",
+                        "co2_peak_level": 1200
+                    }
+                ]
                 "outlets": [
                     {
                         "id": "outlet1",

@@ -13,7 +13,6 @@ function HttpWebHookSensorAccessory(ServiceParam, CharacteristicParam, platform,
   this.type = sensorConfig["type"];
   this.autoRelease = sensorConfig["autoRelease"];
   this.autoReleaseTime = sensorConfig["autoReleaseTime"] || Constants.DEFAULT_SENSOR_TIMEOUT;
-  this.co2PeakLevel = sensorConfig["co2PeakLevel"] || 1200;
 
   this.informationService = new Service.AccessoryInformation();
   this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
@@ -59,16 +58,11 @@ function HttpWebHookSensorAccessory(ServiceParam, CharacteristicParam, platform,
     this.service = new Service.LeakSensor(this.name);
     this.service.getCharacteristic(Characteristic.LeakDetected).on('get', this.getState.bind(this));
   }
-  else if (this.type === "co2") {
-    this.service = new Service.CarbonDioxideSensor(this.name);
-    this.service.getCharacteristic(Characteristic.CarbonDioxideLevel).on('get', this.getState.bind(this));
-    this.service.getCharacteristic(Characteristic.CarbonDioxideDetected).on('get', this.getState.bind(this));
-  }
 }
 
 HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
   var cached = this.storage.getItemSync("http-webhook-" + this.id);
-  var isNumberBased = this.type === "leak" || this.type === "humidity" || this.type === "temperature" || this.type === "airquality" || this.type === "light" || this.type === "co2";
+  var isNumberBased = this.type === "leak" || this.type === "humidity" || this.type === "temperature" || this.type === "airquality" || this.type === "light";
   if (cached === undefined) {
     cached = isNumberBased ? 0 : false;
   }
@@ -134,10 +128,6 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
     else if (this.type === "leak") {
       this.service.getCharacteristic(Characteristic.LeakDetected).updateValue(urlValue, undefined, Constants.CONTEXT_FROM_WEBHOOK);
     }
-    else if (this.type === "co2") {
-      this.service.getCharacteristic(Characteristic.CarbonDioxideLevel).updateValue(urlValue, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-      this.service.getCharacteristic(Characteristic.CarbonDioxideDetected).updateValue(urlValue > this.co2PeakLevel ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    }
 
   }
   return {
@@ -163,9 +153,6 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
   }
   else if (this.type === "light") {
     callback(null, parseFloat(state));
-  }
-  else if (this.type === "co2") {
-    callback(null, state ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL);
   }
   else {
     callback(null, state);

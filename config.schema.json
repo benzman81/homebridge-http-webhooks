@@ -99,8 +99,7 @@
                 "humidity",
                 "airquality",
                 "light",
-                "leak",
-                "co2"
+                "leak"
               ]
             },
             "autoRelease": {
@@ -355,6 +354,34 @@
                   2.55
                 ]
               }
+            }
+          }
+        }
+      },
+      "co2sensors" : {
+        "type" : "array",
+        "title" : "CO2 Sensors",
+        "Description" : "Control a CO2 sensor by updating the PPM value.",
+        "items": {
+          "title": "CO2 Sensors",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "co2sensor1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "CO2 sensor 1",
+              "required": false
+            },
+            "co2_peak_level": {
+              "title": "CO2 peak level",
+              "type": "integer",
+              "required": false
             }
           }
         }
