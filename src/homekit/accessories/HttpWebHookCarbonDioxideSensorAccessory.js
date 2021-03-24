@@ -35,6 +35,7 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(ur
   var urlValue = urlParams.value;
   var co2Detected = urlValue > this.co2PeakLevel;
   this.log.debug("urlValue: "+ urlValue);
+  this.log.debug("co2Detected: "+ co2Detected);
   this.storage.setItemSync("http-webhook-carbon-dioxide-level-" + this.id, urlValue);
   this.storage.setItemSync("http-webhook-carbon-dioxide-detected-" + this.id, co2Detected);
   this.log.debug("cached: "+ cached);
