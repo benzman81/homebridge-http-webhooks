@@ -99,7 +99,8 @@
                 "humidity",
                 "airquality",
                 "light",
-                "leak"
+                "leak",
+                "co2"
               ]
             },
             "autoRelease": {
