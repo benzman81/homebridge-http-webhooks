@@ -33,14 +33,16 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(ur
     };
   }
   var urlValue = urlParams.value;
+  var co2Detected = urlValue > this.co2PeakLevel;
   this.log.debug("urlValue: "+ urlValue);
   this.storage.setItemSync("http-webhook-carbon-dioxide-level-" + this.id, urlValue);
+  this.storage.setItemSync("http-webhook-carbon-dioxide-detected-" + this.id, co2Detected);
   this.log.debug("cached: "+ cached);
   this.log.debug("cached !== urlValue: "+ (cached !== urlValue));
   if (cached !== urlValue) {
     this.log("Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
     this.service.getCharacteristic(Characteristic.CarbonDioxideLevel).updateValue(urlValue, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-    this.service.getCharacteristic(Characteristic.CarbonDioxideDetected).updateValue(urlValue > this.co2PeakLevel ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, undefined, Constants.CONTEXT_FROM_WEBHOOK);
+    this.service.getCharacteristic(Characteristic.CarbonDioxideDetected).updateValue(co2Detected ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, undefined, Constants.CONTEXT_FROM_WEBHOOK);
   }
   return {
     "success" : true
