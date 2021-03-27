@@ -2,7 +2,7 @@
   "pluginAlias": "HttpWebHooks",
   "pluginType": "platform",
   "singular": true,
-  "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, and `leak` sensors.",
+  "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, `co2sensors`, and `leak` sensors.",
   "footerDisplay": "Visit the Project [Readme](https://github.com/benzman81/homebridge-http-webhooks#readme) for more details.",
   "schema": {
     "type": "object",
@@ -354,6 +354,34 @@
                   2.55
                 ]
               }
+            }
+          }
+        }
+      },
+      "co2sensors" : {
+        "type" : "array",
+        "title" : "CO2 Sensors",
+        "Description" : "Control a CO2 sensor by updating the PPM value.",
+        "items": {
+          "title": "CO2 Sensors",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "co2sensor1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "CO2 sensor 1",
+              "required": false
+            },
+            "co2_peak_level": {
+              "title": "CO2 peak level",
+              "type": "integer",
+              "required": false
             }
           }
         }
