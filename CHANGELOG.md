@@ -1,3 +1,9 @@
+### 0.1.13
+
+New features:
+
+  - Added CO2 sensor (thanks to jwktje)
+
 ### 0.1.12
 
 New features:
