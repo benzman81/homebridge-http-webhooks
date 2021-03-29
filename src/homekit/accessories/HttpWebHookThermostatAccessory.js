@@ -13,7 +13,6 @@ function HttpWebHookThermostatAccessory(ServiceParam, CharacteristicParam, platf
     this.id = thermostatConfig["id"];
     this.name = thermostatConfig["name"];
     this.type = "thermostat";
-	this.path_to_temp = thermostatConfig["path_to_temp"];
     this.rejectUnauthorized = thermostatConfig["rejectUnauthorized"] === undefined ? true : thermostatConfig["rejectUnauthorized"] === true;
     this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
     this.setTargetTemperatureMethod = thermostatConfig["set_target_temperature_method"] || "GET";
@@ -120,11 +119,6 @@ HttpWebHookThermostatAccessory.prototype.setTargetTemperature = function (temp, 
 
 HttpWebHookThermostatAccessory.prototype.getCurrentTemperature = function (callback) {
     this.log.debug("Getting current temperature for '%s'...", this.id);
-	// getting temperature from file
-    fs.readFile(this.path_to_temp, 'utf-8', (err, data) => {
-        if (err) throw err;
-        this.storage.setItemSync("http-webhook-current-temperature-" + this.id, data);
-    })
     var temp = this.storage.getItemSync("http-webhook-current-temperature-" + this.id);
     if (temp === undefined) {
         temp = 20;
