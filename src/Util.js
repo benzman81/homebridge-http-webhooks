@@ -11,7 +11,7 @@ const callHttpApi = function(log, urlToCall, urlMethod, urlBody, urlForm, urlHea
       headers : JSON.parse(urlHeaders),
       rejectUnauthorized: rejectUnauthorized
     };
-    if (urlMethod === "POST" || urlMethod === "PUT") {
+    if (urlMethod === "POST" || urlMethod === "PUT" || urlMethod === "PATCH") {
       if (urlForm) {
         log("Adding Form " + urlForm);
         theRequest.form = JSON.parse(urlForm);
