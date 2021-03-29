@@ -1,3 +1,8 @@
+### 0.1.14
+
+New features:
+  - Support http method PATCH (thanks to supermamon)
+
 ### 0.1.13
 
 New features:
