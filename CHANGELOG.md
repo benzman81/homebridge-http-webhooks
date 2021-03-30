@@ -1,3 +1,8 @@
+### 0.1.15
+
+New features:
+  - Support minValue, maxValue and minStep for thermostats (thanks to NikDevx)
+
 ### 0.1.14
 
 New features:

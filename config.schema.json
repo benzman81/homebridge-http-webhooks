@@ -406,6 +406,24 @@
               "placeholder": "Thermostat 1",
               "required": false
             },
+            "minTemp": {
+              "title": "Lower bound for the temperature selector in the Home app",
+              "type": "number",
+              "placeholder": "15",
+              "required": false
+            },
+            "maxTemp": {
+              "title": "Upper bound for the temperature selector in the Home app",
+              "type": "number",
+              "placeholder": "30",
+              "required": false
+            },
+            "minStep": {
+              "title": "Minimum increment value for the temperature selector in the Home app",
+              "type": "number",
+              "placeholder": "0.5",
+              "required": false
+            },
             "rejectUnauthorized": {
               "title": "Reject Unauthorized SSL Certificate",
               "type": "boolean",

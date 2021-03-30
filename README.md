@@ -264,6 +264,9 @@ Example config.json:
                     {
                         "id": "thermostat1",
                         "name": "Thermostat name 1",
+                        "minTemp": 15, // (optional)
+                        "maxTemp": 30, // (optional)
+                        "minStep": 0.5, // (optional)
                         "rejectUnauthorized": false, // (optional)
                         "set_target_temperature_url": "http://127.0.0.1/thermostatscript.php?targettemperature=%f",        // %f is replaced by the target temperature
                         "set_target_temperature_method": "GET", // (optional)
