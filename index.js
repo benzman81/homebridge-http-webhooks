@@ -12,6 +12,7 @@ var HttpWebHookLockMechanismAccessory = require('./src/homekit/accessories/HttpW
 var HttpWebHookWindowCoveringAccessory = require('./src/homekit/accessories/HttpWebHookWindowCoveringAccessory');
 var HttpWebHookFanv2Accessory = require('./src/homekit/accessories/HttpWebHookFanv2Accessory');
 var HttpWebHookCarbonDioxideSensoryAccessory = require('./src/homekit/accessories/HttpWebHookCarbonDioxideSensorAccessory');
+var HttpWebHookValveAccessory = require('./src/homekit/accessories/HttpWebHookValveAccessory');
 
 module.exports = function(homebridge) {
   homebridge.registerPlatform("homebridge-http-webhooks", "HttpWebHooks", HttpWebHooksPlatform);
@@ -28,4 +29,5 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookWindowCovering", HttpWebHookWindowCoveringAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookFanv2", HttpWebHookFanv2Accessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookCarbonDioxideSensor", HttpWebHookCarbonDioxideSensoryAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookValve", HttpWebHookValveAccessory);
 };

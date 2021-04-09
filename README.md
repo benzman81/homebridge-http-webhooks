@@ -54,6 +54,13 @@ can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?a
 ## Fanv2
 For fanv2 the value for `NEWSTATE` is either `true` for on or `false` for off.
 
+## Valve
+For valves/faucets the value for `NEWSTATE` is either `true` for on or `false` for off.
+
+### Valve fault state
+For valves the additional state `statusFault` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
+can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&statusFault=NEWSTATE`
+
 # Trigger action
 
 ## Switch
@@ -144,6 +151,8 @@ To update a fanv2 you can update five different values:
 * Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in confing must be set to true.)
 * Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
 
+## Valves
+For valves/faucets you can trigger a url of any system for switching the valve on or off.
 
 # Configuration
 Example config.json:
@@ -284,7 +293,7 @@ Example config.json:
                         "name": "CO2 sensor name 1",
                         "co2_peak_level": 1200
                     }
-                ]
+                ],
                 "outlets": [
                     {
                         "id": "outlet1",
@@ -430,6 +439,22 @@ Example config.json:
                         "rotation_direction_method": "GET",
                         "rotation_direction_body": "{ \"rotation_direction\": %rotationDirection }",
                         "rotation_direction_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}"
+                    }
+                ],
+                "valves": [
+                    {
+                        "id": "valve1",
+                        "name": "Valve name 1",
+                        "type": "generic valve", // (optional)
+                        "rejectUnauthorized": false, // (optional)
+                        "on_url": "your url to switch the valve on", // (optional)
+                        "on_method": "GET", // (optional)
+                        "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
+                        "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
+                        "off_url": "your url to switch the valve off", // (optional)
+                        "off_method": "GET", // (optional)
+                        "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
+                        "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
                     }
                 ]
             }
