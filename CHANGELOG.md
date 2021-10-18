@@ -1,3 +1,8 @@
+### 0.1.16
+
+New features:
+  - Added value support (thanks to emptygalaxy)
+
 ### 0.1.15
 
 New features:
