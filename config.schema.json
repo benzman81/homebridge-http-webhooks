@@ -1239,6 +1239,88 @@
             }
           }
         }
+      },
+      "valves": {
+        "type": "array",
+        "title": "Valves",
+        "description": "Turn On and Off valves by triggering a URL of any system.",
+        "items": {
+          "title": "Valves",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "valve1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Valve 1",
+              "required": false
+            },
+            "type": {
+              "title": "Type",
+              "type": "string",
+              "enum": ["generic valve","irrigation", "shower head", "water faucet"]
+            },
+            "rejectUnauthorized": {
+              "title": "Reject Unauthorized SSL Certificate",
+              "type": "boolean",
+              "placeholder": true,
+              "required": false
+            },
+            "on_url": {
+              "title": "On URL",
+              "type": "string",
+              "placeholder": "your url to switch the valve on",
+              "required": false
+            },
+            "on_method": {
+              "title": "On Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "on_body": {
+              "title": "On Body",
+              "type": "string",
+              "placeholder": "{ \"on\" : true }",
+              "required": false
+            },
+            "on_headers": {
+              "title": "On Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            },
+            "off_url": {
+              "title": "Off URL",
+              "type": "string",
+              "placeholder": "your url to switch the valve off",
+              "required": false
+            },
+            "off_method": {
+              "title": "Off Method",
+              "type": "string",
+              "placeholder": "GET",
+              "required": false
+            },
+            "off_body": {
+              "title": "Off Body",
+              "type": "string",
+              "placeholder": "{ \"on\": false }",
+              "required": false
+            },
+            "off_headers": {
+              "title": "Off Headers",
+              "type": "string",
+              "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
       }
     }
   },
@@ -1632,6 +1714,33 @@
                 "fanv2s[].rotation_direction_method",
                 "fanv2s[].rotation_direction_body",
                 "fanv2s[].rotation_direction_headers"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Valves",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            {
+              "title": "Valves",
+              "type": "array",
+              "orderable": false,
+              "items": [
+                "valves[].id",
+                "valves[].name",
+                "valves[].type",
+                "valves[].rejectUnauthorized",
+                "valves[].on_url",
+                "valves[].on_method",
+                "valves[].on_body",
+                "valves[].on_headers",
+                "valves[].off_url",
+                "valves[].off_method",
+                "valves[].off_body",
+                "valves[].off_headers"
               ]
             }
           ]

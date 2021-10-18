@@ -14,6 +14,7 @@ var HttpWebHookLockMechanismAccessory = require('./accessories/HttpWebHookLockMe
 var HttpWebHookWindowCoveringAccessory = require('./accessories/HttpWebHookWindowCoveringAccessory');
 var HttpWebHookFanv2Accessory = require('./accessories/HttpWebHookFanv2Accessory');
 var HttpWebHookCarbonDioxideSensoryAccessory = require('./accessories/HttpWebHookCarbonDioxideSensorAccessory');
+var HttpWebHookValveAccessory = require('./accessories/HttpWebHookValveAccessory');
 
 var Service, Characteristic;
 
@@ -41,6 +42,7 @@ function HttpWebHooksPlatform(log, config, homebridge) {
   this.lockMechanisms = config["lockmechanisms"] || [];
   this.fanv2s = config["fanv2s"] || [];
   this.co2sensors = config["co2sensors"] || [];
+  this.valves = config["valves"] || [];
 
   this.server = new Server(Service, Characteristic, this, config);
 };
@@ -111,6 +113,11 @@ HttpWebHooksPlatform.prototype.accessories = function(callback) {
   for (var i = 0; i < this.co2sensors.length; i++) {
     var co2sensorAccessory = new HttpWebHookCarbonDioxideSensoryAccessory(Service, Characteristic, this, this.co2sensors[i]);
     accessories.push(co2sensorAccessory);
+  }
+
+  for (var i = 0; i < this.valves.length; i++) {
+    var valveAccessory = new HttpWebHookValveAccessory(Service, Characteristic, this, this.valves[i]);
+    accessories.push(valveAccessory);
   }
 
   this.server.setAccessories(accessories);
