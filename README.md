@@ -131,8 +131,8 @@ Stateless switches requires 3 parameters accessoryId, buttonName and the event t
 # Lock mechanism
 To update a lock mechanism you can update two different values:
 
-Current lock state (unsecured=0 /secured=1 / jammed=2 /unknown=3 ): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE`
-Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
+* Current lock state (unsecured=0 /secured=1 / jammed=2 /unknown=3 ): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE`
+* Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
 
 # Window Coverings
 To update a window coverings you can update three different values:
