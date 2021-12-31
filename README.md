@@ -152,7 +152,7 @@ To update a fanv2 you can update five different values:
 * Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
 
 ## Valves
-For valves/faucets you can trigger a url of any system for switching the valve on or off.
+For valves/faucets you can call the url from any system to switch the valve on or off.
 
 # Configuration
 Example config.json:
