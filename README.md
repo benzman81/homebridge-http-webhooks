@@ -64,19 +64,19 @@ can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?a
 # Trigger action
 
 ## Switch
-For switches you can trigger a url of any system for switching the switch on or off.
+For switches you can call the url from any system to switch the switch on or off.
 
 ## Push button
-For push buttons you can trigger a url of any system for "pushing the button. The button will be released automatically.
+For push buttons you can call the url from any system to push the button. The button will be released automatically.
 
 ## Light
-For lights you can trigger a url of any system for switching the light on or off.
+For lights you can call the url from any system to switch the light on or off.
 
 ## Outlet
-For outlets you can trigger a url of any system for switching the outlet on or off.
+For outlets you can call the url from any system to switch the outlet on or off.
 
 ## Fanv2
-For fanv2 you can trigger a url of any system for switching the fanv2 on or off.
+For fanv2 you can call the url from any system to switch the fanv2 on or off.
 
 # Update a numeric accessory
 To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
