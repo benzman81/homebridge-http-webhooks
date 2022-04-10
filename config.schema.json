@@ -945,7 +945,7 @@
             "open_url": {
               "title": "Open URL",
               "type": "string",
-              "placeholder": "your url to open the garage door",
+              "placeholder": "your url to open the lock mechanism",
               "required": false
             },
             "open_method": {
@@ -969,7 +969,7 @@
             "close_url": {
               "title": "Close URL",
               "type": "string",
-              "placeholder": "your url to close the garage door",
+              "placeholder": "your url to close the lock mechanism",
               "required": false
             },
             "close_method": {
