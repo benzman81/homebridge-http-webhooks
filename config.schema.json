@@ -69,7 +69,7 @@
       "sensors": {
         "type": "array",
         "title": "Sensors",
-        "description": "Create a contact, motion, occupancy, smoke, temperature, humidity, airquality, light, or leak sensors.",
+        "description": "Create contact, motion, occupancy, smoke, temperature, humidity, airquality, light, or leak sensors.",
         "items": {
           "title": "Sensors",
           "type": "object",
@@ -119,7 +119,7 @@
       "switches": {
         "type": "array",
         "title": "Switches",
-        "description": "Turn On and Off switches by triggering a URL of any system.",
+        "description": "Turn on and off switches by triggering a URL from any system.",
         "items": {
           "title": "Switches",
           "type": "object",
@@ -196,7 +196,7 @@
       "pushbuttons": {
         "type": "array",
         "title": "Sensors",
-        "description": "Push Buttons by triggerring a URL of any system. The button will be released automatically.",
+        "description": "Push Buttons by triggerring a URL from any system. The button will be released automatically.",
         "items": {
           "title": "Sensors",
           "type": "object",
@@ -249,7 +249,7 @@
       "lights": {
         "type": "array",
         "title": "Lights",
-        "description": "Turn On and Off Lights by triggering a URL of any system.",
+        "description": "Turn on and off Lights by triggering a URL from any system.",
         "items": {
           "title": "Lights",
           "type": "object",
@@ -484,7 +484,7 @@
       "outlets": {
         "type": "array",
         "title": "Outlets",
-        "description": "Turn On and Off Outls by triggering a URL of any system.",
+        "description": "Turn on and off Outlets by triggering a URL from any system.",
         "items": {
           "title": "Outlets",
           "type": "object",
@@ -996,7 +996,7 @@
       "fanv2s": {
         "type": "array",
         "title": "Fanv2",
-        "description": "Turn On and Off Fanv2 by triggering a URL of any system.",
+        "description": "Turn on and off Fanv2s by triggering a URL from any system.",
         "items": {
           "title": "Fanv2s",
           "type": "object",
@@ -1110,7 +1110,7 @@
             "lock_url": {
               "title": "Lock URL",
               "type": "string",
-              "placeholder": "your url to lock the fanv2's physical controls",
+              "placeholder": "your url to lock the fanv2s physical controls",
               "required": false
             },
             "lock_method": {
@@ -1134,7 +1134,7 @@
             "unlock_url": {
               "title": "Unlock URL",
               "type": "string",
-              "placeholder": "your url to unlock the fanv2's physical controls",
+              "placeholder": "your url to unlock the fanv2s physical controls",
               "required": false
             },
             "unlock_method": {
@@ -1163,7 +1163,7 @@
             "target_state_url": {
               "title": "Target State URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2's target state",
+              "placeholder": "your url to change the fanv2s target state",
               "required": false
             },
             "target_state_method": {
@@ -1192,7 +1192,7 @@
             "swing_mode_url": {
               "title": "Swing Mode URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2's swing mode",
+              "placeholder": "your url to change the fanv2s swing mode",
               "required": false
             },
             "swing_mode_method": {
@@ -1216,7 +1216,7 @@
             "rotation_direction_url": {
               "title": "Rotation Direction URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2's rotation direction",
+              "placeholder": "your url to change the fanv2s rotation direction",
               "required": false
             },
             "rotation_direction_method": {
@@ -1243,7 +1243,7 @@
       "valves": {
         "type": "array",
         "title": "Valves",
-        "description": "Turn On and Off valves by triggering a URL of any system.",
+        "description": "Turn on and off valves by triggering a URL from any system.",
         "items": {
           "title": "Valves",
           "type": "object",
