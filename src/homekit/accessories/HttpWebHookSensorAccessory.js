@@ -13,6 +13,7 @@ function HttpWebHookSensorAccessory(ServiceParam, CharacteristicParam, platform,
   this.type = sensorConfig["type"];
   this.autoRelease = sensorConfig["autoRelease"];
   this.autoReleaseTime = sensorConfig["autoReleaseTime"] || Constants.DEFAULT_SENSOR_TIMEOUT;
+  this.resetAutoReleaseOnDetection = sensorConfig["resetAutoReleaseOnDetection"];
 
   this.informationService = new Service.AccessoryInformation();
   this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
