@@ -80,53 +80,19 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
   this.storage.setItemSync("http-webhook-" + this.id, urlValue);
   this.log.debug("cached: "+ cached);
   this.log.debug("cached !== urlValue: "+ (cached !== urlValue));
+
+
   if (cached !== urlValue) {
     this.log("Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
 
     if (this.type === "contact") {
       this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(urlValue ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-      if (this.autoRelease) {
-        var timeoutStorageKey = "http-webhook-" + this.type + "-auto-release-timeout-" + this.id;
-        var timeout = this.storage.getItemSync(timeoutStorageKey);
-        if (this.resetAutoReleaseOnDetection) clearTimeout(timeout);
-
-        timeout = setTimeout(function() {
-        this.storage.setItemSync("http-webhook-" + this.id, true);
-        this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_DETECTED, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
-        }.bind(this), this.autoReleaseTime);
-
-        this.storage.setItemSync(timeoutStorageKey, timeout);
-      }
     }
     else if (this.type === "motion") {
       this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(urlValue, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-      if (this.autoRelease) {
-        var timeoutStorageKey = "http-webhook-" + this.type + "-auto-release-timeout-" + this.id;
-        var timeout = this.storage.getItemSync(timeoutStorageKey);
-        if (this.resetAutoReleaseOnDetection) clearTimeout(timeout);
-
-        timeout = setTimeout(function () {
-          this.storage.setItemSync("http-webhook-" + this.id, false);
-          this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(false, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
-        }.bind(this), this.autoReleaseTime);
-
-        this.storage.setItemSync(timeoutStorageKey, timeout);
-      }
     }
     else if (this.type === "occupancy") {
       this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(urlValue ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_WEBHOOK);
-      if (this.autoRelease) {
-        var timeoutStorageKey = "http-webhook-" + this.type + "-auto-release-timeout-" + this.id;
-        var timeout = this.storage.getItemSync(timeoutStorageKey);
-        if (this.resetAutoReleaseOnDetection) clearTimeout(timeout);
-
-        timeout = setTimeout(function () {
-          this.storage.setItemSync("http-webhook-" + this.id, false);
-          this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
-        }.bind(this), this.autoReleaseTime);
-        
-        this.storage.setItemSync(timeoutStorageKey, timeout);
-      }
     }
     else if (this.type === "smoke") {
       this.service.getCharacteristic(Characteristic.SmokeDetected).updateValue(urlValue ? Characteristic.SmokeDetected.SMOKE_DETECTED : Characteristic.SmokeDetected.SMOKE_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_WEBHOOK);
@@ -149,6 +115,9 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
     }
 
   }
+
+  this.setAutoReleaseTimeout();
+
   return {
     "success" : true
   };
@@ -181,5 +150,28 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
 HttpWebHookSensorAccessory.prototype.getServices = function() {
   return [ this.service, this.informationService ];
 };
+
+HttpWebHookSensorAccessory.prototype.resetToInitialState = function () {
+    if (this.type === "contact") {
+        this.storage.setItemSync("http-webhook-" + this.id, true);
+        this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_DETECTED, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
+    } else if (this.type === "motion") {
+        this.storage.setItemSync("http-webhook-" + this.id, false);
+        this.service.getCharacteristic(Characteristic.MotionDetected).updateValue(false, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
+    } else if (this.type === "occupancy") {
+        this.storage.setItemSync("http-webhook-" + this.id, false);
+        this.service.getCharacteristic(Characteristic.OccupancyDetected).updateValue(Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
+    }
+}
+
+HttpWebHookSensorAccessory.prototype.setAutoReleaseTimeout = function () {
+    if (!this.autoRelease || !this.resetAutoReleaseOnDetection) return;
+    clearTimeout(this[this.getTimeoutKey()]);
+    this[this.getTimeoutKey()] = setTimeout(this.resetToInitialState.bind(this), this.autoReleaseTime);
+}
+
+HttpWebHookSensorAccessory.prototype.getTimeoutKey = function() {
+    return `autoReleaseTimeout-${this.type}-${this.id}`;
+}
 
 module.exports = HttpWebHookSensorAccessory;
