@@ -358,10 +358,10 @@
           }
         }
       },
-      "co2sensors" : {
-        "type" : "array",
-        "title" : "CO2 Sensors",
-        "Description" : "Control a CO2 sensor by updating the PPM value.",
+      "co2sensors": {
+        "type": "array",
+        "title": "CO2 Sensor",
+        "description": "Control a CO2 sensor by updating the PPM value.",
         "items": {
           "title": "CO2 Sensors",
           "type": "object",
@@ -1449,6 +1449,24 @@
                 "lights[].brightness_body",
                 "lights[].brightness_headers",
                 "lights[].brightness_factor"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "CO2 Sensors",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            {
+              "title": "CO2 Sensor",
+              "type": "array",
+              "orderable": false,
+              "items": [
+                "co2sensors[].id",
+                "co2sensors[].name",
+                "co2sensors[].co2_peak_level"
               ]
             }
           ]
