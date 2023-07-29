@@ -1,3 +1,8 @@
+### 0.1.17
+
+Breaking change:
+  - Thermostat parameter was wrong. Documentation stated "maxTemp" but was "maxValue". Now changed "maxValue" to "maxTemp" according to documentation (thanks to mgoeppl)
+
 ### 0.1.16
 
 New features:
