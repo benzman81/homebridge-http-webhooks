@@ -13,7 +13,7 @@ function HttpWebHookThermostatAccessory(ServiceParam, CharacteristicParam, platf
   this.name = thermostatConfig["name"];
   this.type = "thermostat";
   this.minValue = thermostatConfig["minTemp"] || 15;
-  this.maxValue = thermostatConfig["maxValue"] || 30;
+  this.maxValue = thermostatConfig["maxTemp"] || 30;
   this.minStep = thermostatConfig["minStep"] || 0.5;
   this.rejectUnauthorized = thermostatConfig["rejectUnauthorized"] === undefined ? true: thermostatConfig["rejectUnauthorized"] === true;
   this.setTargetTemperatureURL = thermostatConfig["set_target_temperature_url"] || "";
