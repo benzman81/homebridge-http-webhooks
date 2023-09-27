@@ -93,8 +93,10 @@ HttpWebHookFanv2Accessory.prototype.changeFromServer = function (urlParams) {
     if (cachedState === undefined) {
         cachedState = false;
     }
+    var state = urlParams.state || cachedState;
+    var stateBool = state === "true" || state === true;
     if (urlParams.state != cachedState) {
-        this.log("Change state for fanv2 to '%d'.", urlParams.state);
+        this.log("Change state for fanv2 to '%s'.", stateBool);
         this.service.getCharacteristic(Characteristic.Active).updateValue((urlParams.state == "true"), undefined, Constants.CONTEXT_FROM_WEBHOOK);
     }
     if (urlParams.speed != null) {
