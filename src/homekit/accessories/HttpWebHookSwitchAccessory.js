@@ -24,9 +24,9 @@ function HttpWebHookSwitchAccessory(ServiceParam, CharacteristicParam, platform,
   this.offHeaders = switchConfig["off_headers"] || "{}";
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSwitchAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSwitchAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   this.service = new Service.Switch(this.name);
   this.service.getCharacteristic(Characteristic.On).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));

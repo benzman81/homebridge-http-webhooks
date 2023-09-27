@@ -15,9 +15,9 @@ function HttpWebHookSensorAccessory(ServiceParam, CharacteristicParam, platform,
   this.autoReleaseTime = sensorConfig["autoReleaseTime"] || Constants.DEFAULT_SENSOR_TIMEOUT;
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSensorAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSensorAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   if (this.type === "contact") {
     this.service = new Service.ContactSensor(this.name);

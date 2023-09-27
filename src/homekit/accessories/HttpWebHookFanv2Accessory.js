@@ -66,9 +66,9 @@ function HttpWebHookFanv2Accessory(ServiceParam, CharacteristicParam, platform, 
     this.rotationDirectionHeaders = fanv2Config["rotation_direction_headers"] || "{}";
 
     this.informationService = new Service.AccessoryInformation();
-    this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-    this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookFanv2Accessory-" + this.name);
-    this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookFanv2Accessory-" + this.id);
+    this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+    this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+    this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
     this.service = new Service.Fanv2(this.name);
     this.service.getCharacteristic(Characteristic.Active).on('get', this.getState.bind(this)).on('set', this.setState.bind(this));

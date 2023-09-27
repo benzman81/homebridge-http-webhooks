@@ -43,6 +43,9 @@ function HttpWebHooksPlatform(log, config, homebridge) {
   this.fanv2s = config["fanv2s"] || [];
   this.co2sensors = config["co2sensors"] || [];
   this.valves = config["valves"] || [];
+  this.manufacturer = config["manufacturer"] || "HttpWebHooksPlatform";
+  this.modelPrefix = config["modelPrefix"] || "HttpWebHookAccessory-";
+  this.serialPrefix = config["serialPrefix"] || "HttpWebHookAccessory-";
 
   this.server = new Server(Service, Characteristic, this, config);
 };

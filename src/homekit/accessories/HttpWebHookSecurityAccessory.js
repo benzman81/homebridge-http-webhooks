@@ -20,9 +20,9 @@ function HttpWebHookSecurityAccessory(ServiceParam, CharacteristicParam, platfor
   this.setStateHeaders = securityConfig["set_state_headers"] || "{}";
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookSecurityAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookSecurityAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   this.service = new Service.SecuritySystem(this.name);
   this.service.getCharacteristic(Characteristic.SecuritySystemTargetState).on('get', this.getTargetSecurityState.bind(this)).on('set', this.setTargetSecurityState.bind(this));

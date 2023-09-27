@@ -25,9 +25,9 @@ function HttpWebHookStatelessSwitchAccessory(ServiceParam, CharacteristicParam, 
   }
 
   var informationService = new Service.AccessoryInformation();
-  informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  informationService.setCharacteristic(Characteristic.Model, "HttpWebHookStatelessSwitchAccessory-" + this.name);
-  informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookStatelessSwitchAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
   this.service.push(informationService);
 };
 

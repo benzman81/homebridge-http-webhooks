@@ -28,9 +28,9 @@ function HttpWebHookThermostatAccessory(ServiceParam, CharacteristicParam, platf
   this.setTargetHeatingCoolingStateHeaders = thermostatConfig["set_target_heating_cooling_state_headers"] || "{}";
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookThermostatAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookThermostatAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   this.service = new Service.Thermostat(this.name);
   this.service.getCharacteristic(Characteristic.TargetHeatingCoolingState).on('get', this.getTargetHeatingCoolingState.bind(this)).on('set', this.setTargetHeatingCoolingState.bind(this));

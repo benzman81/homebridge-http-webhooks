@@ -14,9 +14,9 @@ function HttpWebHookCarbonDioxideSensorAccessory(ServiceParam, CharacteristicPar
   this.co2PeakLevel = sensorConfig["co2_peak_level"] || 1200;
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookCarbonDioxideSensorAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookCarbonDioxideSensorAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   this.service = new Service.CarbonDioxideSensor(this.name);
   this.service.getCharacteristic(Characteristic.CarbonDioxideLevel).on('get', this.getCarbonDioxideLevel.bind(this));

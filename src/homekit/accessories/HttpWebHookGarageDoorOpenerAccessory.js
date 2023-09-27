@@ -25,9 +25,9 @@ function HttpWebHookGarageDoorOpenerAccessory(ServiceParam, CharacteristicParam,
   this.setTargetDoorStateCloseHeaders = garageDoorOpenerConfig["close_headers"] || "{}";
 
   this.informationService = new Service.AccessoryInformation();
-  this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-  this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookGarageDoorOpenerAccessory-" + this.name);
-  this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookGarageDoorOpenerAccessory-" + this.id);
+  this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+  this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+  this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
   this.service = new Service.GarageDoorOpener(this.name);
   this.service.getCharacteristic(Characteristic.TargetDoorState).on('get', this.getTargetDoorState.bind(this)).on('set', this.setTargetDoorState.bind(this));

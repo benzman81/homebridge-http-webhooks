@@ -25,9 +25,9 @@ function HttpWebHookValveAccessory(ServiceParam, CharacteristicParam, platform, 
     this.offHeaders = valveConfig["off_headers"] || "{}";
 
     this.informationService = new Service.AccessoryInformation();
-    this.informationService.setCharacteristic(Characteristic.Manufacturer, "HttpWebHooksPlatform");
-    this.informationService.setCharacteristic(Characteristic.Model, "HttpWebHookValveAccessory-" + this.name);
-    this.informationService.setCharacteristic(Characteristic.SerialNumber, "HttpWebHookValveAccessory-" + this.id);
+    this.informationService.setCharacteristic(Characteristic.Manufacturer, this.manufacturer);
+    this.informationService.setCharacteristic(Characteristic.Model, this.modelPrefix + this.name);
+    this.informationService.setCharacteristic(Characteristic.SerialNumber, this.serialPrefix + this.id);
 
     var valveType = 0;
     switch(valveConfig.type) {
