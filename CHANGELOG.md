@@ -1,3 +1,9 @@
+### 0.1.18
+
+Bugfix:
+
+  - fixed "nan" log when using fanv2 (thanks to shirnschall).
+
 ### 0.1.17
 
 Breaking change:
