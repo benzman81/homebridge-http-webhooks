@@ -44,6 +44,7 @@ HttpWebHookSwitchAccessory.prototype.changeFromServer = function(urlParams) {
     };
   }
   else {
+    var state = urlParams.state
     var stateBool = state === "true";
     if (urlParams.state === "toggle") {
       stateBool = !cachedState
