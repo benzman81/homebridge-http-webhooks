@@ -44,8 +44,10 @@ HttpWebHookSwitchAccessory.prototype.changeFromServer = function(urlParams) {
     };
   }
   else {
-    var state = urlParams.state;
     var stateBool = state === "true";
+    if (urlParams.state === "toggle") {
+      stateBool = !cachedState
+    }
     this.storage.setItemSync("http-webhook-" + this.id, stateBool);
     // this.log("[INFO Http WebHook Server] State change of '%s'
     // to '%s'.",accessory.id,stateBool);
