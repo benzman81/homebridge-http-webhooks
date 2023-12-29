@@ -4,3 +4,4 @@ sampleHttps.js
 package-lock.json
 .cache
 .idea
+.DS_Store
