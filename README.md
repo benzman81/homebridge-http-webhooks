@@ -176,7 +176,8 @@ Example config.json:
                         "name": "Sensor name 1",
                         "type": "contact",
                         "autoRelease": false, // (optional)
-                        "autoReleaseTime": 7500 // (optional, in ms)
+                        "autoReleaseTime": 7500, // (optional, in ms)
+                        "resetAutoReleaseOnDetection": true // (optional)
                     },
                     {
                         "id": "sensor2",

@@ -112,6 +112,11 @@
               "type": "integer",
               "placeholder": "7500",
               "required": false
+            },
+            "resetAutoReleaseOnDetection": {
+                "title": "Reset Auto Release on Detection",
+                "type": "boolean",
+                "required": false
             }
           }
         }
@@ -1369,7 +1374,8 @@
                 "sensors[].name",
                 "sensors[].type",
                 "sensors[].autoRelease",
-                "sensors[].autoReleaseTime"
+                "sensors[].autoReleaseTime",
+                "sensors[].resetAutoReleaseOnDetection"
               ]
             }
           ]
