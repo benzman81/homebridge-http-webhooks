@@ -36,7 +36,7 @@ For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy de
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
 
 ## Switch
-For switches the value for `NEWSTATE` is either `true` for on or `false` for off.
+For switches the value for `NEWSTATE` is either `true` for on or `false` for off. Alternatively use the value `toggle` to make the switch to into its other state.  
 
 ## Push button
 For push buttons the value for `NEWSTATE` is `true`. The button will be released automatically.
