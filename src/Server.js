@@ -172,10 +172,10 @@ Server.prototype.start = function() {
       callback(username === httpAuthUser && password === httpAuthPass);
     });
     if(this.https) {
-      https.createServer(basicAuth, sslServerOptions, serverCallback).listen(this.webhookPort, this.webhookListenHost);
+      https.createServer(sslServerOptions, basic.check(serverCallback)).listen(this.webhookPort, this.webhookListenHost);
     }
     else {
-      http.createServer(basicAuth, serverCallback).listen(this.webhookPort, this.webhookListenHost);
+      http.createServer(basic.check(serverCallback)).listen(this.webhookPort, this.webhookListenHost);
     }
   }
   else {
