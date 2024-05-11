@@ -118,7 +118,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getCurrentDoorState = function(callback) {
-  this.log("Getting Current Door State for '%s'...", this.id);
+  this.debug("Getting Current Door State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-door-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.CurrentDoorState.CLOSED;
