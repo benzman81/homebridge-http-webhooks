@@ -2,13 +2,13 @@
 ### 0.1.19-beta.1
 From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
-tested on homebdrige v2 with a motion sensor, all OK
+Tested on Homebridge v2 with a motion sensor, all OK
 Updated dependencies:
   "http-auth": "^4.2.0",
   "node-persist": "^2.1.0",
   "request": "^2.88.2",
   "selfsigned": "^2.4.1"
-NOTE: a newer version of node-persist exists but all storage commands are async  , requiring more code changes
+NOTE: a newer version of node-persist exists but all storage commands are async, requiring more code changes
 
 ### 0.1.18
 
