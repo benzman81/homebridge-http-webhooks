@@ -173,53 +173,53 @@ Example config.json:
                 "sensors": [
                     {
                         "id": "sensor1",
-                        "name": "Sensor name 1",
+                        "name": "Contact Sensor name 1",
                         "type": "contact",
                         "autoRelease": false, // (optional)
                         "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor2",
-                        "name": "Sensor name 2",
+                        "name": "Motion Sensor name 2",
                         "type": "motion",
                         "autoRelease": false, // (optional)
                         "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor3",
-                        "name": "Sensor name 3",
+                        "name": "Occupancy Sensor name 3",
                         "type": "occupancy",
                         "autoRelease": false, // (optional)
                         "autoReleaseTime": 7500 // (optional, in ms)
                     },
                     {
                         "id": "sensor4",
-                        "name": "Sensor name 4",
+                        "name": "Smoke Sensor name 4",
                         "type": "smoke"
                     },
                     {
                         "id": "sensor5",
-                        "name": "Sensor name 5",
+                        "name": "Temperature Sensor name 5",
                         "type": "temperature"
                     },
                     {
                         "id": "sensor6",
-                        "name": "Sensor name 6",
+                        "name": "Humidity Sensor name 6",
                         "type": "humidity"
                     },
                     {
                         "id": "sensor7",
-                        "name": "Sensor name 7",
+                        "name": "Air Quality Sensor name 7",
                         "type": "airquality"
                     },
                     {
                         "id": "sensor8",
-                        "name": "Sensor name 8",
+                        "name": "Light Sensor name 8",
                         "type": "light"
                     },
                     {
                         "id": "sensor9",
-                        "name": "Sensor name 9",
+                        "name": "Leak Sensor name 9",
                         "type": "leak"
                     }
                 ],
@@ -241,7 +241,7 @@ Example config.json:
                 "pushbuttons": [
                     {
                         "id": "pushbutton1",
-                        "name": "Push button name 1",
+                        "name": "Push Button name 1",
                         "rejectUnauthorized": false, // (optional)
                         "push_url": "your url to be called on push", // (optional)
                         "push_method": "GET", // (optional)
@@ -290,7 +290,7 @@ Example config.json:
                 "co2sensors" : [
                     {
                         "id": "co2sensor1",
-                        "name": "CO2 sensor name 1",
+                        "name": "CO2 Sensor name 1",
                         "co2_peak_level": 1200
                     }
                 ],
@@ -312,7 +312,7 @@ Example config.json:
                 "security": [
                     {
                         "id": "security1",
-                        "name": "Security System",
+                        "name": "Security System name 1",
                         "rejectUnauthorized": false, // (optional)
                         "set_state_url": "http://localhost/security/mode/%d", // %d is replaced by the target state
                         "set_state_method": "GET", // (optional)
@@ -338,7 +338,7 @@ Example config.json:
                 "statelessswitches": [
                     {
                     "id": "statelessswitch1",
-                    "name": "Stateless Switch 1",
+                    "name": "Stateless Switch name 1",
                     "buttons": [//the buttons of the switch
                         {
                             "name": "Button1" // (The name does not appear in Home app but appear in Eve app)
@@ -354,7 +354,7 @@ Example config.json:
                 "windowcoverings": [
                     {
                         "id": "windowcovering1",
-                        "name": "Some Window Cover",
+                        "name": "Window Covering name 1",
                         "rejectUnauthorized": false, // (optional)
                         "open_url" : "http://your.url/to/open",
                         "open_method" : "GET", // (optional)
@@ -385,14 +385,14 @@ Example config.json:
                 ],
                 "lockmechanisms": [
                     {
-                        "id": "doorlock1",
-                        "name": "Door",
+                        "id": "lockmechanism1",
+                        "name": "Lock Mechanism name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "open_url" : "your url to open the garage door", // (optional)
+                        "open_url" : "your url to unlock the lock mechanism", // (optional)
                         "open_method" : "GET",// (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST, PUT and PATCH; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "close_url" : "your url to close the garage door", // (optional)
+                        "close_url" : "your url to lock the lock mechanism", // (optional)
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST, PUT and PATCH; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -400,8 +400,8 @@ Example config.json:
                 ],
                 "fanv2s": [
                     {
-                        "id": "fanv2-1",
-                        "name": "Fanv2-1",
+                        "id": "fanv21",
+                        "name": "Fanv2 name 1",
                         "rejectUnauthorized": true, // (optional)
                         "on_url": "your url to switch the fanv2 on",
                         "on_method": "GET",
