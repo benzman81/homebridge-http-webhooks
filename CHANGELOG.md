@@ -3,6 +3,16 @@
 From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
+
+Updated Readme:
+  Updated name of all sensors to show sensor type (Motion Sensor name 2 etc) to make it easier to test
+  Updated name of Push Button to make name consistent with other examples
+  Updated name of Security System to make name consistent with other examples
+  Updated name of Window Covering to make name consistent with other examples
+  Updated id, name, open_url and close_url of example Lock Mechanism in Readme to make name consistent with other examples
+  Updated id and name of example Fanv2 to make name Homebridge v2 compliant
+  Updated name of CO2 Sensor to make name consistent with other examples
+
 Updated dependencies:
   "http-auth": "^4.2.0",
   "node-persist": "^2.1.0",
