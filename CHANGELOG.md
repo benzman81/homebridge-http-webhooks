@@ -4,6 +4,9 @@ From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
 
+Fixed logging error in getCurrentHeatingCoolingState
+Fixed capitalisation consistency errors in HttpWebHookThermostatAccessory.js
+
 Updated Readme:
   Updated name of all sensors to show sensor type (Motion Sensor name 2 etc) to make it easier to test
   Updated name of Push Button to make name consistent with other examples
