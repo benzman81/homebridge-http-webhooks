@@ -4,6 +4,9 @@ From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
 
+Fixed issue  "This plugin generated a warning from the characteristic 'Current Ambient Light Level'" when state is unknown in HttpWebHookSensorAccessory.js
+Improved logging for sensors to include sensor type to help in debugging in HttpWebHookSensorAccessory.js
+
 Fixed log level inconsistencies in HttpWebHookGarageDoorOpenerAccessory.js 
 Fixed logging error in getCurrentHeatingCoolingState
 Fixed capitalisation consistency errors in HttpWebHookThermostatAccessory.js
