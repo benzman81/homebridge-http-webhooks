@@ -4,6 +4,7 @@ From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
 
+Fixed log level inconsistencies in HttpWebHookGarageDoorOpenerAccessory.js 
 Fixed logging error in getCurrentHeatingCoolingState
 Fixed capitalisation consistency errors in HttpWebHookThermostatAccessory.js
 
