@@ -4,6 +4,7 @@ From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
 
+Fixed tick-mark typo in Readme for Occupancy sensor
 Fixed typo and capitalisation issues in Readme for Window Covering
 
 Fixed issue  "This plugin generated a warning from the characteristic 'Current Ambient Light Level'" when state is unknown in HttpWebHookSensorAccessory.js
