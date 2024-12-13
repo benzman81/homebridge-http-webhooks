@@ -22,6 +22,7 @@ The returned JSON format is:
 
 # Trigger change for boolean accessory
 To trigger a change of a boolean accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
+Use only the text `true` or `false`. Do not use numbers 1 or 0.
 
 ## Contact sensor
 For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, than the state will be released after `autoReleaseTime`, if not set 5 seconds.
@@ -30,7 +31,7 @@ For contact sensors the value for `NEWSTATE` is either `true` for contact or `fa
 For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Occupancy sensor
-For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
+For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or `false` for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Smoke sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
@@ -243,7 +244,7 @@ Example config.json:
                         "id": "pushbutton1",
                         "name": "Push button name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "push_url": "your url to be called when the pushbutton is pushed", // (optional)
+                        "push_url": "your url to call when the pushbutton is pushed", // (optional)
                         "push_method": "GET", // (optional)
                         "push_body": "{ \"push\": true }", // (optional only for POST, PUT and PATCH; use "push_form" for x-www-form-urlencoded JSON)
                         "push_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
