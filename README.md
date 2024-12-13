@@ -228,11 +228,11 @@ Example config.json:
                         "id": "switch1",
                         "name": "Switch name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the switch on", // (optional)
+                        "on_url": "your url to call when the switch is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the switch off", // (optional)
+                        "off_url": "your url to call when the switch is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -243,7 +243,7 @@ Example config.json:
                         "id": "pushbutton1",
                         "name": "Push button name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "push_url": "your url to be called on push", // (optional)
+                        "push_url": "your url to be called when the pushbutton is pushed", // (optional)
                         "push_method": "GET", // (optional)
                         "push_body": "{ \"push\": true }", // (optional only for POST, PUT and PATCH; use "push_form" for x-www-form-urlencoded JSON)
                         "push_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -254,15 +254,15 @@ Example config.json:
                         "id": "light1",
                         "name": "Light name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the light on", // (optional)
+                        "on_url": "your url to call when the light is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the light off", // (optional)
+                        "off_url": "your url to call when the light is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "brightness_url": "your url to change the light brightness", // (optional)
+                        "brightness_url": "your url to call when the light brightness is changed", // (optional)
                         "brightness_method": "GET", // (optional)
                         "brightness_body": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}", // (optional only for POST, PUT and PATCH; use "brightness_form" for x-www-form-urlencoded JSON, variables are replaced on the fly)
                         "brightness_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
@@ -299,11 +299,11 @@ Example config.json:
                         "id": "outlet1",
                         "name": "Outlet name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the outlet on", // (optional)
+                        "on_url": "your url to call when the outlet is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the outlet off", // (optional)
+                        "off_url": "your url to call when the outlet is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -325,11 +325,11 @@ Example config.json:
                         "id": "garagedooropener1",
                         "name": "Garage Door Opener name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "open_url" : "your url to open the garage door", // (optional)
+                        "open_url" : "your url to call when the garage door is opened", // (optional)
                         "open_method" : "GET", // (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST, PUT and PATCH; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "close_url" : "your url to close the garage door", // (optional)
+                        "close_url" : "your url to call when the garage door is closed", // (optional)
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST, PUT and PATCH; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -388,11 +388,11 @@ Example config.json:
                         "id": "doorlock1",
                         "name": "Door",
                         "rejectUnauthorized": false, // (optional)
-                        "open_url" : "your url to open the garage door", // (optional)
+                        "open_url" : "your url to call when the lock mechanisms is unlocked (opened)", // (optional)
                         "open_method" : "GET",// (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST, PUT and PATCH; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "close_url" : "your url to close the garage door", // (optional)
+                        "close_url" : "your url to call when the lock mechanism is locaked (closed)", // (optional)
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST, PUT and PATCH; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -403,39 +403,39 @@ Example config.json:
                         "id": "fanv2-1",
                         "name": "Fanv2-1",
                         "rejectUnauthorized": true, // (optional)
-                        "on_url": "your url to switch the fanv2 on",
+                        "on_url": "your url to call when the fanv2 is turned on",
                         "on_method": "GET",
                         "on_body": "{ \"on\" : true }",
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "off_url": "your url to switch the fanv2 off",
+                        "off_url": "your url to call when the fanv2 is turned off",
                         "off_method": "GET",
                         "off_body": "{ \"off\" : true }",
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "speed_url": "your url to change the fanv2 rotation speed",
+                        "speed_url": "your url to call when the fanv2 speed is changed",
                         "speed_method": "GET",
                         "speed_body": "{ \"on\" : %statusPlaceholder, \"speed\" : %speedPlaceholder}",
                         "speed_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "speed_factor":2.55,
                         "enableLockPhysicalControls": true,
-                        "lock_url": "your url to lock the fanv2's physical controls",
+                        "lock_url": "your url to call when the fanv2's physical controls are locked",
                         "lock_method": "GET",
                         "lock_body": "{ \"physicalLock\": true }",
                         "lock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "unlock_url": "your url to unlock the fanv2's physical controls",
+                        "unlock_url": "your url to call when the fanv2's physical controls are unlocked",
                         "unlock_method": "GET",
                         "unlock_body": "{ \"physicalLock\": false }",
                         "unlock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "enableTargetStateControls": true,
-                        "target_state_url": "your url to change the fanv2's target state",
+                        "target_state_url": "your url to call when the fanv2's target state is changed",
                         "target_state_method": "GET",
                         "target_state_body": "{ \"mode\": %targetState }",
                         "target_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "enableSwingModeControls": true,
-                        "swing_mode_url": "your url to change the fanv2's swing mode",
+                        "swing_mode_url": "your url to call when the fanv2's swing mode is changed",
                         "swing_mode_method": "GET",
                         "swing_mode_body": "{ \"swing_mode\": %swingMode }",
                         "swing_mode_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "rotation_direction_url": "your url to change the fanv2's rotation direction",
+                        "rotation_direction_url": "your url to call when the fanv2's rotation direction is changed",
                         "rotation_direction_method": "GET",
                         "rotation_direction_body": "{ \"rotation_direction\": %rotationDirection }",
                         "rotation_direction_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}"
@@ -447,11 +447,11 @@ Example config.json:
                         "name": "Valve name 1",
                         "type": "generic valve", // (optional)
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the valve on", // (optional)
+                        "on_url": "your url to call when the valve is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the valve off", // (optional)
+                        "off_url": "your url to call when the valve is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
