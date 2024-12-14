@@ -43,7 +43,7 @@ HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParam
     this.storage.setItemSync("http-webhook-lock-current-state-" + this.id, urlParams.lockcurrentstate);
     if (cachedLockCurrentState !== urlParams.lockcurrentstate) {
       if (urlParams.lockcurrentstate) {
-        this.log("Change Current Lock State for locking to '%s'.", urlParams.lockcurrentstate);
+        this.log(this.name + ": Change Current Lock State for locking to '%s'.", urlParams.lockcurrentstate);
         this.service.getCharacteristic(Characteristic.LockCurrentState).updateValue(urlParams.lockcurrentstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }
@@ -56,7 +56,7 @@ HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParam
     this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, urlParams.locktargetstate);
     if (cachedLockTargetState !== urlParams.locktargetstate) {
       if (urlParams.locktargetstate) {
-        this.log("Change Target Lock State for locking to '%s'.", urlParams.locktargetstate);
+        this.log(this.name + ": Change Target Lock State for locking to '%s'.", urlParams.locktargetstate);
         this.service.getCharacteristic(Characteristic.LockTargetState).updateValue(urlParams.locktargetstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }
@@ -69,7 +69,7 @@ HttpWebHookLockMechanismAccessory.prototype.changeFromServer = function(urlParam
 }
 
 HttpWebHookLockMechanismAccessory.prototype.getLockTargetState = function(callback) {
-  this.log.debug("Getting current Target Lock State for '%s'...", this.id);
+  this.log.debug(this.name + ": Getting current Target Lock State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-lock-target-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.LockTargetState.SECURED;
@@ -82,7 +82,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
   var newHomeKitState = doLock ? Characteristic.LockCurrentState.SECURED : Characteristic.LockCurrentState.UNSECURED;
   var newHomeKitStateTarget = doLock ? Characteristic.LockTargetState.SECURED : Characteristic.LockTargetState.UNSECURED;
 
-  this.log("Target Lock State for '%s' to '%s'...", this.id, doLock);
+  this.log(this.name + ": Target Lock State for '%s' to '%s'...", this.id, doLock);
   this.storage.setItemSync("http-webhook-lock-target-state-" + this.id, homeKitState);
   var urlToCall = this.setLockTargetStateCloseURL;
   var urlMethod = this.setLockTargetStateCloseMethod;
@@ -110,7 +110,7 @@ HttpWebHookLockMechanismAccessory.prototype.setLockTargetState = function(homeKi
 };
 
 HttpWebHookLockMechanismAccessory.prototype.getLockCurrentState = function(callback) {
-  this.log.debug("Getting Current Lock State for '%s'...", this.id);
+  this.log.debug(this.name + ": Getting Current Lock State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-lock-current-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.LockCurrentState.SECURED;

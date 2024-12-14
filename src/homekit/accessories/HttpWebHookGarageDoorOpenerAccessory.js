@@ -44,7 +44,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.changeFromServer = function(urlPa
     this.storage.setItemSync("http-webhook-current-door-state-" + this.id, urlParams.currentdoorstate);
     if (cachedCurrentDoorState !== urlParams.currentdoorstate) {
       if (urlParams.currentdoorstate) {
-        this.log("Change Current Door State for garage door opener to '%s'.", urlParams.currentdoorstate);
+        this.log(this.name + ": Change Current Door State for garage door opener to '%s'.", urlParams.currentdoorstate);
         this.service.getCharacteristic(Characteristic.CurrentDoorState).updateValue(urlParams.currentdoorstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }
@@ -57,7 +57,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.changeFromServer = function(urlPa
     this.storage.setItemSync("http-webhook-target-door-state-" + this.id, urlParams.targetdoorstate);
     if (cachedTargetDoorState !== urlParams.targetdoorstate) {
       if (urlParams.targetdoorstate) {
-        this.log("Change Target Door State for garage door opener to '%s'.", urlParams.targetdoorstate);
+        this.log(this.name + ": Change Target Door State for garage door opener to '%s'.", urlParams.targetdoorstate);
         this.service.getCharacteristic(Characteristic.TargetDoorState).updateValue(urlParams.targetdoorstate, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }
@@ -70,7 +70,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.changeFromServer = function(urlPa
     this.storage.setItemSync("http-webhook-obstruction-detected-" + this.id, urlParams.obstructiondetected);
     if (cachedObstructionDetected !== urlParams.obstructiondetected) {
       if (urlParams.obstructiondetected) {
-        this.log("Change Obstruction Detected for garage door opener to '%s'.", urlParams.obstructiondetected);
+        this.log(this.name + ": Change Obstruction Detected for garage door opener to '%s'.", urlParams.obstructiondetected);
         this.service.getCharacteristic(Characteristic.ObstructionDetected).updateValue(urlParams.obstructiondetected, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }
@@ -84,7 +84,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.changeFromServer = function(urlPa
 }
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(callback) {
-  this.log("Getting current Target Door State for '%s'...", this.id);
+  this.log(this.name + ": Getting current Target Door State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-target-door-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.TargetDoorState.CLOSED;
@@ -93,7 +93,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getTargetDoorState = function(cal
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(newState, callback, context) {
-  this.log("Target Door State for '%s'...", this.id);
+  this.log(this.name + ": Target Door State for '%s'...", this.id);
   this.storage.setItemSync("http-webhook-target-door-state-" + this.id, newState);
 
   var doOpen = newState === Characteristic.TargetDoorState.OPEN;
@@ -118,7 +118,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.setTargetDoorState = function(new
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getCurrentDoorState = function(callback) {
-  this.log("Getting Current Door State for '%s'...", this.id);
+  this.log(this.name + ": Getting Current Door State for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-current-door-state-" + this.id);
   if (state === undefined) {
     state = Characteristic.CurrentDoorState.CLOSED;
@@ -127,7 +127,7 @@ HttpWebHookGarageDoorOpenerAccessory.prototype.getCurrentDoorState = function(ca
 };
 
 HttpWebHookGarageDoorOpenerAccessory.prototype.getObstructionDetected = function(callback) {
-  this.log("Getting Obstruction Detected for '%s'...", this.id);
+  this.log(this.name + ": Getting Obstruction Detected for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-obstruction-detected-" + this.id);
   if (state === undefined) {
     state = false;
