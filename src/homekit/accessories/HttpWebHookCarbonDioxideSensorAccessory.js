@@ -26,7 +26,7 @@ function HttpWebHookCarbonDioxideSensorAccessory(ServiceParam, CharacteristicPar
 HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(urlParams) {
   var cached = this.storage.getItemSync("http-webhook-" + this.id) || 0;
   if (urlParams.value === undefined) {
-    this.log.debug("No urlValue");
+    this.log.debug(this.name + ": No urlValue");
     return {
       "success" : true,
       "state" : cached
@@ -34,14 +34,14 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(ur
   }
   var urlValue = urlParams.value;
   var co2Detected = urlValue > this.co2PeakLevel;
-  this.log.debug("urlValue: "+ urlValue);
-  this.log.debug("co2Detected: "+ co2Detected);
+  this.log.debug(this.name + ": urlValue: "+ urlValue);
+  this.log.debug(this.name + ": co2Detected: "+ co2Detected);
   this.storage.setItemSync("http-webhook-carbon-dioxide-level-" + this.id, urlValue);
   this.storage.setItemSync("http-webhook-carbon-dioxide-detected-" + this.id, co2Detected);
-  this.log.debug("cached: "+ cached);
-  this.log.debug("cached !== urlValue: "+ (cached !== urlValue));
+  this.log.debug(this.name + ": cached: "+ cached);
+  this.log.debug(this.name + ": cached !== urlValue: "+ (cached !== urlValue));
   if (cached !== urlValue) {
-    this.log("Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
+    this.log(this.name + ": Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
     this.service.getCharacteristic(Characteristic.CarbonDioxideLevel).updateValue(urlValue, undefined, Constants.CONTEXT_FROM_WEBHOOK);
     this.service.getCharacteristic(Characteristic.CarbonDioxideDetected).updateValue(co2Detected ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, undefined, Constants.CONTEXT_FROM_WEBHOOK);
   }
@@ -51,7 +51,7 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(ur
 }
 
 HttpWebHookCarbonDioxideSensorAccessory.prototype.getCarbonDioxideLevel = function(callback) {
-  this.log.debug("Getting carbon dioxide level for '%s'...", this.id);
+  this.log.debug(this.name + ": Getting carbon dioxide level for '%s'...", this.id);
   var temp = this.storage.getItemSync("http-webhook-carbon-dioxide-level-" + this.id);
   if (temp === undefined) {
     temp = 0;
@@ -60,7 +60,7 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.getCarbonDioxideLevel = functi
 };
 
 HttpWebHookCarbonDioxideSensorAccessory.prototype.getCarbonDioxideDetected = function(callback) {
-    this.log.debug("Getting carbon dioxide detected state for '%s'...", this.id);
+    this.log.debug(this.name + ": Getting carbon dioxide detected state for '%s'...", this.id);
     var state = this.storage.getItemSync("http-webhook-carbon-dioxide-detected-" + this.id);
     if (state === undefined) {
         state = false;

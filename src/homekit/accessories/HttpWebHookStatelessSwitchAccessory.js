@@ -36,7 +36,7 @@ HttpWebHookStatelessSwitchAccessory.prototype.changeFromServer = function(urlPar
     for (var index = 0; index < this.service.length; index++) {
       var serviceName = this.service[index].getCharacteristic(Characteristic.Name).value;
       if (serviceName === urlParams.buttonName) {
-        this.log("Pressing '%s' with event '%i'", urlParams.buttonName, urlParams.event)
+        this.log(this.name + ": Pressing '%s' with event '%i'", urlParams.buttonName, urlParams.event)
         this.service[index].getCharacteristic(Characteristic.ProgrammableSwitchEvent).updateValue(urlParams.event, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       }
     }

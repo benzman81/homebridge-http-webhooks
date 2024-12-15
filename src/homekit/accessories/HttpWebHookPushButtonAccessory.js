@@ -40,7 +40,7 @@ HttpWebHookPushButtonAccessory.prototype.changeFromServer = function(urlParams) 
     // this.log("[INFO Http WebHook Server] State change of '%s'
     // to '%s'.",accessory.id,stateBool);
     if (stateBool) {
-      this.log("Change HomeKit state for push button to '%s'.", stateBool);
+      this.log(this.name + ": Change HomeKit state for push button to '%s'.", stateBool);
       this.service.getCharacteristic(Characteristic.On).updateValue(stateBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
       setTimeout(function() {
         this.service.getCharacteristic(Characteristic.On).updateValue(false, undefined, Constants.CONTEXT_FROM_TIMEOUTCALL);
@@ -53,13 +53,13 @@ HttpWebHookPushButtonAccessory.prototype.changeFromServer = function(urlParams) 
 }
 
 HttpWebHookPushButtonAccessory.prototype.getState = function(callback) {
-  this.log.debug("Getting current state for '%s'...", this.id);
+  this.log.debug(this.name + ": Getting current state for '%s'...", this.id);
   var state = false;
   callback(null, state);
 };
 
 HttpWebHookPushButtonAccessory.prototype.setState = function(powerOn, callback, context) {
-  this.log("Push buttons state change for '%s'...", this.id);
+  this.log(this.name + ": Push buttons state change for '%s'...", this.id);
   if (!powerOn) {
     callback(null);
   }
