@@ -1,7 +1,7 @@
-### NEXT VERSION
-New features:
-  - Added accessory names to log entries
+### 0.1.19
 
+New features:
+  - Added accessory names to log entries (thanks to jsiegenthaler).
 
 ### 0.1.18
 
