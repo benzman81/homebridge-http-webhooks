@@ -389,7 +389,7 @@ Example config.json:
                         "id": "doorlock1",
                         "name": "Door",
                         "rejectUnauthorized": false, // (optional)
-                        "open_url" : "your url to call when the lock mechanisms is unlocked (opened)", // (optional)
+                        "open_url" : "your url to call when the lock mechanism is unlocked (opened)", // (optional)
                         "open_method" : "GET",// (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST, PUT and PATCH; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
