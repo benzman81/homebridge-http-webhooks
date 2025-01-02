@@ -122,7 +122,7 @@ To update a garage door opener you can update three different values:
 * Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&obstructiondetected=NEWVALUE`
 
 # Stateless Switch
-Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger:
+Stateless switches requires 3 parameters: accessoryId, buttonName and the event to trigger:
 * Single press = 0
 * Double press = 1
 * Long press = 2
@@ -136,7 +136,7 @@ To update a lock mechanism you can update two different values:
 * Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
 
 # Window Covering
-To update a window coverings you can update three different values:
+To update a window covering you can update three different values:
 * Current position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentposition=%s` (%s is replaced by corresponding current position)
 * Target position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetposition=%s` (%s is replaced by corresponding target position)
 Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
