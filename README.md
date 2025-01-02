@@ -95,7 +95,7 @@ For humidity sensors the value for `NEWVALUE` is the new relative humidity perce
 For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
 
 ## CO2 Sensor
-For a CO2 Sensor the value for `NEWVALUE` is the new PPM reading.
+For a CO2 sensor the value for `NEWVALUE` is the new PPM reading.
 
 ## Leak Sensor
 For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
