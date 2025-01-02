@@ -10,7 +10,7 @@ Currently supports contact, motion, occupancy, smoke sensors, switches, push but
 2. Install this plugin using: `npm install -g homebridge-http-webhooks`
 3. Update your configuration file. See sample-config.json snippet below.
 
-# Retrieve state
+# Retrieve State
 To retrieve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
 The returned JSON format is:
 ```
@@ -20,26 +20,26 @@ The returned JSON format is:
     }
 ```
 
-# Trigger change for boolean accessory
+# Trigger Change for Boolean Accessory
 To trigger a change of a boolean accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
 Use only the text `true` or `false`. Do not use numbers 1 or 0.
 
-## Contact sensor
+## Contact Sensor
 For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, than the state will be released after `autoReleaseTime`, if not set 5 seconds.
 
-## Motion sensor
+## Motion Sensor
 For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
-## Occupancy sensor
+## Occupancy Sensor
 For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or `false` for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
-## Smoke sensor
+## Smoke Sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
 
 ## Switch
 For switches the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-## Push button
+## Push Button
 For push buttons the value for `NEWSTATE` is `true`. The button will be released automatically.
 
 ## Light
@@ -48,7 +48,7 @@ For lights the value for `NEWSTATE` is either `true` for on or `false` for off.
 ## Outlet
 For outlets the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-### Outlet in use
+### Outlet In Use
 For outlets the additional state `stateOutletInUse` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
 can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&stateOutletInUse=NEWSTATE`
 
@@ -58,16 +58,16 @@ For fanv2 the value for `NEWSTATE` is either `true` for on or `false` for off.
 ## Valve
 For valves/faucets the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-### Valve fault state
+### Valve Fault State
 For valves the additional state `statusFault` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
 can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&statusFault=NEWSTATE`
 
-# Trigger action
+# Trigger Action
 
 ## Switch
 For switches you can call the url from any system to switch the switch on or off.
 
-## Push button
+## Push Button
 For push buttons you can call the url from any system to push the button. The button will be released automatically.
 
 ## Light
@@ -79,25 +79,25 @@ For outlets you can call the url from any system to switch the outlet on or off.
 ## Fanv2
 For fanv2 you can call the url from any system to switch the fanv2 on or off.
 
-# Update a numeric accessory
+# Update a Numeric Accessory
 To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
 
-## Temperature sensor
+## Temperature Sensor
 For temperature sensors the value for `NEWVALUE` is the new temperature reading.
 
-## Light sensor
+## Light Sensor
 For light sensors the value for `NEWVALUE` is the new light intensity in lux (as float).
 
-## Humidity sensor
+## Humidity Sensor
 For humidity sensors the value for `NEWVALUE` is the new relative humidity percentage reading.
 
-## Air Quality sensor
+## Air Quality Sensor
 For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
 
 ## CO2 Sensor
 For a CO2 sensor the value for `NEWVALUE` is the new PPM reading.
 
-## Leak sensor
+## Leak Sensor
 For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
 
 ## Light (brightness)
@@ -115,28 +115,28 @@ To update the state of security, you can update two different values:
 * Current state (Stay=0 / Away=1 / Night=2 / Disarmed=3 / Triggered=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
 * Target state (Stay=0 / Away=1 / Night=2 / Disarm=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
-# Garage Door opener
+# Garage Door Opener
 To update a garage door opener you can update three different values:
 * Current door state (Open=0 / Closed=1 / Opening=2 / Closing=3 / Stopped=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentdoorstate=NEWVALUE`
 * Target door state (Open=0 / Closed=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetdoorstate=NEWVALUE`
 * Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&obstructiondetected=NEWVALUE`
 
-# Stateless switch
-Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger:
+# Stateless Switch
+Stateless switches requires 3 parameters: accessoryId, buttonName and the event to trigger:
 * Single press = 0
 * Double press = 1
 * Long press = 2
 
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
 
-# Lock mechanism
+# Lock Mechanism
 To update a lock mechanism you can update two different values:
 
 * Current lock state (unsecured=0 / secured=1 / jammed=2 / unknown=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE`
 * Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
 
-# Window Coverings
-To update a window coverings you can update three different values:
+# Window Covering
+To update a window covering you can update three different values:
 * Current position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentposition=%s` (%s is replaced by corresponding current position)
 * Target position (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetposition=%s` (%s is replaced by corresponding target position)
 Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
@@ -152,7 +152,7 @@ To update a fanv2 you can update five different values:
 * Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in confing must be set to true.)
 * Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
 
-## Valves
+# Valve
 For valves/faucets you can call the url from any system to switch the valve on or off.
 
 # Configuration
@@ -463,7 +463,7 @@ Example config.json:
     }
 ```
 
-## Cache directory storage (cache_directory)
+## Cache Directory Storage (cache_directory)
 The cache directory is used to cache the state of the accessories. It must point to a **valid** and **empty** directory and the user that runs homebridge must have **write access**.
 
 ## HTTPS
