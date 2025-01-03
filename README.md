@@ -70,6 +70,21 @@ For switches you can call the url from any system to switch the switch on or off
 ## Push button
 For push buttons you can call the url from any system to push the button. The button will be released automatically.
 
+## Doorbell
+Doorbells require 2 parameters: accessoryId and the event to trigger:
+* Single press = 0
+* Double press = 1
+* Long press = 2
+`http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&event=EVENT`
+
+Examples:
+* Ring the doorbell with a single button press: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&event=0`
+* Ring the doorbell with a long button press: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&event=2`
+
+Doorbells are shown as a stateless programmable switch.
+When the doorbell is rung by calling the webhooks url, it generates the notification "Roomname doorbell rang." and executes any actions which have been added in the Home app to the stateless programmable switch.
+When adding the doorbell to the Home app, it will ask for somme options to recognise familiar faces. These can be ignored, as no camera is associated with the doorbell.
+
 ## Light
 For lights you can call the url from any system to switch the light on or off.
 
@@ -248,6 +263,14 @@ Example config.json:
                         "push_method": "GET", // (optional)
                         "push_body": "{ \"push\": true }", // (optional only for POST, PUT and PATCH; use "push_form" for x-www-form-urlencoded JSON)
                         "push_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
+                    }
+                ],
+                "doorbells": [
+                    {
+                        "id": "doorbell1",
+                        "name": "Doorbell name 1",
+                        "double_press": false, // (optional, set to true to enable this action if desired)
+                        "long_press": false // (optional, set to true to enable this action if desired)
                     }
                 ],
                 "lights": [

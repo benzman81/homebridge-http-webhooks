@@ -4,6 +4,7 @@ const Server = require('../Server');
 var HttpWebHookSensorAccessory = require('./accessories/HttpWebHookSensorAccessory');
 var HttpWebHookSwitchAccessory = require('./accessories/HttpWebHookSwitchAccessory');
 var HttpWebHookPushButtonAccessory = require('./accessories/HttpWebHookPushButtonAccessory');
+var HttpWebHookDoorbellAccessory = require('./accessories/HttpWebHookDoorbellAccessory');
 var HttpWebHookLightBulbAccessory = require('./accessories/HttpWebHookLightBulbAccessory');
 var HttpWebHookThermostatAccessory = require('./accessories/HttpWebHookThermostatAccessory');
 var HttpWebHookOutletAccessory = require('./accessories/HttpWebHookOutletAccessory');
@@ -32,6 +33,7 @@ function HttpWebHooksPlatform(log, config, homebridge) {
   this.sensors = config["sensors"] || [];
   this.switches = config["switches"] || [];
   this.pushButtons = config["pushbuttons"] || [];
+  this.doorbells = config["doorbells"] || [];
   this.lights = config["lights"] || [];
   this.thermostats = config["thermostats"] || [];
   this.outlets = config["outlets"] || [];
@@ -63,6 +65,11 @@ HttpWebHooksPlatform.prototype.accessories = function(callback) {
   for (var i = 0; i < this.pushButtons.length; i++) {
     var pushButtonsAccessory = new HttpWebHookPushButtonAccessory(Service, Characteristic, this, this.pushButtons[i]);
     accessories.push(pushButtonsAccessory);
+  }
+
+  for (var i = 0; i < this.doorbells.length; i++) {
+    var doorbellAccessory = new HttpWebHookDoorbellAccessory(Service, Characteristic, this, this.doorbells[i]);
+    accessories.push(doorbellAccessory);
   }
 
   for (var i = 0; i < this.lights.length; i++) {
