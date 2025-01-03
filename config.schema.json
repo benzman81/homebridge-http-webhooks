@@ -2,7 +2,7 @@
   "pluginAlias": "HttpWebHooks",
   "pluginType": "platform",
   "singular": true,
-  "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, `co2sensors`, and `leak` sensors.",
+  "headerDisplay": "A `http` plugin with support of webhooks for homebridge.\n\nThe plugin gets its states from any system that is calling the url to trigger a state change.\n\nCurrently supports `contact`, `motion`, `occupancy`, `smoke`, `switches`, `push buttons`, `doorbells`, `lights` (only on/off and brightness), `temperature`, `humidity`, `thermostats`, `co2sensors`, and `leak` sensors.",
   "footerDisplay": "Visit the Project [Readme](https://github.com/benzman81/homebridge-http-webhooks#readme) for more details.",
   "schema": {
     "type": "object",
@@ -241,6 +241,39 @@
               "title": "Push Headers",
               "type": "string",
               "placeholder": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
+              "required": false
+            }
+          }
+        }
+      },
+      "doorbells": {
+        "type": "array",
+        "title": "Doorbells",
+        "description": "Ring doorbells via a URL from any system.",
+        "items": {
+          "title": "Doorbells",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "string",
+              "placeholder": "doorbell1",
+              "required": false
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "placeholder": "Doorbell 1",
+              "required": false
+            },
+            "double_press": {
+              "title": "Enable Double Press",
+              "type": "boolean",
+              "required": false
+            },
+            "long_press": {
+              "title": "Enable Long Press",
+              "type": "boolean",
               "required": false
             }
           }
@@ -1402,7 +1435,7 @@
         },
         {
           "type": "section",
-          "title": "Push Button",
+          "title": "Push Buttons",
           "expandable": true,
           "expanded": false,
           "items": [
@@ -1418,6 +1451,25 @@
                 "pushbuttons[].push_method",
                 "pushbuttons[].push_body",
                 "pushbuttons[].push_headers"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Doorbells",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            {
+              "title": "Doorbell",
+              "type": "array",
+              "orderable": false,
+              "items": [
+                "doorbells[].id",
+                "doorbells[].name",
+                "doorbells[].double_press",
+                "doorbells[].long_press"
               ]
             }
           ]
@@ -1525,7 +1577,7 @@
         },
         {
           "type": "section",
-          "title": "Security",
+          "title": "Security Systems",
           "expandable": true,
           "expanded": false,
           "items": [

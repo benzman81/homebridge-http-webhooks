@@ -2,6 +2,7 @@ var HttpWebHooksPlatform = require('./src/homekit/HttpWebHooksPlatform');
 var HttpWebHookSensorAccessory = require('./src/homekit/accessories/HttpWebHookSensorAccessory');
 var HttpWebHookSwitchAccessory = require('./src/homekit/accessories/HttpWebHookSwitchAccessory');
 var HttpWebHookPushButtonAccessory = require('./src/homekit/accessories/HttpWebHookPushButtonAccessory');
+var HttpWebHookDoorbellAccessory = require('./src/homekit/accessories/HttpWebHookDoorbellAccessory');
 var HttpWebHookLightBulbAccessory = require('./src/homekit/accessories/HttpWebHookLightBulbAccessory');
 var HttpWebHookThermostatAccessory = require('./src/homekit/accessories/HttpWebHookThermostatAccessory');
 var HttpWebHookOutletAccessory = require('./src/homekit/accessories/HttpWebHookOutletAccessory');
@@ -19,6 +20,7 @@ module.exports = function(homebridge) {
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSensor", HttpWebHookSensorAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookSwitch", HttpWebHookSwitchAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookPushButton", HttpWebHookPushButtonAccessory);
+  homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookDoorbell", HttpWebHookDoorbellAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookLight", HttpWebHookLightBulbAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookThermostat", HttpWebHookThermostatAccessory);
   homebridge.registerAccessory("homebridge-http-webhooks", "HttpWebHookOutlet", HttpWebHookOutletAccessory);
