@@ -722,12 +722,12 @@
                     "required": false
                   },
                   "double_press": {
-                    "title": "Double Press",
+                    "title": "Enable Double Press",
                     "type": "boolean",
                     "required": false
                   },
                   "long_press": {
-                    "title": "Long Press",
+                    "title": "Enable Long Press",
                     "type": "boolean",
                     "required": false
                   }
