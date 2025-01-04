@@ -340,14 +340,16 @@ Example config.json:
                     {
                     "id": "statelessswitch1",
                     "name": "Stateless Switch 1",
-                    "buttons": [//the buttons of the switch
+                    "buttons": [ //the buttons of the switch
                         {
                             "name": "Button1" // (The name does not appear in Home app but appear in Eve app)
+                            "double_press": false, // (optional, set to true to enable this action if desired)
+                            "long_press": false // (optional, set to true to enable this action if desired)
                         },
                         {
                             "name": "Button2", // (The name does not appear in Home app but appear in Eve app)
-                            "double_press": false, // (you can disable a type of action)
-                            "long_press": false
+                            "double_press": false, // (optional, set to true to enable this action if desired)
+                            "long_press": false // (optional, set to true to enable this action if desired)
                         }
                     ]
                     }
