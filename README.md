@@ -11,7 +11,7 @@ Currently supports contact, motion, occupancy, smoke sensors, switches, push but
 3. Update your configuration file. See sample-config.json snippet below.
 
 # Retrieve State
-To retrieve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
+To retrieve the current state, you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
 The returned JSON format is:
 ```
     {
@@ -25,13 +25,17 @@ To trigger a change of a boolean accessory you need to call the url `http://your
 Use only the text `true` or `false`. Do not use numbers 1 or 0.
 
 ## Contact Sensor
-For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, than the state will be released after `autoReleaseTime`, if not set 5 seconds.
+For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, then the state will be released after `autoReleaseTime`, if not set 5 seconds.
 
 ## Motion Sensor
-For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
+For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, then the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Occupancy Sensor
+<<<<<<< Updated upstream
 For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or `false` for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
+=======
+For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or 'false' for no occupancy. If `autoRelease` is used, then the state will be released `autoReleaseTime`, if not set 5 seconds.
+>>>>>>> Stashed changes
 
 ## Smoke Sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
@@ -80,7 +84,7 @@ For outlets you can call the url from any system to switch the outlet on or off.
 For fanv2 you can call the url from any system to switch the fanv2 on or off.
 
 # Update a Numeric Accessory
-To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
+To update a numeric accessory, you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
 
 ## Temperature Sensor
 For temperature sensors the value for `NEWVALUE` is the new temperature reading.
@@ -104,7 +108,7 @@ For leak sensors the value for `NEWVALUE` is the new leak state value (1 for lea
 For light brightness the value for `NEWVALUE` is the new light brightness (as integer, between 0 and 100 with respect to brightness factor).
 
 # Thermostat
-To update a thermostat you can update four different values:
+To update a thermostat, you can update four different values:
 * Current temperature reading: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currenttemperature=NEWVALUE`
 * Target temperature: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targettemperature=NEWVALUE`
 * Current state (Off=0 / Heating=1 / Cooling=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
@@ -116,7 +120,7 @@ To update the state of security, you can update two different values:
 * Target state (Stay=0 / Away=1 / Night=2 / Disarm=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
 # Garage Door Opener
-To update a garage door opener you can update three different values:
+To update a garage door opener, you can update three different values:
 * Current door state (Open=0 / Closed=1 / Opening=2 / Closing=3 / Stopped=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentdoorstate=NEWVALUE`
 * Target door state (Open=0 / Closed=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetdoorstate=NEWVALUE`
 * Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&obstructiondetected=NEWVALUE`
@@ -130,7 +134,7 @@ Stateless switches requires 3 parameters: accessoryId, buttonName and the event 
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
 
 # Lock Mechanism
-To update a lock mechanism you can update two different values:
+To update a lock mechanism, you can update two different values:
 
 * Current lock state (unsecured=0 / secured=1 / jammed=2 / unknown=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE`
 * Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
@@ -142,15 +146,15 @@ To update a window covering you can update three different values:
 Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
 * Position State (Decreasing=0 / Increasing=1 / Stopped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
 
-If you dont use callbacks to let your covering give feedback of current position back to homekit you can set "auto_set_current_position" to true.
+If you don't use callbacks to let your covering give feedback of current position back to HomeKit you can set "auto_set_current_position" to true.
 
 # Fanv2
 To update a fanv2 you can update five different values:
 * Rotation Speed (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&speed=%s` (%s is replaced by fan's rotation speed)
-* Swing Mode (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&swingMode=0 (or 1)` (To use this feature, "enableSwingModeControls" in confing must be set to true.)
+* Swing Mode (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&swingMode=0 (or 1)` (To use this feature, "enableSwingModeControls" in config must be set to true.)
 * Rotation Direction (CLOCKWISE=0 / COUNTER_CLOCKWISE=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&rotationDirection=0 (or 1)`
-* Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in confing must be set to true.)
-* Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
+* Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in config must be set to true.)
+* Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in config must be set to true.)
 
 # Valve
 For valves/faucets you can call the url from any system to switch the valve on or off.
@@ -470,5 +474,4 @@ The cache directory is used to cache the state of the accessories. It must point
 
 ## HTTPS
 If you want to create a secure connection for the webhooks you need to enable it by setting *https* to true. Then a self signed
-ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl
-certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.
+ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.
