@@ -29,7 +29,7 @@
     "homebridge": ">=0.3.0"
   },
   "dependencies": {
-    "http-auth": "^3.2.4",
+    "http-auth": "^4.2.0",
     "node-persist": "2.0.x",
     "request": "2.87.x",
     "selfsigned": "^1.10.7"
