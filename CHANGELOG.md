@@ -1,5 +1,4 @@
-
-### 0.1.19-beta.1
+### 0.2.0-beta.1
 From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
 Tested on Homebridge v2 with a motion sensor, all OK
@@ -29,6 +28,11 @@ Updated dependencies:
   "request": "^2.88.2",
   "selfsigned": "^2.4.1"
 NOTE: a newer version of node-persist exists but all storage commands are async, requiring more code changes
+
+### 0.1.19
+
+New features:
+  - Added accessory names to log entries (thanks to jsiegenthaler).
 
 ### 0.1.18
 

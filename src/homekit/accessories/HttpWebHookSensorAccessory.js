@@ -68,19 +68,19 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
   }
   var noUrlValue = isNumberBased ? urlParams.value === undefined : urlParams.state === undefined;
   if (noUrlValue) {
-    this.log.debug("No urlValue");
+    this.log.debug(this.name + ": No urlValue");
     return {
       "success" : true,
       "state" : cached
     };
   }
   var urlValue = isNumberBased ? urlParams.value : urlParams.state === "true";
-  this.log.debug("urlValue: "+ urlValue);
+  this.log.debug(this.name + ": urlValue: "+ urlValue);
   this.storage.setItemSync("http-webhook-" + this.id, urlValue);
-  this.log.debug("cached: "+ cached);
-  this.log.debug("cached !== urlValue: "+ (cached !== urlValue));
+  this.log.debug(this.name + ": cached: "+ cached);
+  this.log.debug(this.name + ": cached !== urlValue: "+ (cached !== urlValue));
   if (cached !== urlValue) {
-    this.log("Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
+    this.log(this.name + ": Change HomeKit value for " + this.type + " sensor to '%s'.", urlValue);
 
     if (this.type === "contact") {
       this.service.getCharacteristic(Characteristic.ContactSensorState).updateValue(urlValue ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED, undefined, Constants.CONTEXT_FROM_WEBHOOK);
@@ -136,9 +136,9 @@ HttpWebHookSensorAccessory.prototype.changeFromServer = function(urlParams) {
 };
 
 HttpWebHookSensorAccessory.prototype.getState = function(callback) {
-  this.log.debug("Getting current state for %s sensor '%s'...", this.type, this.id);
+  this.log.debug(this.name + ": Getting current state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-" + this.id);
-  this.log.debug("State for %s sensor '%s' is '%s'", this.type, this.id, state);
+  this.log.debug(this.name + ": State for '%s' is '%s'", this.id, state);
   if (state === undefined) {
     state = false; // force default value if undefined
   }

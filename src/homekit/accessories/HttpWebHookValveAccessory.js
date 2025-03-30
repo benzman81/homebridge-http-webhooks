@@ -79,7 +79,7 @@ HttpWebHookValveAccessory.prototype.changeFromServer = function(urlParams) {
             this.log.info("Change HomeKit value for " + this.type + " state to '%s'.", stateNumber);
 
             if (cachedState !== stateNumber) {
-                this.log("Change HomeKit state for valve to '%s'.", stateNumber);
+                this.log(this.name + ": Change HomeKit state for valve to '%s'.", stateNumber);
                 this.service.getCharacteristic(Characteristic.Active).updateValue(stateNumber, undefined, Constants.CONTEXT_FROM_WEBHOOK);
                 this.service.getCharacteristic(Characteristic.InUse).updateValue(stateNumber, undefined, Constants.CONTEXT_FROM_WEBHOOK);
             }
@@ -91,7 +91,7 @@ HttpWebHookValveAccessory.prototype.changeFromServer = function(urlParams) {
             this.log.info("Change HomeKit value for " + this.type + " statusFault to '%s'.", statusFaultNumber);
 
             if (cachedStatusFault !== statusFaultNumber) {
-                this.log("Change HomeKit statusFault for valve to '%s'.", statusFault);
+                this.log(this.name + ": Change HomeKit statusFault for valve to '%s'.", statusFault);
                 this.service.getCharacteristic(Characteristic.StatusFault).updateValue(statusFaultNumber, undefined, Constants.CONTEXT_FROM_WEBHOOK);
             }
         }
@@ -102,7 +102,7 @@ HttpWebHookValveAccessory.prototype.changeFromServer = function(urlParams) {
 };
 
 HttpWebHookValveAccessory.prototype.getState = function(callback) {
-    this.log.debug("Getting current state for", this.id);
+    this.log.debug(this.name + ": Getting current state for", this.id);
     var state = this.storage.getItemSync("http-webhook-" + this.id);
     if (state === undefined) {
         state = 0;
@@ -112,7 +112,7 @@ HttpWebHookValveAccessory.prototype.getState = function(callback) {
 };
 
 HttpWebHookValveAccessory.prototype.getStatusFault = function(callback) {
-    this.log.debug("Getting status fault for", this.id);
+    this.log.debug(this.name + ": Getting status fault for", this.id);
     var statusFault = this.storage.getItemSync("http-webhook-" + this.id + "-statusFault");
     if (statusFault === undefined) {
         statusFault = 0;

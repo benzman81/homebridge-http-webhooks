@@ -10,8 +10,8 @@ Currently supports contact, motion, occupancy, smoke sensors, switches, push but
 2. Install this plugin using: `npm install -g homebridge-http-webhooks`
 3. Update your configuration file. See sample-config.json snippet below.
 
-# Retrieve state
-To retrieve the current state you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
+# Retrieve State
+To retrieve the current state, you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger`
 The returned JSON format is:
 ```
     {
@@ -20,25 +20,26 @@ The returned JSON format is:
     }
 ```
 
-# Trigger change for boolean accessory
+# Trigger Change for Boolean Accessory
 To trigger a change of a boolean accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&state=NEWSTATE`
+Use only the text `true` or `false`. Do not use numbers 1 or 0.
 
-## Contact sensor
-For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, than the state will be released after `autoReleaseTime`, if not set 5 seconds.
+## Contact Sensor
+For contact sensors the value for `NEWSTATE` is either `true` for contact or `false` for no contact. If `autoRelease` is used, then the state will be released after `autoReleaseTime`, if not set 5 seconds.
 
-## Motion sensor
-For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
+## Motion Sensor
+For motion sensors the value for `NEWSTATE` is either `true` for motion detection or `false` for no motion. If `autoRelease` is used, then the state will be released `autoReleaseTime`, if not set 5 seconds.
 
 ## Occupancy sensor
 For occupancy sensors the value for `NEWSTATE` is either `true` for occupancy detection or `false` for no occupancy. If `autoRelease` is used, than the state will be released `autoReleaseTime`, if not set 5 seconds.
 
-## Smoke sensor
+## Smoke Sensor
 For smoke sensors the value for `NEWSTATE` is either `true` for smoke detection or `false` for no smoke.
 
 ## Switch
 For switches the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-## Push button
+## Push Button
 For push buttons the value for `NEWSTATE` is `true`. The button will be released automatically.
 
 ## Light
@@ -47,7 +48,7 @@ For lights the value for `NEWSTATE` is either `true` for on or `false` for off.
 ## Outlet
 For outlets the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-### Outlet in use
+### Outlet In Use
 For outlets the additional state `stateOutletInUse` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
 can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&stateOutletInUse=NEWSTATE`
 
@@ -57,16 +58,16 @@ For fanv2 the value for `NEWSTATE` is either `true` for on or `false` for off.
 ## Valve
 For valves/faucets the value for `NEWSTATE` is either `true` for on or `false` for off.
 
-### Valve fault state
+### Valve Fault State
 For valves the additional state `statusFault` is available. The value for `NEWSTATE` is either `true` for on or `false` for off and
 can be changed by calling the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToTrigger&statusFault=NEWSTATE`
 
-# Trigger action
+# Trigger Action
 
 ## Switch
 For switches you can call the url from any system to switch the switch on or off.
 
-## Push button
+## Push Button
 For push buttons you can call the url from any system to push the button. The button will be released automatically.
 
 ## Light
@@ -78,32 +79,32 @@ For outlets you can call the url from any system to switch the outlet on or off.
 ## Fanv2
 For fanv2 you can call the url from any system to switch the fanv2 on or off.
 
-# Update a numeric accessory
-To update a numeric accessory you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
+# Update a Numeric Accessory
+To update a numeric accessory, you need to call the url `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&value=NEWVALUE`
 
-## Temperature sensor
+## Temperature Sensor
 For temperature sensors the value for `NEWVALUE` is the new temperature reading.
 
-## Light sensor
+## Light Sensor
 For light sensors the value for `NEWVALUE` is the new light intensity in lux (as float).
 
-## Humidity sensor
+## Humidity Sensor
 For humidity sensors the value for `NEWVALUE` is the new relative humidity percentage reading.
 
-## Air Quality sensor
+## Air Quality Sensor
 For air quality sensors the value for `NEWVALUE` is the new air quality value (Between 1-5, 1 Excellent).
 
 ## CO2 Sensor
 For a CO2 sensor the value for `NEWVALUE` is the new PPM reading.
 
-## Leak sensor
+## Leak Sensor
 For leak sensors the value for `NEWVALUE` is the new leak state value (1 for leak, 0 for dry).
 
 ## Light (brightness)
 For light brightness the value for `NEWVALUE` is the new light brightness (as integer, between 0 and 100 with respect to brightness factor).
 
 # Thermostat
-To update a thermostat you can update four different values:
+To update a thermostat, you can update four different values:
 * Current temperature reading: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currenttemperature=NEWVALUE`
 * Target temperature: `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targettemperature=NEWVALUE`
 * Current state (Off=0 / Heating=1 / Cooling=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
@@ -114,22 +115,22 @@ To update the state of security, you can update two different values:
 * Current state (Stay=0 / Away=1 / Night=2 / Disarmed=3 / Triggered=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentstate=NEWVALUE`
 * Target state (Stay=0 / Away=1 / Night=2 / Disarm=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetstate=NEWVALUE`
 
-# Garage Door opener
-To update a garage door opener you can update three different values:
+# Garage Door Opener
+To update a garage door opener, you can update three different values:
 * Current door state (Open=0 / Closed=1 / Opening=2 / Closing=3 / Stopped=4): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&currentdoorstate=NEWVALUE`
 * Target door state (Open=0 / Closed=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetdoorstate=NEWVALUE`
 * Obstruction detected (No=0 / Yes=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&obstructiondetected=NEWVALUE`
 
-# Stateless switch
-Stateless switches requires 3 parameters accessoryId, buttonName and the event to trigger:
+# Stateless Switch
+Stateless switches requires 3 parameters: accessoryId, buttonName and the event to trigger:
 * Single press = 0
 * Double press = 1
 * Long press = 2
 
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&buttonName=theButtonName&event=EVENT`
 
-# Lock mechanism
-To update a lock mechanism you can update two different values:
+# Lock Mechanism
+To update a lock mechanism, you can update two different values:
 
 * Current lock state (unsecured=0 / secured=1 / jammed=2 / unknown=3): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockcurrentstate=NEWVALUE`
 * Target lock state (unsecured=0 / secured=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&locktargetstate=NEWVALUE`
@@ -141,17 +142,17 @@ To update a window covering you can update three different values:
 Setting of target position you can realize by send link to: open, 20%, 40%, 60% 80% and close
 * Position State (Decreasing=0 / Increasing=1 / Stopped=2): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&positionstate=0 (1 or 2)` (position state is not mandatory and not fully tested yet)
 
-If you dont use callbacks to let your covering give feedback of current position back to homekit you can set "auto_set_current_position" to true.
+If you don't use callbacks to let your covering give feedback of current position back to HomeKit you can set "auto_set_current_position" to true.
 
 # Fanv2
 To update a fanv2 you can update five different values:
 * Rotation Speed (%): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&speed=%s` (%s is replaced by fan's rotation speed)
-* Swing Mode (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&swingMode=0 (or 1)` (To use this feature, "enableSwingModeControls" in confing must be set to true.)
+* Swing Mode (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&swingMode=0 (or 1)` (To use this feature, "enableSwingModeControls" in config must be set to true.)
 * Rotation Direction (CLOCKWISE=0 / COUNTER_CLOCKWISE=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&rotationDirection=0 (or 1)`
-* Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in confing must be set to true.)
-* Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in confing must be set to true.)
+* Lock Physical Controls (DISABLED=0 / ENABLED=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&lockstate=0 (or 1)` (To use this feature, "enableLockPhysicalControls" in config must be set to true.)
+* Target Fan State (MANUAL=0 / AUTO=1): `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&targetState=0 (or 1)`(To use this feature, "enableTargetStateControls" in config must be set to true.)
 
-## Valves
+# Valve
 For valves/faucets you can call the url from any system to switch the valve on or off.
 
 # Configuration
@@ -228,11 +229,11 @@ Example config.json:
                         "id": "switch1",
                         "name": "Switch name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the switch on", // (optional)
+                        "on_url": "your url to call when the switch is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the switch off", // (optional)
+                        "off_url": "your url to call when the switch is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -243,7 +244,7 @@ Example config.json:
                         "id": "pushbutton1",
                         "name": "Push Button name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "push_url": "your url to be called on push", // (optional)
+                        "push_url": "your url to call when the pushbutton is pushed", // (optional)
                         "push_method": "GET", // (optional)
                         "push_body": "{ \"push\": true }", // (optional only for POST, PUT and PATCH; use "push_form" for x-www-form-urlencoded JSON)
                         "push_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -254,15 +255,15 @@ Example config.json:
                         "id": "light1",
                         "name": "Light name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the light on", // (optional)
+                        "on_url": "your url to call when the light is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the light off", // (optional)
+                        "off_url": "your url to call when the light is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "brightness_url": "your url to change the light brightness", // (optional)
+                        "brightness_url": "your url to call when the light brightness is changed", // (optional)
                         "brightness_method": "GET", // (optional)
                         "brightness_body": "{ \"on\" : %statusPlaceholder, \"bri\" : %brightnessPlaceholder}", // (optional only for POST, PUT and PATCH; use "brightness_form" for x-www-form-urlencoded JSON, variables are replaced on the fly)
                         "brightness_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
@@ -299,11 +300,11 @@ Example config.json:
                         "id": "outlet1",
                         "name": "Outlet name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the outlet on", // (optional)
+                        "on_url": "your url to call when the outlet is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the outlet off", // (optional)
+                        "off_url": "your url to call when the outlet is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -325,11 +326,11 @@ Example config.json:
                         "id": "garagedooropener1",
                         "name": "Garage Door Opener name 1",
                         "rejectUnauthorized": false, // (optional)
-                        "open_url" : "your url to open the garage door", // (optional)
+                        "open_url" : "your url to call when the garage door is opened", // (optional)
                         "open_method" : "GET", // (optional)
                         "open_body": "{ \"open\": true }", // (optional only for POST, PUT and PATCH; use "open_form" for x-www-form-urlencoded JSON)
                         "open_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "close_url" : "your url to close the garage door", // (optional)
+                        "close_url" : "your url to call when the garage door is closed", // (optional)
                         "close_method" : "GET", // (optional)
                         "close_body": "{ \"open\": false }", // (optional only for POST, PUT and PATCH; use "close_form" for x-www-form-urlencoded JSON)
                         "close_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -340,13 +341,17 @@ Example config.json:
                     "id": "statelessswitch1",
                     "name": "Stateless Switch name 1",
                     "buttons": [//the buttons of the switch
+                    "name": "Stateless Switch 1",
+                    "buttons": [ //the buttons of the switch
                         {
                             "name": "Button1" // (The name does not appear in Home app but appear in Eve app)
+                            "double_press": false, // (optional, set to true to enable this action if desired)
+                            "long_press": false // (optional, set to true to enable this action if desired)
                         },
                         {
                             "name": "Button2", // (The name does not appear in Home app but appear in Eve app)
-                            "double_press": false, // (you can disable a type of action)
-                            "long_press": false
+                            "double_press": false, // (optional, set to true to enable this action if desired)
+                            "long_press": false // (optional, set to true to enable this action if desired)
                         }
                     ]
                     }
@@ -403,39 +408,39 @@ Example config.json:
                         "id": "fanv21",
                         "name": "Fanv2 name 1",
                         "rejectUnauthorized": true, // (optional)
-                        "on_url": "your url to switch the fanv2 on",
+                        "on_url": "your url to call when the fanv2 is turned on",
                         "on_method": "GET",
                         "on_body": "{ \"on\" : true }",
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "off_url": "your url to switch the fanv2 off",
+                        "off_url": "your url to call when the fanv2 is turned off",
                         "off_method": "GET",
                         "off_body": "{ \"off\" : true }",
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "speed_url": "your url to change the fanv2 rotation speed",
+                        "speed_url": "your url to call when the fanv2 speed is changed",
                         "speed_method": "GET",
                         "speed_body": "{ \"on\" : %statusPlaceholder, \"speed\" : %speedPlaceholder}",
                         "speed_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "speed_factor":2.55,
                         "enableLockPhysicalControls": true,
-                        "lock_url": "your url to lock the fanv2's physical controls",
+                        "lock_url": "your url to call when the fanv2's physical controls are locked",
                         "lock_method": "GET",
                         "lock_body": "{ \"physicalLock\": true }",
                         "lock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "unlock_url": "your url to unlock the fanv2's physical controls",
+                        "unlock_url": "your url to call when the fanv2's physical controls are unlocked",
                         "unlock_method": "GET",
                         "unlock_body": "{ \"physicalLock\": false }",
                         "unlock_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "enableTargetStateControls": true,
-                        "target_state_url": "your url to change the fanv2's target state",
+                        "target_state_url": "your url to call when the fanv2's target state is changed",
                         "target_state_method": "GET",
                         "target_state_body": "{ \"mode\": %targetState }",
                         "target_state_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
                         "enableSwingModeControls": true,
-                        "swing_mode_url": "your url to change the fanv2's swing mode",
+                        "swing_mode_url": "your url to call when the fanv2's swing mode is changed",
                         "swing_mode_method": "GET",
                         "swing_mode_body": "{ \"swing_mode\": %swingMode }",
                         "swing_mode_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}",
-                        "rotation_direction_url": "your url to change the fanv2's rotation direction",
+                        "rotation_direction_url": "your url to call when the fanv2's rotation direction is changed",
                         "rotation_direction_method": "GET",
                         "rotation_direction_body": "{ \"rotation_direction\": %rotationDirection }",
                         "rotation_direction_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}"
@@ -447,11 +452,11 @@ Example config.json:
                         "name": "Valve name 1",
                         "type": "generic valve", // (optional)
                         "rejectUnauthorized": false, // (optional)
-                        "on_url": "your url to switch the valve on", // (optional)
+                        "on_url": "your url to call when the valve is turned on", // (optional)
                         "on_method": "GET", // (optional)
                         "on_body": "{ \"on\" : true }", // (optional only for POST, PUT and PATCH; use "on_form" for x-www-form-urlencoded JSON)
                         "on_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}", // (optional)
-                        "off_url": "your url to switch the valve off", // (optional)
+                        "off_url": "your url to call when the valve is turned off", // (optional)
                         "off_method": "GET", // (optional)
                         "off_body": "{ \"on\": false }", // (optional only for POST, PUT and PATCH; use "off_form" for x-www-form-urlencoded JSON)
                         "off_headers": "{\"Authorization\": \"Bearer ABCDEFGH\", \"Content-Type\": \"application/json\"}" // (optional)
@@ -462,10 +467,9 @@ Example config.json:
     }
 ```
 
-## Cache directory storage (cache_directory)
+## Cache Directory Storage (cache_directory)
 The cache directory is used to cache the state of the accessories. It must point to a **valid** and **empty** directory and the user that runs homebridge must have **write access**.
 
 ## HTTPS
 If you want to create a secure connection for the webhooks you need to enable it by setting *https* to true. Then a self signed
-ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl
-certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.
+ssl certificate will be created automatically and a secure connection will be used. If you want to use your own generated ssl certificate you can do this by setting the values for *https_keyfile* and *https_certfile* to the corresponding file paths.

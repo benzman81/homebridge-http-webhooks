@@ -50,7 +50,7 @@ HttpWebHookSwitchAccessory.prototype.changeFromServer = function(urlParams) {
     // this.log("[INFO Http WebHook Server] State change of '%s'
     // to '%s'.",accessory.id,stateBool);
     if (cachedState !== stateBool) {
-      this.log("Change HomeKit state for switch to '%s'.", stateBool);
+      this.log(this.name + ": Change HomeKit state for switch to '%s'.", stateBool);
       this.service.getCharacteristic(Characteristic.On).updateValue(stateBool, undefined, Constants.CONTEXT_FROM_WEBHOOK);
     }
     return {
@@ -60,7 +60,7 @@ HttpWebHookSwitchAccessory.prototype.changeFromServer = function(urlParams) {
 }
 
 HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
-  this.log.debug("Getting current state for '%s'...", this.id);
+  this.log.debug(this.name + ": Getting current state for '%s'...", this.id);
   var state = this.storage.getItemSync("http-webhook-" + this.id);
   if (state === undefined) {
     state = false;
@@ -69,7 +69,7 @@ HttpWebHookSwitchAccessory.prototype.getState = function(callback) {
 };
 
 HttpWebHookSwitchAccessory.prototype.setState = function(powerOn, callback, context) {
-  this.log("Switch state for '%s'...", this.id);
+  this.log(this.name + ": Switch state for '%s'...", this.id);
   this.storage.setItemSync("http-webhook-" + this.id, powerOn);
   var urlToCall = this.onURL;
   var urlMethod = this.onMethod;

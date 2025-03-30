@@ -145,7 +145,7 @@
             "on_url": {
               "title": "On URL",
               "type": "string",
-              "placeholder": "your url to switch the switch on",
+              "placeholder": "your url to call when the switch is turned on",
               "required": false
             },
             "on_method": {
@@ -169,7 +169,7 @@
             "off_url": {
               "title": "Off URL",
               "type": "string",
-              "placeholder": "your url to switch the switch off",
+              "placeholder": "your url to call when the switch is turned off",
               "required": false
             },
             "off_method": {
@@ -222,7 +222,7 @@
             "push_url": {
               "title": "Push URL",
               "type": "string",
-              "placeholder": "your url to be called on push",
+              "placeholder": "your url to call when the pushbutton is pushed",
               "required": false
             },
             "push_method": {
@@ -275,7 +275,7 @@
             "on_url": {
               "title": "On URL",
               "type": "string",
-              "placeholder": "your url to switch the light on",
+              "placeholder": "your url to call when the light is turned on",
               "required": false
             },
             "on_method": {
@@ -299,7 +299,7 @@
             "off_url": {
               "title": "Off URL",
               "type": "string",
-              "placeholder": "your url to switch the light off",
+              "placeholder": "your url to call when the light is turned off",
               "required": false
             },
             "off_method": {
@@ -323,7 +323,7 @@
             "brightness_url": {
               "title": "Brightness URL",
               "type": "string",
-              "placeholder": "your url to change the light brightness",
+              "placeholder": "your url to call when the light brightness is changed",
               "required": false
             },
             "brightness_method": {
@@ -510,7 +510,7 @@
             "on_url": {
               "title": "On URL",
               "type": "string",
-              "placeholder": "your url to switch the outlet on",
+              "placeholder": "your url to call when the outlet is turned on",
               "required": false
             },
             "on_method": {
@@ -534,7 +534,7 @@
             "off_url": {
               "title": "Off URL",
               "type": "string",
-              "placeholder": "your url to switch the outlet off",
+              "placeholder": "your url to call when the outlet is turned off",
               "required": false
             },
             "off_method": {
@@ -640,7 +640,7 @@
             "open_url": {
               "title": "Open URL",
               "type": "string",
-              "placeholder": "your url to open the garage door",
+              "placeholder": "your url to call when the garage door is opened",
               "required": false
             },
             "open_method": {
@@ -664,7 +664,7 @@
             "close_url": {
               "title": "Close URL",
               "type": "string",
-              "placeholder": "your url to close the garage door",
+              "placeholder": "your url to call when the garage door is closed",
               "required": false
             },
             "close_method": {
@@ -722,12 +722,12 @@
                     "required": false
                   },
                   "double_press": {
-                    "title": "Double Press",
+                    "title": "Enable Double Press",
                     "type": "boolean",
                     "required": false
                   },
                   "long_press": {
-                    "title": "Long Press",
+                    "title": "Enable Long Press",
                     "type": "boolean",
                     "required": false
                   }
@@ -945,7 +945,7 @@
             "open_url": {
               "title": "Open URL",
               "type": "string",
-              "placeholder": "your url to open the lock mechanism",
+              "placeholder": "your url to call when the lock mechanism is unlocked (opened)",
               "required": false
             },
             "open_method": {
@@ -969,7 +969,7 @@
             "close_url": {
               "title": "Close URL",
               "type": "string",
-              "placeholder": "your url to close the lock mechanism",
+              "placeholder": "your url to call when the lock mechanism is locked (closed)",
               "required": false
             },
             "close_method": {
@@ -1022,7 +1022,7 @@
             "on_url": {
               "title": "On URL",
               "type": "string",
-              "placeholder": "your url to switch the fanv2 on",
+              "placeholder": "your url to call when the fanv2 is turned on",
               "required": false
             },
             "on_method": {
@@ -1046,7 +1046,7 @@
             "off_url": {
               "title": "Off URL",
               "type": "string",
-              "placeholder": "your url to switch the fanv2 off",
+              "placeholder": "your url to call when the fanv2 is turned off",
               "required": false
             },
             "off_method": {
@@ -1070,7 +1070,7 @@
             "speed_url": {
               "title": "Speed URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2 rotation speed",
+              "placeholder": "your url to call when the fanv2 speed is changed",
               "required": false
             },
             "speed_method": {
@@ -1110,7 +1110,7 @@
             "lock_url": {
               "title": "Lock URL",
               "type": "string",
-              "placeholder": "your url to lock the fanv2s physical controls",
+              "placeholder": "your url to call when the fanv2's physical controls are locked",
               "required": false
             },
             "lock_method": {
@@ -1134,7 +1134,7 @@
             "unlock_url": {
               "title": "Unlock URL",
               "type": "string",
-              "placeholder": "your url to unlock the fanv2s physical controls",
+              "placeholder": "your url to call when the fanv2's physical controls are unlocked",
               "required": false
             },
             "unlock_method": {
@@ -1163,7 +1163,7 @@
             "target_state_url": {
               "title": "Target State URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2s target state",
+              "placeholder": "your url to call when the fanv2's target state is changed",
               "required": false
             },
             "target_state_method": {
@@ -1192,7 +1192,7 @@
             "swing_mode_url": {
               "title": "Swing Mode URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2s swing mode",
+              "placeholder": "your url to call when the fanv2's swing mode is changed",
               "required": false
             },
             "swing_mode_method": {
@@ -1216,7 +1216,7 @@
             "rotation_direction_url": {
               "title": "Rotation Direction URL",
               "type": "string",
-              "placeholder": "your url to change the fanv2s rotation direction",
+              "placeholder": "your url to call when the fanv2's rotation direction is changed",
               "required": false
             },
             "rotation_direction_method": {
@@ -1274,7 +1274,7 @@
             "on_url": {
               "title": "On URL",
               "type": "string",
-              "placeholder": "your url to switch the valve on",
+              "placeholder": "your url to call when the valve is turned on",
               "required": false
             },
             "on_method": {
@@ -1298,7 +1298,7 @@
             "off_url": {
               "title": "Off URL",
               "type": "string",
-              "placeholder": "your url to switch the valve off",
+              "placeholder": "your url to call when the valve is turned off",
               "required": false
             },
             "off_method": {
