@@ -1,3 +1,34 @@
+### 0.2.0-beta.1
+From jsiegenthaler:
+Updated package.json to show compatibility with Homebridge v2
+Tested on Homebridge v2 with a motion sensor, all OK
+
+Fixed tick-mark typo in Readme for Occupancy sensor
+Fixed typo and capitalisation issues in Readme for Window Covering
+
+Fixed issue  "This plugin generated a warning from the characteristic 'Current Ambient Light Level'" when state is unknown in HttpWebHookSensorAccessory.js
+Improved logging for sensors to include sensor type to help in debugging in HttpWebHookSensorAccessory.js
+
+Fixed log level inconsistencies in HttpWebHookGarageDoorOpenerAccessory.js 
+Fixed logging error in getCurrentHeatingCoolingState
+Fixed capitalisation consistency errors in HttpWebHookThermostatAccessory.js
+
+Updated Readme:
+  Updated name of all sensors to show sensor type (Motion Sensor name 2 etc) to make it easier to test
+  Updated name of Push Button to make name consistent with other examples
+  Updated name of Security System to make name consistent with other examples
+  Updated name of Window Covering to make name consistent with other examples
+  Updated id, name, open_url and close_url of example Lock Mechanism in Readme to make name consistent with other examples
+  Updated id and name of example Fanv2 to make name Homebridge v2 compliant
+  Updated name of CO2 Sensor to make name consistent with other examples
+
+Updated dependencies:
+  "http-auth": "^4.2.0",
+  "node-persist": "^2.1.0",
+  "request": "^2.88.2",
+  "selfsigned": "^2.4.1"
+NOTE: a newer version of node-persist exists but all storage commands are async, requiring more code changes
+
 ### 0.1.19
 
 New features:
@@ -6,8 +37,8 @@ New features:
 ### 0.1.18
 
 Bugfix:
-
   - fixed "nan" log when using fanv2 (thanks to shirnschall).
+
 
 ### 0.1.17
 

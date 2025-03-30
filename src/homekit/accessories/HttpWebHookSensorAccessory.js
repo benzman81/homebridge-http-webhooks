@@ -140,7 +140,7 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
   var state = this.storage.getItemSync("http-webhook-" + this.id);
   this.log.debug(this.name + ": State for '%s' is '%s'", this.id, state);
   if (state === undefined) {
-    state = false;
+    state = false; // force default value if undefined
   }
   if (this.type === "contact") {
     callback(null, state ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
@@ -152,6 +152,9 @@ HttpWebHookSensorAccessory.prototype.getState = function(callback) {
     callback(null, state ? Characteristic.OccupancyDetected.OCCUPANCY_DETECTED : Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED);
   }
   else if (this.type === "light") {
+    if (state === false) {
+      state = 0.0001 // 0.0001 is minimum valid value for light
+    }
     callback(null, parseFloat(state));
   }
   else {
