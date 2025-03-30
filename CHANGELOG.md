@@ -1,3 +1,7 @@
+### 0.2.0
+- Added Homebridge v2 compytability (thanks to jsiegenthaler).
+- Added Doorbell (thanks to jsiegenthaler).
+
 ### 0.2.0-beta.1
 From jsiegenthaler:
 Updated package.json to show compatibility with Homebridge v2
