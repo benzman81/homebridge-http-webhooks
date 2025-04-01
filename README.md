@@ -75,6 +75,7 @@ Doorbells require 2 parameters: accessoryId and the event to trigger:
 * Single press = 0
 * Double press = 1
 * Long press = 2
+
 `http://yourHomebridgeServerIp:webhook_port/?accessoryId=theAccessoryIdToUpdate&event=EVENT`
 
 Examples:
@@ -83,7 +84,7 @@ Examples:
 
 Doorbells are shown as a stateless programmable switch.
 When the doorbell is rung by calling the webhooks url, it generates the notification "Roomname doorbell rang." and executes any actions which have been added in the Home app to the stateless programmable switch.
-When adding the doorbell to the Home app, it will ask for somme options to recognise familiar faces. These can be ignored, as no camera is associated with the doorbell.
+When adding the doorbell to the Home app, it will ask for some options to recognise familiar faces. These can be ignored, as no camera is associated with the doorbell.
 
 ## Light
 For lights you can call the url from any system to switch the light on or off.
