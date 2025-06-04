@@ -1,8 +1,8 @@
 const Constants = require('../../Constants');
 
 function HttpWebHookCarbonDioxideSensorAccessory(ServiceParam, CharacteristicParam, platform, sensorConfig) {
-  Service = ServiceParam;
-  Characteristic = CharacteristicParam;
+  var Service = ServiceParam;
+  var Characteristic = CharacteristicParam;
 
   this.platform = platform;
   this.log = platform.log;
@@ -24,7 +24,10 @@ function HttpWebHookCarbonDioxideSensorAccessory(ServiceParam, CharacteristicPar
 }
 
 HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(urlParams) {
-  var cached = this.storage.getItemSync("http-webhook-" + this.id) || 0;
+  var cached = this.storage.getItemSync("http-webhook-carbon-dioxide-level-" + this.id);
+  if (cached === undefined) {
+    cached = 0;
+  }
   if (urlParams.value === undefined) {
     this.log.debug(this.name + ": No urlValue");
     return {
@@ -32,7 +35,7 @@ HttpWebHookCarbonDioxideSensorAccessory.prototype.changeFromServer = function(ur
       "state" : cached
     };
   }
-  var urlValue = urlParams.value;
+  var urlValue = parseFloat(urlParams.value);
   var co2Detected = urlValue > this.co2PeakLevel;
   this.log.debug(this.name + ": urlValue: "+ urlValue);
   this.log.debug(this.name + ": co2Detected: "+ co2Detected);
