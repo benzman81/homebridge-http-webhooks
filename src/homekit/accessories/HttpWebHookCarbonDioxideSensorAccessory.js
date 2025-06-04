@@ -1,8 +1,8 @@
 const Constants = require('../../Constants');
 
 function HttpWebHookCarbonDioxideSensorAccessory(ServiceParam, CharacteristicParam, platform, sensorConfig) {
-  var Service = ServiceParam;
-  var Characteristic = CharacteristicParam;
+  Service = ServiceParam;
+  Characteristic = CharacteristicParam;
 
   this.platform = platform;
   this.log = platform.log;
