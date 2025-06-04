@@ -5,3 +5,6 @@ package-lock.json
 .cache
 .idea
 .DS_Store
+/tmp
+.cursor
+*.icloud
